@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Super Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .tab-btn.active{border-bottom:3px solid #059669;color:#059669;font-weight:700;}
+    .modal-overlay{display:none;}.modal-overlay.open{display:flex;}
+    body{font-family:system-ui,sans-serif;}
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- ADMIN LOGIN SCREEN -->
+<div id="admin-login" class="flex items-center justify-center min-h-screen">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
+    <div class="bg-green-900 text-white p-6 text-center">
+      <p class="text-4xl mb-2">🌾</p>
+      <h1 class="text-2xl font-extrabold">AgriHub Admin</h1>
+      <p class="text-green-300 text-sm mt-1">Super Admin Dashboard</p>
+    </div>
+    <div class="p-6 space-y-4">
+      <input id="admin-token-input" type="password" placeholder="Admin Secret Token" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <button onclick="doAdminLogin()" class="w-full bg-green-800 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg transition">Enter Dashboard</button>
+      <div id="admin-login-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg text-center"></div>
+      <p class="text-xs text-gray-400 text-center">Default token: <code class="bg-gray-100 px-1 rounded">agrihub-admin-2024</code></p>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="admin-dashboard" class="hidden">
+  <!-- HEADER -->
+  <div class="bg-green-900 text-white shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🌾</span>
+        <div>
+          <h1 class="text-lg font-extrabold">AgriHub Pro — Admin</h1>
+          <p class="text-green-300 text-xs">Super Admin Control Panel</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-sm">
+        <span id="admin-badge" class="bg-green-700 px-3 py-1 rounded-full text-xs font-semibold">Admin</span>
+        <button onclick="adminLogout()" class="bg-red-700 hover:bg-red-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition">Logout</button>
+      </div>
+    </div>
+    <!-- TABS -->
+    <div class="max-w-7xl mx-auto px-4 border-t border-green-800">
+      <div class="flex gap-1 overflow-x-auto">
+        <button onclick="switchTab('fulfillment')" id="tab-fulfillment" class="tab-btn active px-5 py-3 text-sm whitespace-nowrap text-green-300 transition border-b-3">Fulfillment</button>
+        <button onclick="switchTab('land')" id="tab-land" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Real Estate</button>
+        <button onclick="switchTab('store')" id="tab-store" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Official Store</button>
+        <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Analytics</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- FULFILLMENT TAB -->
+    <div id="tab-fulfillment-content">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-bold text-gray-800">Pending Crop Deliveries</h2>
+        <button onclick="loadPendingCrops()" class="text-sm text-green-700 font-semibold hover:underline flex items-center gap-1">↻ Refresh</button>
+      </div>
+      <div id="fulfillment-loading" class="text-center py-16">
+        <div class="inline-block w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-gray-500">Loading pending deliveries...</p>
+      </div>
+      <div id="fulfillment-empty" class="hidden text-center py-16">
+        <p class="text-5xl mb-3">✅</p>
+        <p class="text-gray-500 text-lg">All caught up! No pending deliveries.</p>
+      </div>
+      <div id="fulfillment-grid" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+    </div>
+
+    <!-- LAND TAB -->
+    <div id="tab-land-content" class="hidden">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-bold text-gray-800">Pending Land Listings</h2>
+        <button onclick="loadPendingLand()" class="text-sm text-green-700 font-semibold hover:underline">↻ Refresh</button>
+      </div>
+      <div id="land-loading" class="text-center py-16">
+        <div class="inline-block w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-gray-500">Loading pending land listings...</p>
+      </div>
+      <div id="land-empty" class="hidden text-center py-16">
+        <p class="text-5xl mb-3">✅</p>
+        <p class="text-gray-500 text-lg">No pending land listings.</p>
+      </div>
+      <div id="land-table" class="hidden bg-white rounded-2xl shadow overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left py-3 px-4 text-gray-500 font-semibold">Property</th>
+              <th class="text-left py-3 px-4 text-gray-500 font-semibold">Owner</th>
+              <th class="text-left py-3 px-4 text-gray-500 font-semibold">Acreage</th>
+              <th class="text-left py-3 px-4 text-gray-500 font-semibold">Total Price</th>
+              <th class="py-3 px-4 text-gray-500 font-semibold text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="land-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- OFFICIAL STORE TAB -->
+    <div id="tab-store-content" class="hidden">
+      <div class="max-w-2xl">
+        <h2 class="text-xl font-bold text-gray-800 mb-2">Upload Official AgriHub Product</h2>
+        <p class="text-gray-500 text-sm mb-5">Products uploaded here will appear with the "✓ AgriHub Official Tech" badge and link to the admin WhatsApp number.</p>
+        <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Product / Item Title</label>
+            <input id="store-title" type="text" placeholder="e.g., IoT Soil Moisture Sensor Kit" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Total Stock Weight / Qty (kg or units)</label>
+              <input id="store-total" type="number" min="0.1" step="0.1" placeholder="100" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Weight / Qty Per Unit</label>
+              <input id="store-per-unit" type="number" min="0.1" step="0.1" placeholder="1" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Packaging / Unit Type</label>
+              <input id="store-pack-type" type="text" placeholder="e.g., Box, Kit, Sensor" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Price Per Unit (₹)</label>
+              <input id="store-price" type="number" min="0" step="1" placeholder="2499" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Product Image (max 5MB)</label>
+            <input id="store-image" type="file" accept="image/jpeg,image/png,image/webp" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700" />
+          </div>
+          <div id="store-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
+          <div id="store-success" class="hidden text-green-700 text-sm bg-green-50 p-3 rounded-lg"></div>
+          <button onclick="submitOfficialProduct()" id="store-submit" class="w-full bg-green-800 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition">Upload Official Product</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div id="tab-analytics-content" class="hidden">
+      <div id="analytics-loading" class="text-center py-16">
+        <div class="inline-block w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-gray-500">Loading platform analytics...</p>
+      </div>
+      <div id="analytics-content-inner" class="hidden">
+        <!-- STATS CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl shadow p-5 text-center">
+            <p class="text-3xl font-extrabold text-blue-600" id="an-total-users">—</p>
+            <p class="text-xs text-gray-500 mt-1">Total Registered Users</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-5 text-center">
+            <p class="text-3xl font-extrabold text-yellow-600" id="an-premium-users">—</p>
+            <p class="text-xs text-gray-500 mt-1">Premium Subscribers</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-5 text-center">
+            <p class="text-3xl font-extrabold text-green-700" id="an-total-volume">—</p>
+            <p class="text-xs text-gray-500 mt-1">Total Hub Volume (kg)</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow p-5 text-center">
+            <p class="text-3xl font-extrabold text-amber-600" id="an-pending-land">—</p>
+            <p class="text-xs text-gray-500 mt-1">Pending Land Reviews</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- BAR CHART: User Tiers -->
+          <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-base font-bold text-gray-800 mb-4">User Tier Distribution</h3>
+            <div class="relative h-56"><canvas id="userTierChart"></canvas></div>
+          </div>
+          <!-- LINE CHART: Monthly Volume -->
+          <div class="bg-white rounded-2xl shadow p-6">
+            <h3 class="text-base font-bold text-gray-800 mb-4">Monthly Warehouse Volume (kg)</h3>
+            <div class="relative h-56"><canvas id="volumeChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- TOP CROPS BAR CHART -->
+        <div class="bg-white rounded-2xl shadow p-6 mb-6">
+          <h3 class="text-base font-bold text-gray-800 mb-4">Top Crops by Volume</h3>
+          <div class="relative h-64"><canvas id="cropVolumeChart"></canvas></div>
+        </div>
+
+        <!-- RECENT PRODUCTS TABLE -->
+        <div class="bg-white rounded-2xl shadow overflow-hidden">
+          <div class="p-5 border-b border-gray-100"><h3 class="text-base font-bold text-gray-800">Recent Crop Submissions</h3></div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50"><tr>
+                <th class="text-left py-3 px-4 text-gray-500 font-semibold">Crop</th>
+                <th class="text-left py-3 px-4 text-gray-500 font-semibold">Farmer</th>
+                <th class="text-left py-3 px-4 text-gray-500 font-semibold">Weight (kg)</th>
+                <th class="text-left py-3 px-4 text-gray-500 font-semibold">Status</th>
+              </tr></thead>
+              <tbody id="admin-recent-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAY CONFIRM MODAL -->
+<div id="pay-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <h3 class="text-lg font-bold text-gray-800 mb-1">Confirm Intake & Pay</h3>
+    <p class="text-gray-500 text-sm mb-4">Enter the verified physical weight after hub inspection.</p>
+    <input id="verified-weight-input" type="number" min="0.1" step="0.1" placeholder="Verified weight in kg" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-green-500" />
+    <div class="flex gap-3">
+      <button onclick="document.getElementById('pay-modal').classList.remove('open')" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition">Cancel</button>
+      <button id="pay-confirm-btn" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition">Confirm & Pay</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+  <span>✓</span><span id="toast-msg"></span>
+</div>
+
+<script>
+const API_BASE='/api';
+let adminToken='', chartInstances={};
+
+function doAdminLogin(){
+  const token=document.getElementById('admin-token-input').value.trim();
+  if(!token){showLoginError('Please enter the admin token');return;}
+  adminToken=token;
+  sessionStorage.setItem('agrihub_admin_token',token);
+  verifyAndEnter();
+}
+
+async function verifyAndEnter(){
+  try {
+    const res=await fetch(`${API_BASE}/admin/analytics/platform`,{headers:{'X-Admin-Token':adminToken}});
+    if(res.status===403){showLoginError('Invalid admin token. Please check and try again.');adminToken='';return;}
+    document.getElementById('admin-login').classList.add('hidden');
+    document.getElementById('admin-dashboard').classList.remove('hidden');
+    loadPendingCrops();
+  } catch { showLoginError('Cannot reach the API server. Make sure it is running.'); }
+}
+
+function showLoginError(msg){const e=document.getElementById('admin-login-error');e.textContent=msg;e.classList.remove('hidden');}
+
+function adminLogout(){adminToken='';sessionStorage.removeItem('agrihub_admin_token');document.getElementById('admin-dashboard').classList.add('hidden');document.getElementById('admin-login').classList.remove('hidden');document.getElementById('admin-token-input').value='';}
+
+function switchTab(tab){
+  ['fulfillment','land','store','analytics'].forEach(t=>{
+    document.getElementById(`tab-${t}`).classList.toggle('active',t===tab);
+    document.getElementById(`tab-${t}-content`).classList.toggle('hidden',t!==tab);
+  });
+  if(tab==='fulfillment') loadPendingCrops();
+  else if(tab==='land') loadPendingLand();
+  else if(tab==='analytics') loadAnalytics();
+}
+
+async function loadPendingCrops(){
+  document.getElementById('fulfillment-loading').classList.remove('hidden');
+  document.getElementById('fulfillment-grid').classList.add('hidden');
+  document.getElementById('fulfillment-empty').classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/admin/logistics/pending`,{headers:{'X-Admin-Token':adminToken}});
+    const data=await res.json();
+    const products=data.products||[];
+    document.getElementById('fulfillment-loading').classList.add('hidden');
+    if(!products.length){document.getElementById('fulfillment-empty').classList.remove('hidden');return;}
+    const grid=document.getElementById('fulfillment-grid');
+    grid.classList.remove('hidden');
+    grid.innerHTML=products.map(p=>`
+      <div class="bg-white rounded-2xl shadow p-5">
+        ${p.imagePath?`<img src="${p.imagePath}" class="w-full h-40 object-cover rounded-xl mb-4">`:'<div class="w-full h-28 bg-green-50 rounded-xl mb-4 flex items-center justify-center text-4xl">🌾</div>'}
+        <h3 class="font-bold text-gray-800 text-base mb-1">${p.cropTitle}</h3>
+        <p class="text-xs text-gray-400 mb-3">by ${p.sellerName||'Farmer'} · ${p.calculatedTotalUnits} units · ${p.totalWeightKg}kg total</p>
+        <div class="space-y-2 text-xs text-gray-600 bg-gray-50 rounded-xl p-3 mb-4">
+          <div class="flex justify-between"><span>Packaging:</span><span class="font-medium">${p.packagingUnitType}</span></div>
+          <div class="flex justify-between"><span>Per Unit:</span><span class="font-medium">${p.weightPerUnitKg}kg</span></div>
+          <div class="flex justify-between"><span>Declared Weight:</span><span class="font-semibold text-green-800">${p.totalWeightKg}kg</span></div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="openPayModal('${p._id}')" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl text-sm transition">✓ Confirm Intake & Pay</button>
+          <button onclick="publishProduct('${p._id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2.5 rounded-xl text-sm transition" title="Skip to retail">→</button>
+        </div>
+      </div>`).join('');
+  } catch {
+    document.getElementById('fulfillment-loading').innerHTML='<p class="text-red-400 py-8 text-center">Failed to load. Check API server.</p>';
+  }
+}
+
+function openPayModal(productId){
+  document.getElementById('pay-modal').classList.add('open');
+  document.getElementById('verified-weight-input').value='';
+  document.getElementById('pay-confirm-btn').onclick=()=>confirmPayProduct(productId);
+}
+
+async function confirmPayProduct(id){
+  const weight=document.getElementById('verified-weight-input').value;
+  try {
+    const res=await fetch(`${API_BASE}/admin/logistics/pay/${id}`,{method:'PUT',headers:{'X-Admin-Token':adminToken,'Content-Type':'application/json'},body:JSON.stringify({verifiedWeight:weight})});
+    document.getElementById('pay-modal').classList.remove('open');
+    if(res.ok){showToast('Product confirmed as received and paid!');loadPendingCrops();}
+    else{const d=await res.json();showToast(d.error||'Failed');}
+  } catch { showToast('Network error'); }
+}
+
+async function publishProduct(id){
+  const price=prompt('Enter retail price per unit (₹):', '0');
+  if(price===null) return;
+  try {
+    const res=await fetch(`${API_BASE}/admin/logistics/publish/${id}`,{method:'PUT',headers:{'X-Admin-Token':adminToken,'Content-Type':'application/json'},body:JSON.stringify({pricePerUnit:price})});
+    if(res.ok){showToast('Product listed for retail!');loadPendingCrops();}
+    else{const d=await res.json();showToast(d.error||'Failed');}
+  } catch { showToast('Network error'); }
+}
+
+async function loadPendingLand(){
+  document.getElementById('land-loading').classList.remove('hidden');
+  document.getElementById('land-table').classList.add('hidden');
+  document.getElementById('land-empty').classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/admin/land/pending`,{headers:{'X-Admin-Token':adminToken}});
+    const data=await res.json();
+    const listings=data.listings||[];
+    document.getElementById('land-loading').classList.add('hidden');
+    if(!listings.length){document.getElementById('land-empty').classList.remove('hidden');return;}
+    const tbody=document.getElementById('land-tbody');
+    document.getElementById('land-table').classList.remove('hidden');
+    tbody.innerHTML=listings.map(l=>`
+      <tr class="border-b border-gray-50 hover:bg-gray-50">
+        <td class="py-3 px-4">
+          <p class="font-semibold text-gray-800">${l.title}</p>
+          ${l.location?`<p class="text-xs text-gray-400">📍 ${l.location}</p>`:''}
+        </td>
+        <td class="py-3 px-4 text-gray-600 text-sm">${l.sellerName||'—'}</td>
+        <td class="py-3 px-4 text-gray-600 text-sm">${l.totalAcreage} acres</td>
+        <td class="py-3 px-4">
+          <p class="font-bold text-amber-700">₹${Math.round(l.totalPrice).toLocaleString('en-IN')}</p>
+          <p class="text-xs text-gray-400">₹${l.pricePerSqFt}/sqft</p>
+        </td>
+        <td class="py-3 px-4">
+          <div class="flex gap-2 justify-center">
+            <button onclick="approveLand('${l._id}')" class="bg-green-600 hover:bg-green-500 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition">✓ Approve</button>
+            <button onclick="rejectLand('${l._id}')" class="bg-red-500 hover:bg-red-400 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition">✗ Reject</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  } catch {
+    document.getElementById('land-loading').innerHTML='<p class="text-red-400 py-8 text-center">Failed to load.</p>';
+  }
+}
+
+async function approveLand(id){
+  try {
+    const res=await fetch(`${API_BASE}/admin/land/approve/${id}`,{method:'PUT',headers:{'X-Admin-Token':adminToken}});
+    if(res.ok){showToast('Land listing approved!');loadPendingLand();}
+    else{const d=await res.json();showToast(d.error||'Failed');}
+  } catch { showToast('Network error'); }
+}
+
+async function rejectLand(id){
+  try {
+    const res=await fetch(`${API_BASE}/admin/land/reject/${id}`,{method:'PUT',headers:{'X-Admin-Token':adminToken}});
+    if(res.ok){showToast('Land listing rejected');loadPendingLand();}
+    else{const d=await res.json();showToast(d.error||'Failed');}
+  } catch { showToast('Network error'); }
+}
+
+async function submitOfficialProduct(){
+  const btn=document.getElementById('store-submit'); btn.disabled=true; btn.textContent='Uploading...';
+  const err=document.getElementById('store-error'), suc=document.getElementById('store-success');
+  err.classList.add('hidden'); suc.classList.add('hidden');
+  const fd=new FormData();
+  fd.append('cropTitle',document.getElementById('store-title').value);
+  fd.append('totalWeightKg',document.getElementById('store-total').value);
+  fd.append('weightPerUnitKg',document.getElementById('store-per-unit').value);
+  fd.append('packagingUnitType',document.getElementById('store-pack-type').value);
+  fd.append('pricePerUnit',document.getElementById('store-price').value);
+  const img=document.getElementById('store-image').files[0];
+  if(img) fd.append('image',img);
+  try {
+    const res=await fetch(`${API_BASE}/admin/store/official`,{method:'POST',headers:{'X-Admin-Token':adminToken},body:fd});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error||'Upload failed';err.classList.remove('hidden');return;}
+    suc.textContent=`✓ "${data.product.cropTitle}" is now live with the Official badge!`;suc.classList.remove('hidden');
+    document.getElementById('store-title').value='';document.getElementById('store-total').value='';document.getElementById('store-per-unit').value='';document.getElementById('store-pack-type').value='';document.getElementById('store-price').value='';document.getElementById('store-image').value='';
+  } catch { err.textContent='Network error.'; err.classList.remove('hidden'); }
+  finally { btn.disabled=false; btn.textContent='Upload Official Product'; }
+}
+
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+async function loadAnalytics(){
+  document.getElementById('analytics-loading').classList.remove('hidden');
+  document.getElementById('analytics-content-inner').classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/admin/analytics/platform`,{headers:{'X-Admin-Token':adminToken}});
+    const data=await res.json();
+    document.getElementById('analytics-loading').classList.add('hidden');
+    document.getElementById('analytics-content-inner').classList.remove('hidden');
+    document.getElementById('an-total-users').textContent=data.users?.total||0;
+    document.getElementById('an-premium-users').textContent=data.users?.premium||0;
+    document.getElementById('an-total-volume').textContent=(data.hub?.totalVolumeKg||0).toFixed(1);
+    document.getElementById('an-pending-land').textContent=data.hub?.pendingLandListings||0;
+
+    Object.values(chartInstances).forEach(c=>c.destroy()); chartInstances={};
+
+    const ctx1=document.getElementById('userTierChart').getContext('2d');
+    chartInstances.tier=new Chart(ctx1,{
+      type:'bar',
+      data:{labels:['Free Users','Premium Users'],datasets:[{label:'Count',data:[data.users?.free||0,data.users?.premium||0],backgroundColor:['#6ee7b7','#f59e0b'],borderRadius:8}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}
+    });
+
+    const monthly=data.monthlyVolume||[];
+    const ctx2=document.getElementById('volumeChart').getContext('2d');
+    chartInstances.vol=new Chart(ctx2,{
+      type:'line',
+      data:{
+        labels:monthly.map(m=>`${MONTHS[(m._id.month||1)-1]} ${m._id.year}`),
+        datasets:[{label:'Volume (kg)',data:monthly.map(m=>m.volume),borderColor:'#059669',backgroundColor:'rgba(5,150,105,0.1)',fill:true,tension:0.4,pointBackgroundColor:'#059669'}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+    });
+
+    const crops=data.cropBreakdown||[];
+    const ctx3=document.getElementById('cropVolumeChart').getContext('2d');
+    chartInstances.crops=new Chart(ctx3,{
+      type:'bar',
+      data:{labels:crops.map(c=>c._id),datasets:[{label:'Total Weight (kg)',data:crops.map(c=>c.totalWeight),backgroundColor:'#10b981',borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}
+    });
+
+    const recentProducts=data.recentProducts||[];
+    const tbody=document.getElementById('admin-recent-tbody');
+    const statusMap={'Awaiting_Hub_Delivery':'<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-semibold">Awaiting</span>','Received_And_Paid':'<span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full font-semibold">Paid</span>','Listed_For_Retail':'<span class="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">Retail</span>'};
+    tbody.innerHTML=recentProducts.map(p=>`
+      <tr class="border-b border-gray-50 hover:bg-gray-50">
+        <td class="py-3 px-4 font-medium text-gray-800">${p.cropTitle}</td>
+        <td class="py-3 px-4 text-gray-500 text-sm">${p.sellerName||'—'}</td>
+        <td class="py-3 px-4 text-gray-600">${p.totalWeightKg}</td>
+        <td class="py-3 px-4">${statusMap[p.adminVerificationStatus]||p.adminVerificationStatus}</td>
+      </tr>`).join('');
+  } catch {
+    document.getElementById('analytics-loading').innerHTML='<p class="text-red-400 py-8 text-center">Failed to load analytics.</p>';
+  }
+}
+
+function showToast(msg,dur=3500){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),dur);}
+
+const saved=sessionStorage.getItem('agrihub_admin_token');
+if(saved){adminToken=saved;verifyAndEnter();}
+</script>
+</body>
+</html>

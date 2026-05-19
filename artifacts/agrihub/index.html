@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Marketplace</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#059669" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .official-glow { box-shadow: 0 0 16px 4px rgba(5,150,105,0.45); }
+    .badge-glow { animation: pulse-glow 2.5s infinite; }
+    @keyframes pulse-glow { 0%,100%{box-shadow:0 0 6px 2px rgba(5,150,105,0.6)} 50%{box-shadow:0 0 18px 6px rgba(5,150,105,0.95)} }
+    .lang-btn.active { background:#059669!important; color:#fff!important; }
+    .modal-overlay { display:none; }
+    .modal-overlay.open { display:flex; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+<nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/index.html" class="flex items-center gap-2 text-xl font-bold shrink-0">
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+    </a>
+    <div class="hidden md:flex items-center gap-5 text-sm font-medium">
+      <a href="/index.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_market">Marketplace</a>
+      <a href="/community.html" class="hover:text-green-200 transition" data-t="nav_community">Community</a>
+      <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
+      <a href="/profile.html" class="hover:text-green-200 transition" data-t="nav_profile">My Profile</a>
+    </div>
+    <div class="flex items-center gap-3 shrink-0">
+      <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
+        <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+      </div>
+      <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition truncate max-w-32" data-t="login">Login</button>
+    </div>
+  </div>
+</nav>
+
+<div class="bg-gradient-to-br from-green-900 via-green-800 to-emerald-700 text-white py-12 px-4">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-extrabold mb-2 leading-tight" data-t="hero_title">Fresh From The Farm. Direct To You.</h1>
+      <p class="text-green-200 text-lg" data-t="hero_sub">Verified quality. Fair prices. Trusted farmers.</p>
+    </div>
+    <button onclick="openIntakeModal()" class="bg-yellow-400 hover:bg-yellow-300 text-green-900 font-bold px-6 py-3.5 rounded-xl text-sm transition shadow-xl whitespace-nowrap" data-t="sell_crop">+ Sell Your Crop</button>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap gap-3 items-center">
+  <input id="search-input" onkeyup="filterProducts()" type="text" placeholder="Search crops..." class="border border-gray-300 rounded-lg px-4 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-green-500" data-t-placeholder="search_placeholder" />
+  <select id="filter-official" onchange="filterProducts()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+    <option value="">All Products</option>
+    <option value="official">AgriHub Official Only</option>
+    <option value="farmer">Farmer Products Only</option>
+  </select>
+  <span id="product-count" class="text-sm text-gray-400 ml-auto"></span>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 pb-16">
+  <div id="loading" class="text-center py-20">
+    <div class="inline-block w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+    <p class="mt-4 text-gray-500" data-t="loading">Loading marketplace...</p>
+  </div>
+  <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></div>
+  <div id="empty-state" class="hidden text-center py-24">
+    <p class="text-7xl mb-4">🌱</p>
+    <p class="text-gray-400 text-lg" data-t="no_products">No products available yet.</p>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div class="bg-green-800 text-white p-6">
+      <h2 class="text-xl font-bold" id="auth-title">Login to AgriHub</h2>
+      <p class="text-green-200 text-sm mt-1">Access your farmer dashboard</p>
+    </div>
+    <div class="p-6">
+      <div id="login-form" class="space-y-4">
+        <input id="login-email" type="email" placeholder="Email address" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input id="login-password" type="password" placeholder="Password" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <button onclick="doLogin()" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg transition">Login</button>
+        <p class="text-center text-sm text-gray-500">Don't have an account? <button onclick="showRegister()" class="text-green-700 font-semibold hover:underline">Register</button></p>
+      </div>
+      <div id="register-form" class="hidden space-y-4">
+        <input id="reg-name" type="text" placeholder="Full Name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input id="reg-email" type="email" placeholder="Email address" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input id="reg-phone" type="tel" placeholder="Phone with country code (e.g. 919876543210)" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <input id="reg-password" type="password" placeholder="Password (min 6 chars)" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <button onclick="doRegister()" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg transition">Create Account</button>
+        <p class="text-center text-sm text-gray-500">Already registered? <button onclick="showLogin()" class="text-green-700 font-semibold hover:underline">Login</button></p>
+      </div>
+      <div id="auth-error" class="hidden mt-3 text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
+    </div>
+    <div class="px-6 pb-5 text-center"><button onclick="closeAuthModal()" class="text-gray-400 text-sm hover:text-gray-600">Cancel</button></div>
+  </div>
+</div>
+
+<!-- INTAKE MODAL -->
+<div id="intake-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[95vh]">
+    <div class="bg-green-800 text-white p-6">
+      <h2 class="text-xl font-bold" data-t="intake_title">List Your Crop for Wholesale</h2>
+      <p class="text-green-200 text-sm mt-1" data-t="intake_sub">Submit your harvest to the AgriHub fulfillment center</p>
+    </div>
+    <form id="intake-form" onsubmit="submitIntake(event)" class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="crop_title_label">Crop Title</label>
+        <input name="cropTitle" type="text" required placeholder="e.g., Organic Paddy Rice" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="total_weight">Total Weight (kg)</label>
+          <input name="totalWeightKg" type="number" min="0.1" step="0.1" required placeholder="500" oninput="calcUnits()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="weight_per_unit">Weight Per Unit (kg)</label>
+          <input name="weightPerUnitKg" type="number" min="0.1" step="0.1" required placeholder="25" oninput="calcUnits()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="pack_type">Packaging Unit Type</label>
+        <select name="packagingUnitType" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+          <option value="">Select packaging...</option>
+          <option>Gunny Bag</option><option>Jute Sack</option><option>Plastic Bag</option>
+          <option>Crate</option><option>Carton Box</option><option>Mesh Bag</option><option>Basket</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="price_per_unit">Price Per Unit (₹)</label>
+        <input name="pricePerUnit" type="number" min="0" step="1" placeholder="1200" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div id="units-calc" class="hidden bg-green-50 border-2 border-green-300 rounded-xl p-4">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl font-extrabold text-green-800" id="units-count">0</span>
+          <div>
+            <p class="text-sm font-bold text-green-800" data-t="total_packages">Total Packages Required</p>
+            <p class="text-xs text-green-600 font-mono" id="units-formula"></p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="crop_image">Crop Image (optional, max 5MB)</label>
+        <input name="image" type="file" accept="image/jpeg,image/png,image/webp" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+      </div>
+      <div id="intake-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeIntakeModal()" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition" data-t="cancel">Cancel</button>
+        <button type="submit" id="intake-submit" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-lg transition" data-t="submit_listing">Submit Listing</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+  <span>✓</span><span id="toast-msg"></span>
+</div>
+
+<script>
+const API_BASE = '/api';
+const ADMIN_PHONE = '919876543210';
+let products = [], currentLang = 'en';
+let token = localStorage.getItem('agrihub_token') || '';
+let user = JSON.parse(localStorage.getItem('agrihub_user') || 'null');
+
+const T = {
+  en: {
+    brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+    login:'Login',logout:'Logout',hero_title:'Fresh From The Farm. Direct To You.',hero_sub:'Verified quality. Fair prices. Trusted farmers.',
+    sell_crop:'+ Sell Your Crop',search_placeholder:'Search crops...',loading:'Loading marketplace...',
+    no_products:'No products available yet. Be the first to list!',intake_title:'List Your Crop for Wholesale',
+    intake_sub:'Submit your harvest to the AgriHub fulfillment center',crop_title_label:'Crop Title',
+    total_weight:'Total Weight (kg)',weight_per_unit:'Weight Per Unit (kg)',pack_type:'Packaging Unit Type',
+    price_per_unit:'Price Per Unit (₹)',crop_image:'Crop Image (optional, max 5MB)',total_packages:'Total Packages Required',
+    cancel:'Cancel',submit_listing:'Submit Listing',official_badge:'✓ AgriHub Official Tech',
+    buy_whatsapp:'Buy on WhatsApp',units:'units',per_unit:'/unit'
+  },
+  ta: {
+    brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',logout:'வெளியேறு',hero_title:'பண்ணையிலிருந்து நேரடியாக உங்களுக்கு',hero_sub:'சரிபார்க்கப்பட்ட தரம். நியாயமான விலை.',
+    sell_crop:'+ பயிரை விற்கவும்',search_placeholder:'பயிர்களை தேடுங்கள்...',loading:'சந்தை ஏற்றப்படுகிறது...',
+    no_products:'இன்னும் தயாரிப்புகள் இல்லை!',intake_title:'மொத்த விற்பனைக்கு பயிரை பட்டியலிடவும்',
+    intake_sub:'உங்கள் அறுவடையை அக்ரிஹப் மையத்திற்கு சமர்ப்பிக்கவும்',crop_title_label:'பயிர் பெயர்',
+    total_weight:'மொத்த எடை (கிலோ)',weight_per_unit:'ஒரு அலகு எடை (கிலோ)',pack_type:'பேக்கேஜிங் வகை',
+    price_per_unit:'ஒரு அலகு விலை (₹)',crop_image:'பயிர் படம் (விருப்பமானது)',total_packages:'மொத்த தொகுப்புகள்',
+    cancel:'ரத்து செய்',submit_listing:'சமர்ப்பிக்கவும்',official_badge:'✓ அக்ரிஹப் அதிகாரப்பூர்வ தொழில்நுட்பம்',
+    buy_whatsapp:'வாட்ஸ்அப்பில் வாங்கவும்',units:'அலகுகள்',per_unit:'/அலகு'
+  }
+};
+
+function t(k){ return T[currentLang][k] || T.en[k] || k; }
+
+function setLang(lang) {
+  currentLang = lang;
+  ['en','ta'].forEach(l => {
+    const btn = document.getElementById(`btn-${l}`);
+    btn.classList.toggle('active', l === lang);
+  });
+  document.querySelectorAll('[data-t]').forEach(el => { const v=T[lang][el.dataset.t]; if(v) el.textContent=v; });
+  document.querySelectorAll('[data-t-placeholder]').forEach(el => { const v=T[lang][el.dataset.tPlaceholder]; if(v) el.placeholder=v; });
+  renderProducts();
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById('auth-btn');
+  if (user && token) { btn.textContent = user.name.split(' ')[0]; btn.onclick = doLogout; }
+  else { btn.textContent = t('login'); btn.onclick = openAuthModal; }
+}
+function handleAuthBtn() { if(user&&token) doLogout(); else openAuthModal(); }
+function doLogout() { token=''; user=null; localStorage.removeItem('agrihub_token'); localStorage.removeItem('agrihub_user'); updateAuthUI(); showToast('Logged out'); }
+
+async function doLogin() {
+  const email=document.getElementById('login-email').value, password=document.getElementById('login-password').value;
+  const err=document.getElementById('auth-error'); err.classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    token=data.token; user=data.user;
+    localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
+    closeAuthModal(); updateAuthUI(); showToast(`Welcome back, ${user.name}!`);
+  } catch { err.textContent='Network error. Is the API server running?'; err.classList.remove('hidden'); }
+}
+
+async function doRegister() {
+  const name=document.getElementById('reg-name').value,email=document.getElementById('reg-email').value,
+    phone=document.getElementById('reg-phone').value,password=document.getElementById('reg-password').value;
+  const err=document.getElementById('auth-error'); err.classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/auth/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,phone,password})});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    token=data.token; user=data.user;
+    localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
+    closeAuthModal(); updateAuthUI(); showToast(`Welcome to AgriHub, ${user.name}!`);
+  } catch { err.textContent='Network error. Is the API server running?'; err.classList.remove('hidden'); }
+}
+
+function openAuthModal(){document.getElementById('auth-modal').classList.add('open');showLogin();}
+function closeAuthModal(){document.getElementById('auth-modal').classList.remove('open');}
+function showLogin(){document.getElementById('login-form').classList.remove('hidden');document.getElementById('register-form').classList.add('hidden');document.getElementById('auth-error').classList.add('hidden');document.getElementById('auth-title').textContent='Login to AgriHub';}
+function showRegister(){document.getElementById('login-form').classList.add('hidden');document.getElementById('register-form').classList.remove('hidden');document.getElementById('auth-error').classList.add('hidden');document.getElementById('auth-title').textContent='Create Your Account';}
+
+function openIntakeModal(){if(!token){openAuthModal();return;}document.getElementById('intake-modal').classList.add('open');}
+function closeIntakeModal(){document.getElementById('intake-modal').classList.remove('open');document.getElementById('intake-form').reset();document.getElementById('units-calc').classList.add('hidden');document.getElementById('intake-error').classList.add('hidden');}
+
+function calcUnits(){
+  const form=document.getElementById('intake-form');
+  const totalW=parseFloat(form.totalWeightKg.value)||0, unitW=parseFloat(form.weightPerUnitKg.value)||0;
+  const calc=document.getElementById('units-calc');
+  if(totalW>0&&unitW>0){
+    const u=Math.ceil(totalW/unitW);
+    document.getElementById('units-count').textContent=u;
+    document.getElementById('units-formula').textContent=`⌈${totalW}kg ÷ ${unitW}kg/unit⌉ = ${u} packages`;
+    calc.classList.remove('hidden');
+  } else { calc.classList.add('hidden'); }
+}
+
+async function submitIntake(e) {
+  e.preventDefault();
+  const btn=document.getElementById('intake-submit'); btn.disabled=true; btn.textContent='Submitting...';
+  const err=document.getElementById('intake-error'); err.classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/products`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:new FormData(e.target)});
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    closeIntakeModal(); showToast('Crop listed! Awaiting Hub delivery confirmation.');
+    loadProducts();
+  } catch { err.textContent='Network error. Please try again.'; err.classList.remove('hidden'); }
+  finally { btn.disabled=false; btn.textContent=t('submit_listing'); }
+}
+
+async function loadProducts() {
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('product-grid').classList.add('hidden');
+  document.getElementById('empty-state').classList.add('hidden');
+  try {
+    const res=await fetch(`${API_BASE}/products`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
+    const data=await res.json(); products=data.products||[];
+    renderProducts();
+  } catch {
+    document.getElementById('loading').innerHTML='<p class="text-red-400 py-8">Failed to load products. Please ensure the API server is running.</p>';
+  }
+}
+
+function filterProducts() {
+  const q=(document.getElementById('search-input').value||'').toLowerCase();
+  const filter=document.getElementById('filter-official').value;
+  renderFilteredProducts(products.filter(p=>{
+    const mq=p.cropTitle.toLowerCase().includes(q)||(p.sellerName||'').toLowerCase().includes(q);
+    const mf=!filter||(filter==='official'&&p.isOfficialHubProduct)||(filter==='farmer'&&!p.isOfficialHubProduct);
+    return mq&&mf;
+  }));
+}
+function renderProducts(){filterProducts();}
+
+function renderFilteredProducts(list) {
+  const grid=document.getElementById('product-grid'),loading=document.getElementById('loading'),empty=document.getElementById('empty-state');
+  loading.classList.add('hidden');
+  document.getElementById('product-count').textContent=`${list.length} product${list.length!==1?'s':''} found`;
+  if(!list.length){grid.classList.add('hidden');empty.classList.remove('hidden');return;}
+  empty.classList.add('hidden'); grid.classList.remove('hidden');
+  grid.innerHTML=list.map(p=>{
+    const isOff=p.isOfficialHubProduct;
+    const phone=isOff?(p.adminPhone||ADMIN_PHONE):p.sellerPhone;
+    const msg=encodeURIComponent(`Hi, I'm interested in buying: ${p.cropTitle}\n(${p.calculatedTotalUnits} units × ${p.weightPerUnitKg}kg = ${p.totalWeightKg}kg total)`);
+    const imgHtml=p.imagePath
+      ?`<img src="${p.imagePath}" alt="${p.cropTitle}" class="w-full h-48 object-cover" onerror="this.outerHTML='<div class=\'w-full h-48 bg-green-100 flex items-center justify-center text-5xl\'>🌾</div>'">`
+      :`<div class="w-full h-48 bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center text-5xl">🌾</div>`;
+    return `<div class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-shadow flex flex-col ${isOff?'official-glow ring-2 ring-green-400':''}">
+      <div class="relative">${imgHtml}
+        ${isOff?`<span class="badge-glow absolute top-2 left-2 bg-green-700 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">${t('official_badge')}</span>`:''}
+        <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">${p.calculatedTotalUnits} ${t('units')}</span>
+      </div>
+      <div class="p-4 flex flex-col flex-1">
+        <h3 class="font-bold text-gray-800 mb-1 leading-tight">${p.cropTitle}</h3>
+        <p class="text-xs text-gray-400 mb-1">${p.packagingUnitType} · ${p.weightPerUnitKg}kg${t('per_unit')}</p>
+        <p class="text-xs text-gray-500 mb-3">by ${isOff?'<span class="text-green-700 font-semibold">AgriHub Official</span>':p.sellerName||'Farmer'}</p>
+        ${p.pricePerUnit>0?`<p class="text-green-800 font-extrabold text-xl mb-3">₹${Number(p.pricePerUnit).toLocaleString()}<span class="text-xs font-normal text-gray-400">${t('per_unit')}</span></p>`:'<p class="text-gray-400 text-sm mb-3">Price on request</p>'}
+        <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="mt-auto block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">📱 ${t('buy_whatsapp')}</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showToast(msg,dur=3500){
+  const el=document.getElementById('toast'); document.getElementById('toast-msg').textContent=msg;
+  el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),dur);
+}
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+
+updateAuthUI(); loadProducts(); setLang('en');
+</script>
+</body>
+</html>
