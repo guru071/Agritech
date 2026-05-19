@@ -7,6 +7,7 @@ import storiesRouter from "./stories.js";
 import trackerRouter from "./tracker.js";
 import analyticsRouter from "./analytics.js";
 import adminRouter from "./admin.js";
+import ordersRouter from "./orders.js";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use("/stories", storiesRouter);
 router.use("/tracker", trackerRouter);
 router.use("/users/me/analytics", analyticsRouter);
 router.use("/admin", adminRouter);
+router.use("/orders", ordersRouter);
 
 export default router;

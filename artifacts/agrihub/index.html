@@ -162,7 +162,7 @@
 <script>
 const API_BASE = '/api';
 const ADMIN_PHONE = '919876543210';
-let products = [], currentLang = 'en';
+let products = [], productsMap = {}, currentLang = 'en';
 let token = localStorage.getItem('agrihub_token') || '';
 let user = JSON.parse(localStorage.getItem('agrihub_user') || 'null');
 
@@ -176,7 +176,12 @@ const T = {
     total_weight:'Total Weight (kg)',weight_per_unit:'Weight Per Unit (kg)',pack_type:'Packaging Unit Type',
     price_per_unit:'Price Per Unit (₹)',crop_image:'Crop Image (optional, max 5MB)',total_packages:'Total Packages Required',
     cancel:'Cancel',submit_listing:'Submit Listing',official_badge:'✓ AgriHub Official Tech',
-    buy_whatsapp:'Buy on WhatsApp',units:'units',per_unit:'/unit'
+    order_now:'Order Now',units:'units',per_unit:'/unit',
+    order_title:'Place Order Request',order_sub:'Your details will be sent to the seller via WhatsApp',
+    buyer_name:'Your Full Name',buyer_phone:'Your Phone (with country code e.g. 919...))',buyer_email:'Email (optional)',
+    units_label:'Units You Want',order_msg:'Message to Seller (optional)',
+    submit_order:'Submit & Open WhatsApp',order_success:'Order submitted! Opening WhatsApp...',
+    order_max:'Max available'
   },
   ta: {
     brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
@@ -187,7 +192,12 @@ const T = {
     total_weight:'மொத்த எடை (கிலோ)',weight_per_unit:'ஒரு அலகு எடை (கிலோ)',pack_type:'பேக்கேஜிங் வகை',
     price_per_unit:'ஒரு அலகு விலை (₹)',crop_image:'பயிர் படம் (விருப்பமானது)',total_packages:'மொத்த தொகுப்புகள்',
     cancel:'ரத்து செய்',submit_listing:'சமர்ப்பிக்கவும்',official_badge:'✓ அக்ரிஹப் அதிகாரப்பூர்வ தொழில்நுட்பம்',
-    buy_whatsapp:'வாட்ஸ்அப்பில் வாங்கவும்',units:'அலகுகள்',per_unit:'/அலகு'
+    order_now:'இப்போது ஆர்டர் செய்',units:'அலகுகள்',per_unit:'/அலகு',
+    order_title:'ஆர்டர் கோரிக்கை வைக்கவும்',order_sub:'உங்கள் விவரங்கள் வாட்ஸ்அப் மூலம் விற்பனையாளருக்கு அனுப்பப்படும்',
+    buyer_name:'உங்கள் முழு பெயர்',buyer_phone:'உங்கள் தொலைபேசி (நாட்டு குறியீட்டுடன்)',buyer_email:'மின்னஞ்சல் (விருப்பமானது)',
+    units_label:'நீங்கள் விரும்பும் அலகுகள்',order_msg:'விற்பனையாளருக்கு செய்தி (விருப்பமானது)',
+    submit_order:'சமர்ப்பி & வாட்ஸ்அப் திற',order_success:'ஆர்டர் சமர்ப்பிக்கப்பட்டது! வாட்ஸ்அப் திறக்கிறது...',
+    order_max:'அதிகபட்சம் கிடைக்கும்'
   }
 };
 
@@ -280,6 +290,7 @@ async function loadProducts() {
   try {
     const res=await fetch(`${API_BASE}/products`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
     const data=await res.json(); products=data.products||[];
+    productsMap={}; products.forEach(p=>{productsMap[p._id]=p;});
     renderProducts();
   } catch {
     document.getElementById('loading').innerHTML='<p class="text-red-400 py-8">Failed to load products. Please ensure the API server is running.</p>';
@@ -320,7 +331,7 @@ function renderFilteredProducts(list) {
         <p class="text-xs text-gray-400 mb-1">${p.packagingUnitType} · ${p.weightPerUnitKg}kg${t('per_unit')}</p>
         <p class="text-xs text-gray-500 mb-3">by ${isOff?'<span class="text-green-700 font-semibold">AgriHub Official</span>':p.sellerName||'Farmer'}</p>
         ${p.pricePerUnit>0?`<p class="text-green-800 font-extrabold text-xl mb-3">₹${Number(p.pricePerUnit).toLocaleString()}<span class="text-xs font-normal text-gray-400">${t('per_unit')}</span></p>`:'<p class="text-gray-400 text-sm mb-3">Price on request</p>'}
-        <a href="https://wa.me/${phone}?text=${msg}" target="_blank" class="mt-auto block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">📱 ${t('buy_whatsapp')}</a>
+        <button onclick="openOrderModal('${p._id}')" class="mt-auto block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">🛒 ${t('order_now')}</button>
       </div>
     </div>`;
   }).join('');
@@ -331,10 +342,153 @@ function showToast(msg,dur=3500){
   el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),dur);
 }
 
+/* ── Order Modal ─────────────────────────── */
+let activeOrderProduct = null;
+
+function openOrderModal(id) {
+  const p = productsMap[id]; if (!p) return;
+  activeOrderProduct = p;
+  const el = document.getElementById('order-modal');
+  document.getElementById('order-crop-title').textContent = p.cropTitle;
+  document.getElementById('order-seller').textContent = p.isOfficialHubProduct ? 'AgriHub Official' : (p.sellerName || 'Farmer');
+  document.getElementById('order-price').textContent = p.pricePerUnit > 0 ? `₹${Number(p.pricePerUnit).toLocaleString()} ${t('per_unit')}` : 'Price on request';
+  const maxUnits = p.calculatedTotalUnits || 999;
+  const unitsInput = document.getElementById('order-units');
+  unitsInput.max = maxUnits;
+  unitsInput.value = 1;
+  document.getElementById('order-max-hint').textContent = `${t('order_max')}: ${maxUnits} ${t('units')}`;
+  document.getElementById('order-error').classList.add('hidden');
+  document.getElementById('order-form').reset();
+  unitsInput.value = 1;
+  el.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOrderModal() {
+  document.getElementById('order-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+  activeOrderProduct = null;
+}
+
+async function submitOrder(e) {
+  e.preventDefault();
+  const btn = document.getElementById('order-submit');
+  const errEl = document.getElementById('order-error');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  errEl.classList.add('hidden');
+
+  const p = activeOrderProduct;
+  const buyerName = document.getElementById('order-buyer-name').value.trim();
+  const buyerPhone = document.getElementById('order-buyer-phone').value.trim();
+  const buyerEmail = document.getElementById('order-buyer-email').value.trim();
+  const units = parseInt(document.getElementById('order-units').value);
+  const message = document.getElementById('order-message').value.trim();
+
+  try {
+    const res = await fetch(`${API_BASE}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: p._id, buyerName, buyerPhone, buyerEmail, unitsRequested: units, message })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Failed to submit order';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    showToast(t('order_success'));
+    closeOrderModal();
+    setTimeout(() => window.open(data.whatsappUrl, '_blank'), 300);
+  } catch {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = t('submit_order');
+  }
+}
+
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
 if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
 
 updateAuthUI(); loadProducts(); setLang('en');
 </script>
+
+<!-- ── ORDER REQUEST MODAL ─────────────────────────── -->
+<div id="order-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-5 border-b border-gray-100">
+      <div>
+        <h2 class="font-bold text-gray-900 text-lg" data-t="order_title">Place Order Request</h2>
+        <p class="text-xs text-gray-400 mt-0.5" data-t="order_sub">Your details will be sent to the seller via WhatsApp</p>
+      </div>
+      <button onclick="closeOrderModal()" class="text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
+    </div>
+
+    <!-- Product summary -->
+    <div class="mx-5 mt-4 bg-green-50 rounded-xl p-3 flex gap-3 items-start">
+      <span class="text-3xl">🌾</span>
+      <div class="min-w-0">
+        <p id="order-crop-title" class="font-bold text-green-900 truncate"></p>
+        <p class="text-xs text-gray-500">by <span id="order-seller" class="font-medium"></span></p>
+        <p id="order-price" class="text-green-700 font-semibold text-sm mt-0.5"></p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="order-form" onsubmit="submitOrder(event)" class="p-5 space-y-4">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="buyer_name">Your Full Name</label>
+        <input id="order-buyer-name" type="text" required placeholder="e.g. Ravi Kumar"
+          class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="buyer_phone">Your Phone</label>
+        <input id="order-buyer-phone" type="tel" required placeholder="91XXXXXXXXXX"
+          class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
+        <p class="text-xs text-gray-400 mt-1">Include country code, e.g. <strong>919876543210</strong></p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="buyer_email">Email (optional)</label>
+        <input id="order-buyer-email" type="email" placeholder="you@example.com"
+          class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="units_label">Units You Want</label>
+        <input id="order-units" type="number" min="1" value="1" required
+          class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
+        <p id="order-max-hint" class="text-xs text-gray-400 mt-1"></p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="order_msg">Message (optional)</label>
+        <textarea id="order-message" rows="2" placeholder="Any special requirements…"
+          class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"></textarea>
+      </div>
+
+      <p id="order-error" class="hidden text-red-500 text-sm bg-red-50 rounded-xl px-3 py-2"></p>
+
+      <div class="flex gap-3 pt-1">
+        <button type="button" onclick="closeOrderModal()"
+          class="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl text-sm hover:bg-gray-50 transition">
+          Cancel
+        </button>
+        <button id="order-submit" type="submit"
+          class="flex-2 flex-grow bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+          📱 <span data-t="submit_order">Submit &amp; Open WhatsApp</span>
+        </button>
+      </div>
+
+      <p class="text-center text-xs text-gray-400">
+        WhatsApp will open pre-filled — just hit <strong>Send</strong> to confirm your order.
+      </p>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
