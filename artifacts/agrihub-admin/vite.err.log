@@ -1,0 +1,19 @@
+[2m10:28:20 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/analytics/platform[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[2m10:28:20 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/logistics/pending[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[2m10:28:22 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/land/pending[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[2m10:28:25 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/analytics/platform[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[2m10:35:08 pm[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Failed to load url /src/admin-control.js (resolved id: /src/admin-control.js). Does the file exist?
+[2m10:38:10 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/users[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)
+[2m10:38:10 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/admin/overview[39m
+Error: connect ECONNREFUSED 127.0.0.1:3000
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)

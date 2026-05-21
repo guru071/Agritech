@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro Admin Control Center</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/src/tailwind.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-900">
+  <main id="admin-login" class="flex min-h-screen items-center justify-center px-4">
+    <section class="w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-xl">
+      <div class="bg-emerald-900 p-6 text-white">
+        <p class="text-sm font-semibold uppercase tracking-wide text-emerald-200">AgriHub Pro</p>
+        <h1 class="mt-1 text-2xl font-extrabold">Admin Control Center</h1>
+      </div>
+      <form id="login-form" class="space-y-4 p-6">
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-600">Admin token</span>
+          <input id="admin-token-input" type="password" autocomplete="current-password" placeholder="Paste your admin secret key here" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+        </label>
+        <button type="submit" class="w-full rounded-md bg-emerald-800 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700">Enter Dashboard</button>
+        <p id="admin-login-error" class="hidden rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-700"></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="admin-dashboard" class="hidden min-h-screen">
+    <header class="sticky top-0 z-40 border-b border-emerald-950 bg-emerald-950 text-white shadow-lg">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">AgriHub Pro</p>
+          <h1 class="text-lg font-extrabold">Admin Control Center</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="api-status" class="rounded-full bg-emerald-800 px-3 py-1 text-xs font-semibold">Connected</span>
+          <button id="refresh-active" class="rounded-md bg-white/10 px-3 py-2 text-xs font-bold transition hover:bg-white/20">Refresh</button>
+          <button id="admin-logout" class="rounded-md bg-red-700 px-3 py-2 text-xs font-bold transition hover:bg-red-600">Logout</button>
+        </div>
+      </div>
+      <nav class="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4">
+        <button data-tab="overview" class="tab-btn active shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Overview</button>
+        <button data-tab="users" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Users</button>
+        <button data-tab="products" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Products</button>
+        <button data-tab="orders" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Orders</button>
+        <button data-tab="community" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Community</button>
+        <button data-tab="land" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Land</button>
+        <button data-tab="store" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Official Store</button>
+        <button data-tab="learning" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Academy</button>
+        <button data-tab="analytics" class="tab-btn shrink-0 px-4 py-3 text-sm font-semibold text-emerald-100">Analytics</button>
+      </nav>
+    </header>
+
+    <div class="mx-auto max-w-7xl px-4 py-6">
+      <section id="tab-overview-content" class="tab-panel space-y-6">
+        <div id="overview-stats" class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-6"></div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <section class="rounded-lg bg-white p-4 shadow">
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="font-bold">Recent Users</h2>
+              <button data-tab-jump="users" class="text-sm font-semibold text-emerald-700">Manage</button>
+            </div>
+            <div id="recent-users" class="space-y-2"></div>
+          </section>
+          <section class="rounded-lg bg-white p-4 shadow">
+            <div class="mb-3 flex items-center justify-between">
+              <h2 class="font-bold">Recent Orders</h2>
+              <button data-tab-jump="orders" class="text-sm font-semibold text-emerald-700">Manage</button>
+            </div>
+            <div id="recent-orders" class="space-y-2"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="tab-users-content" class="tab-panel hidden space-y-4">
+        <div class="rounded-lg bg-white p-4 shadow">
+          <div class="grid gap-3 md:grid-cols-[1fr_160px_160px_auto]">
+            <input id="users-q" placeholder="Search users by name, email, phone" class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+            <select id="users-tier" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All tiers</option><option>Free</option><option>Premium</option></select>
+            <select id="users-status" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All status</option><option>Active</option><option>Suspended</option></select>
+            <button data-load="users" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-bold text-white">Apply</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded-lg bg-white shadow">
+          <table class="w-full min-w-[860px] text-sm">
+            <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+              <tr><th class="px-4 py-3">User</th><th class="px-4 py-3">Phone</th><th class="px-4 py-3">Tier</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Joined</th><th class="px-4 py-3 text-right">Actions</th></tr>
+            </thead>
+            <tbody id="users-table"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-products-content" class="tab-panel hidden space-y-4">
+        <div class="rounded-lg bg-white p-4 shadow">
+          <div class="grid gap-3 md:grid-cols-[1fr_190px_140px_140px_auto]">
+            <input id="products-q" placeholder="Search products, sellers, packaging" class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+            <select id="products-status" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All product status</option><option>Awaiting_Hub_Delivery</option><option>Received_And_Paid</option><option>Listed_For_Retail</option></select>
+            <select id="products-source" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All source</option><option value="official">Official</option><option value="farmer">Farmer</option></select>
+            <select id="products-visibility" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All visibility</option><option>Public</option><option>Hidden</option></select>
+            <button data-load="products" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-bold text-white">Apply</button>
+          </div>
+        </div>
+        <div id="products-list" class="grid gap-4 xl:grid-cols-2"></div>
+      </section>
+
+      <section id="tab-orders-content" class="tab-panel hidden space-y-4">
+        <div class="rounded-lg bg-white p-4 shadow">
+          <div class="grid gap-3 md:grid-cols-[1fr_180px_auto]">
+            <input id="orders-q" placeholder="Search orders, buyers, sellers" class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+            <select id="orders-status" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All status</option><option>Pending</option><option>Accepted</option><option>Packed</option><option>Shipped</option><option>Delivered</option><option>Rejected</option><option>Cancelled</option></select>
+            <button data-load="orders" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-bold text-white">Apply</button>
+          </div>
+        </div>
+        <div id="orders-list" class="space-y-3"></div>
+      </section>
+
+      <section id="tab-community-content" class="tab-panel hidden space-y-4">
+        <div class="rounded-lg bg-white p-4 shadow">
+          <div class="grid gap-3 md:grid-cols-[1fr_160px_auto]">
+            <input id="stories-q" placeholder="Search stories by user or caption" class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+            <select id="stories-status" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All stories</option><option>Visible</option><option>Hidden</option></select>
+            <button data-load="community" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-bold text-white">Apply</button>
+          </div>
+        </div>
+        <div id="stories-list" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+      </section>
+
+      <section id="tab-land-content" class="tab-panel hidden space-y-4">
+        <div class="rounded-lg bg-white p-4 shadow">
+          <div class="grid gap-3 md:grid-cols-[1fr_150px_150px_150px_auto]">
+            <input id="land-q" placeholder="Search land title, location, owner" class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-emerald-500" />
+            <select id="land-approval" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All approval</option><option>Pending</option><option>Approved</option><option>Rejected</option></select>
+            <select id="land-status" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All status</option><option>Available</option><option>Sold</option></select>
+            <select id="land-visibility" class="rounded-md border border-slate-300 px-3 py-2 text-sm"><option value="">All visibility</option><option>Public</option><option>Hidden</option></select>
+            <button data-load="land" class="rounded-md bg-slate-900 px-4 py-2 text-sm font-bold text-white">Apply</button>
+          </div>
+        </div>
+        <div id="land-list" class="grid gap-4 xl:grid-cols-2"></div>
+      </section>
+
+      <section id="tab-store-content" class="tab-panel hidden">
+        <form id="official-store-form" class="max-w-3xl rounded-lg bg-white p-5 shadow">
+          <h2 class="mb-4 text-lg font-bold">Official Product Upload</h2>
+          <div class="grid gap-4 md:grid-cols-2">
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Crop title</span><input name="cropTitle" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Packaging</span><input name="packagingUnitType" required placeholder="Gunny Bag" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Total weight kg</span><input name="totalWeightKg" required type="number" min="0.1" step="0.1" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Weight per unit kg</span><input name="weightPerUnitKg" required type="number" min="0.1" step="0.1" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Price per unit</span><input name="pricePerUnit" type="number" min="0" step="1" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+            <label class="block"><span class="text-sm font-semibold text-slate-600">Image</span><input name="image" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm" /></label>
+          </div>
+          <button class="mt-5 rounded-md bg-emerald-800 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">Publish Official Product</button>
+          <p id="store-message" class="mt-3 hidden rounded-md px-3 py-2 text-sm font-semibold"></p>
+        </form>
+      </section>
+
+      <section id="tab-learning-content" class="tab-panel hidden space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <h2 class="text-xl font-extrabold text-slate-800">Academy Tutorials & Videos</h2>
+          <button id="toggle-learning-form-btn" class="rounded-md bg-emerald-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">Add New Tutorial</button>
+        </div>
+
+        <!-- Add/Edit Tutorial Form -->
+        <div id="learning-form-container" class="hidden max-w-3xl rounded-lg bg-white p-5 shadow transition-all duration-300">
+          <h3 id="learning-form-title" class="mb-4 text-lg font-bold">Add Academy Tutorial</h3>
+          <form id="learning-form" class="space-y-4">
+            <input type="hidden" id="learning-id" name="_id" />
+            <div class="grid gap-4 md:grid-cols-2">
+              <label class="block">
+                <span class="text-sm font-semibold text-slate-600">Tutorial Title</span>
+                <input id="learning-title" name="title" required placeholder="e.g., Guide to Soil Aeration" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-slate-600">Category</span>
+                <input id="learning-category" name="category" required placeholder="e.g., Irrigation, Soil Health, Pest Control" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-slate-600">Video Embed URL</span>
+                <input id="learning-videoUrl" name="videoUrl" required placeholder="e.g., https://www.youtube.com/embed/5F_C1F4bTjE" class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-slate-600">Language</span>
+                <select id="learning-language" name="language" required class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                  <option value="EN">English</option>
+                  <option value="தமிழ்">தமிழ்</option>
+                </select>
+              </label>
+            </div>
+            <label class="block">
+              <span class="text-sm font-semibold text-slate-600">Description</span>
+              <textarea id="learning-description" name="description" required rows="3" placeholder="Provide a concise description of what this tutorial covers..." class="mt-1 w-full rounded-md border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100"></textarea>
+            </label>
+            <div class="flex gap-2">
+              <button type="submit" id="learning-submit-btn" class="rounded-md bg-emerald-800 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700">Publish Tutorial</button>
+              <button type="button" id="learning-cancel-btn" class="rounded-md border border-slate-300 px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">Cancel</button>
+            </div>
+            <p id="learning-message" class="hidden rounded-md px-3 py-2 text-sm font-semibold"></p>
+          </form>
+        </div>
+
+        <!-- Tutorials List -->
+        <div id="learning-list" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+      </section>
+
+      <section id="tab-analytics-content" class="tab-panel hidden space-y-4">
+        <div id="analytics-cards" class="grid gap-3 md:grid-cols-4"></div>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <section class="rounded-lg bg-white p-4 shadow"><h2 class="mb-3 font-bold">Monthly Hub Volume</h2><div class="h-72"><canvas id="volume-chart"></canvas></div></section>
+          <section class="rounded-lg bg-white p-4 shadow"><h2 class="mb-3 font-bold">Crop Mix</h2><div class="h-72"><canvas id="crop-chart"></canvas></div></section>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded-md bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-xl"></div>
+
+  <script type="module" src="/src/admin-control.js"></script>
+</body>
+</html>

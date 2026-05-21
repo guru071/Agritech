@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Community</title>
+  <link rel="manifest" href="/manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .lang-btn.active{background:#059669!important;color:#fff!important;}
+    .modal-overlay{display:none;}.modal-overlay.open{display:flex;}
+    .story-ring{background:linear-gradient(135deg,#059669,#34d399,#fbbf24);}
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+<nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
+  <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/index.html" class="flex items-center gap-2 text-xl font-bold">
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+    </a>
+    <div class="hidden md:flex items-center gap-5 text-sm font-medium">
+      <a href="/index.html" class="hover:text-green-200 transition" data-t="nav_market">Marketplace</a>
+      <a href="/community.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_community">Community</a>
+      <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
+      <a href="/profile.html" class="hover:text-green-200 transition" data-t="nav_profile">My Profile</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
+        <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+      </div>
+      <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition max-w-32 truncate" data-t="login">Login</button>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-4 py-6">
+
+  <!-- STORIES BAR -->
+  <div class="bg-white rounded-2xl shadow p-4 mb-6">
+    <div class="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+      <!-- Add Story Button -->
+      <div class="flex flex-col items-center gap-1 shrink-0 cursor-pointer" onclick="openPostStoryModal()">
+        <div class="w-16 h-16 rounded-full bg-green-100 border-2 border-dashed border-green-400 flex items-center justify-center text-2xl hover:bg-green-50 transition">+</div>
+        <span class="text-xs text-gray-500 whitespace-nowrap" data-t="add_story">Add Story</span>
+      </div>
+      <div id="stories-bar" class="flex items-start gap-4 overflow-x-auto">
+        <div class="text-gray-400 text-sm py-4 px-2" data-t="loading_stories">Loading stories...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN FEED -->
+  <div class="flex gap-6">
+    <div class="flex-1">
+      <div class="bg-white rounded-2xl shadow p-4 mb-5">
+        <div class="flex items-center gap-3">
+          <div id="feed-avatar" class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">U</div>
+          <button onclick="openPostStoryModal()" class="flex-1 text-left border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 hover:border-green-400 hover:bg-green-50 transition" data-t="share_placeholder">Share something with the farming community...</button>
+        </div>
+        <div class="flex gap-3 mt-3 pl-13">
+          <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1"><span>📷</span><span data-t="photo_story">Photo Story</span></button>
+          <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1 ml-3"><span>✍️</span><span data-t="text_story">Text Story</span></button>
+        </div>
+      </div>
+
+      <div id="feed-loading" class="text-center py-10">
+        <div class="inline-block w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      <div id="feed-container" class="space-y-4 hidden"></div>
+      <div id="feed-empty" class="hidden bg-white rounded-2xl shadow p-10 text-center">
+        <p class="text-5xl mb-3">🤝</p>
+        <p class="text-gray-500" data-t="no_stories">No stories yet. Be the first to share!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POST STORY MODAL -->
+<div id="post-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div class="bg-green-800 text-white p-5 flex items-center justify-between">
+      <h2 class="text-lg font-bold" data-t="post_story_title">Share a Story</h2>
+      <button onclick="closePostModal()" class="text-green-300 hover:text-white text-xl leading-none">×</button>
+    </div>
+    <form id="post-form" onsubmit="submitStory(event)" class="p-5 space-y-4">
+      <textarea name="caption" rows="4" placeholder="What's happening on your farm today?" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500" data-t-placeholder="story_caption_ph"></textarea>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="attach_photo">Attach Photo (optional)</label>
+        <input name="media" type="file" accept="image/jpeg,image/png,image/webp" class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+      </div>
+      <div id="post-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
+      <div class="flex gap-3">
+        <button type="button" onclick="closePostModal()" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition" data-t="cancel">Cancel</button>
+        <button type="submit" id="post-submit" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition" data-t="post_now">Post Now</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- STORY VIEW MODAL -->
+<div id="story-view-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/90 backdrop-blur-sm" onclick="closeStoryView()">
+  <div class="relative w-full max-w-sm mx-4" onclick="event.stopPropagation()">
+    <button onclick="closeStoryView()" class="absolute -top-10 right-0 text-white text-3xl font-light">×</button>
+    <div class="bg-gray-900 rounded-2xl overflow-hidden">
+      <div class="p-4 flex items-center gap-3 bg-black/40">
+        <div id="sv-avatar" class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold"></div>
+        <div><p id="sv-name" class="text-white font-semibold text-sm"></p><p id="sv-time" class="text-gray-400 text-xs"></p></div>
+      </div>
+      <div id="sv-media" class="min-h-64"></div>
+      <div id="sv-caption" class="p-4 text-white text-sm"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PREMIUM UPGRADE MODAL -->
+<div id="premium-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+    <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 text-center">
+      <p class="text-4xl mb-2">⭐</p>
+      <h2 class="text-xl font-extrabold text-white" data-t="upgrade_title">Upgrade to Premium</h2>
+    </div>
+    <div class="p-6 text-center">
+      <p class="text-gray-700 mb-2 font-semibold" data-t="upgrade_desc">You've reached your daily story limit.</p>
+      <p class="text-gray-500 text-sm mb-5" data-t="upgrade_sub">Free users can post 1 story per 24 hours. Upgrade to Premium for unlimited stories, priority listings, and more!</p>
+      <div class="space-y-3">
+        <button onclick="doUpgrade()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-extrabold py-3 rounded-xl transition shadow" data-t="upgrade_btn">Upgrade to Premium ✨</button>
+        <button onclick="document.getElementById('premium-modal').classList.remove('open')" class="w-full border border-gray-300 text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition text-sm" data-t="maybe_later">Maybe Later</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+  <span>✓</span><span id="toast-msg"></span>
+</div>
+
+<script>
+const API_BASE='/api';
+let token=localStorage.getItem('agrihub_token')||'', user=JSON.parse(localStorage.getItem('agrihub_user')||'null');
+let currentLang='en';
+const T={
+  en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+    login:'Login',add_story:'Add Story',loading_stories:'Loading stories...',share_placeholder:'Share something with the farming community...',
+    photo_story:'Photo Story',text_story:'Text Story',no_stories:'No stories yet. Be the first to share!',
+    post_story_title:'Share a Story',attach_photo:'Attach Photo (optional)',cancel:'Cancel',post_now:'Post Now',
+    story_caption_ph:'What\'s happening on your farm today?',upgrade_title:'Upgrade to Premium',
+    upgrade_desc:'You\'ve reached your daily story limit.',upgrade_sub:'Free users can post 1 story per 24 hours. Upgrade to Premium for unlimited stories!',
+    upgrade_btn:'Upgrade to Premium ✨',maybe_later:'Maybe Later',just_now:'just now',ago:' ago',hrs:' hr',min:' min'},
+  ta:{brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',add_story:'கதை சேர்',loading_stories:'கதைகள் ஏற்றப்படுகின்றன...',share_placeholder:'இன்று உங்கள் பண்ணையில் என்ன நடக்கிறது?',
+    photo_story:'புகைப்பட கதை',text_story:'உரை கதை',no_stories:'இன்னும் கதைகள் இல்லை!',
+    post_story_title:'கதை பகிர்',attach_photo:'புகைப்படம் இணை (விருப்பமானது)',cancel:'ரத்து',post_now:'இப்போது பதிவிடு',
+    story_caption_ph:'இன்று உங்கள் பண்ணையில் என்ன நடக்கிறது?',upgrade_title:'பிரீமியத்திற்கு மேம்படுத்தவும்',
+    upgrade_desc:'நீங்கள் தினசரி கதை வரம்பை எட்டிவிட்டீர்கள்.',upgrade_sub:'இலவச பயனர்கள் 24 மணி நேரத்தில் 1 கதை மட்டுமே பதிவிட முடியும்.',
+    upgrade_btn:'பிரீமியத்திற்கு மேம்படுத்தவும் ✨',maybe_later:'பிறகு பார்க்கலாம்',just_now:'இப்போதுதான்',ago:' முன்',hrs:' மணி',min:' நிமிடம்'}
+};
+function t(k){return T[currentLang][k]||T.en[k]||k;}
+function setLang(lang){
+  currentLang=lang;
+  ['en','ta'].forEach(l=>{document.getElementById(`btn-${l}`).classList.toggle('active',l===lang);});
+  document.querySelectorAll('[data-t]').forEach(el=>{const v=T[lang][el.dataset.t];if(v)el.textContent=v;});
+  document.querySelectorAll('[data-t-placeholder]').forEach(el=>{const v=T[lang][el.dataset.tPlaceholder];if(v)el.placeholder=v;});
+}
+function updateAuthUI(){
+  const btn=document.getElementById('auth-btn'),av=document.getElementById('feed-avatar');
+  if(user&&token){btn.textContent=user.name.split(' ')[0];btn.onclick=doLogout;if(av){av.textContent=user.name[0].toUpperCase();}}
+  else{btn.textContent=t('login');btn.onclick=openAuthRedirect;}
+}
+function handleAuthBtn(){if(user&&token)doLogout();else openAuthRedirect();}
+function openAuthRedirect(){window.location.href='/index.html';}
+function doLogout(){token='';user=null;localStorage.removeItem('agrihub_token');localStorage.removeItem('agrihub_user');updateAuthUI();showToast('Logged out');}
+
+function timeAgo(dateStr){
+  const diff=(Date.now()-new Date(dateStr).getTime())/1000;
+  if(diff<60)return t('just_now');
+  if(diff<3600)return Math.floor(diff/60)+t('min')+t('ago');
+  if(diff<86400)return Math.floor(diff/3600)+t('hrs')+t('ago');
+  return Math.floor(diff/86400)+'d'+t('ago');
+}
+
+async function loadStories(){
+  try {
+    const res=await fetch(`${API_BASE}/stories`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
+    const data=await res.json(); const stories=data.stories||[];
+    renderStoriesBar(stories); renderFeed(stories);
+  } catch {
+    document.getElementById('feed-loading').innerHTML='<p class="text-red-400 text-sm py-6">Failed to load stories. API server might be offline.</p>';
+  }
+}
+
+function renderStoriesBar(stories){
+  const bar=document.getElementById('stories-bar');
+  if(!stories.length){bar.innerHTML='<p class="text-gray-400 text-xs py-4">No stories yet</p>';return;}
+  bar.innerHTML=stories.map(s=>`
+    <div class="flex flex-col items-center gap-1 shrink-0 cursor-pointer" onclick="viewStory(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+      <div class="story-ring p-0.5 rounded-full">
+        <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-xl font-bold text-green-800 border-2 border-white overflow-hidden">
+          ${s.mediaUrl?`<img src="${s.mediaUrl}" class="w-full h-full object-cover" onerror="this.outerHTML='<span>${s.userInitial||'F'}</span>'">`:`<span>${s.userInitial||'F'}</span>`}
+        </div>
+      </div>
+      <span class="text-xs text-gray-600 whitespace-nowrap max-w-14 truncate">${s.userName||'Farmer'}</span>
+    </div>`).join('');
+}
+
+function renderFeed(stories){
+  const container=document.getElementById('feed-container'),loading=document.getElementById('feed-loading'),empty=document.getElementById('feed-empty');
+  loading.classList.add('hidden');
+  if(!stories.length){empty.classList.remove('hidden');return;}
+  container.classList.remove('hidden');
+  container.innerHTML=stories.map(s=>`
+    <div class="bg-white rounded-2xl shadow p-5">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-11 h-11 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">${s.userInitial||'F'}</div>
+        <div>
+          <p class="font-semibold text-gray-800 text-sm">${s.userName||'Farmer'}</p>
+          <p class="text-xs text-gray-400">${timeAgo(s.createdAt)}</p>
+        </div>
+        <span class="ml-auto text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">24h story</span>
+      </div>
+      ${s.mediaUrl?`<img src="${s.mediaUrl}" alt="Story" class="w-full rounded-xl mb-3 object-cover max-h-64" onerror="this.remove()">`:''}
+      ${s.caption?`<p class="text-gray-700 text-sm leading-relaxed">${s.caption}</p>`:''}
+    </div>`).join('');
+}
+
+function viewStory(story){
+  const m=document.getElementById('story-view-modal');
+  document.getElementById('sv-avatar').textContent=story.userInitial||'F';
+  document.getElementById('sv-name').textContent=story.userName||'Farmer';
+  document.getElementById('sv-time').textContent=timeAgo(story.createdAt);
+  document.getElementById('sv-media').innerHTML=story.mediaUrl
+    ?`<img src="${story.mediaUrl}" class="w-full object-cover max-h-80">`
+    :`<div class="h-32 bg-gray-800 flex items-center justify-center text-4xl">🌾</div>`;
+  document.getElementById('sv-caption').textContent=story.caption||'';
+  m.classList.add('open');
+}
+function closeStoryView(){document.getElementById('story-view-modal').classList.remove('open');}
+
+function openPostStoryModal(){if(!token){window.location.href='/index.html';return;}document.getElementById('post-modal').classList.add('open');}
+function closePostModal(){document.getElementById('post-modal').classList.remove('open');document.getElementById('post-form').reset();document.getElementById('post-error').classList.add('hidden');}
+
+async function submitStory(e){
+  e.preventDefault();
+  const btn=document.getElementById('post-submit');btn.disabled=true;btn.textContent='Posting...';
+  const err=document.getElementById('post-error');err.classList.add('hidden');
+  const fd=new FormData(e.target);
+  try {
+    const res=await fetch(`${API_BASE}/stories`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:fd});
+    const data=await res.json();
+    if(res.status===403&&data.code==='STORY_LIMIT'){closePostModal();document.getElementById('premium-modal').classList.add('open');return;}
+    if(!res.ok){err.textContent=data.error||'Failed to post story.';err.classList.remove('hidden');return;}
+    closePostModal();showToast('Story posted!');loadStories();
+  } catch {err.textContent='Network error. Please try again.';err.classList.remove('hidden');}
+  finally{btn.disabled=false;btn.textContent=t('post_now');}
+}
+
+async function doUpgrade(){
+  if(!token){window.location.href='/index.html';return;}
+  try {
+    const res=await fetch(`${API_BASE}/auth/upgrade`,{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+    const data=await res.json();
+    if(res.ok){
+      token=data.token;user={...user,subscriptionTier:'Premium'};
+      localStorage.setItem('agrihub_token',token);localStorage.setItem('agrihub_user',JSON.stringify(user));
+      document.getElementById('premium-modal').classList.remove('open');
+      showToast('🎉 You are now a Premium member!',4000);
+    }
+  } catch { showToast('Upgrade failed. Try again.'); }
+}
+
+function showToast(msg,dur=3500){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),dur);}
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+setLang('en'); updateAuthUI(); loadStories();
+</script>
+</body>
+</html>

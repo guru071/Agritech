@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ProSurvey — 3D Land Editor & Planner</title>
+<link rel="stylesheet" href="/theme.css">
+<script>
+  (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+</script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#080a10;--panel:#111827;--panel2:#1f2937;--panel3:#374151;
+    --border:#374151;--border2:#4b5563;
+    --text:#f3f4f6;--text2:#9ca3af;--text3:#6b7280;
+    --accent:#10b981;--accent2:#047857;--accent-glow:rgba(16,185,129,0.15);
+    --success:#10b981;--warn:#f59e0b;--danger:#ef4444;
+    --raise:#f97316;--lower:#3b82f6;--flat:#84cc16;--smooth:#a855f7;
+    --tool-w:54px;--prop-w:280px;
+  }
+  body{display:flex;flex-direction:column;height:100vh;background:var(--bg);color:var(--text);
+    font:13px/1.5 'Segoe UI',system-ui,sans-serif;overflow:hidden;user-select:none;}
+
+  /* â”€â”€ MENU BAR â”€â”€ */
+  #menubar{height:44px;background:var(--panel);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;position:relative;z-index:50;}
+  .logo{font-size:14px;font-weight:800;color:var(--accent);margin-right:16px;letter-spacing:.5px;
+    display:flex;align-items:center;gap:6px;}
+  .logo-icon{width:20px;height:20px;background:var(--accent);border-radius:4px;
+    display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;}
+  .mbtn{position:relative;padding:4px 10px;border-radius:3px;cursor:pointer;
+    background:transparent;border:none;color:var(--text2);font-size:12px;white-space:nowrap;}
+  .mbtn:hover{background:var(--panel2);color:var(--text);}
+  .mdd{position:absolute;top:calc(100% + 2px);left:0;min-width:210px;
+    background:var(--panel);border:1px solid var(--border2);border-radius:6px;
+    z-index:999;display:none;box-shadow:0 12px 32px rgba(0,0,0,.7);padding:4px;}
+  .mbtn:focus-within .mdd,.mbtn:hover .mdd{display:block;}
+  .mi{padding:7px 12px;border-radius:4px;cursor:pointer;display:flex;
+    justify-content:space-between;align-items:center;font-size:12px;color:var(--text);}
+  .mi:hover{background:var(--panel3);color:var(--accent);}
+  .mi .ks{color:var(--text3);font-size:10px;font-family:monospace;}
+  .msep{height:1px;background:var(--border);margin:3px 0;}
+  .m-spacer{flex:1;}
+  #hdr-coords{font:11px/1 monospace;color:var(--text3);padding:0 12px;
+    border-left:1px solid var(--border);}
+  .hdr-phase{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;
+    background:rgba(16,185,129,.15);color:var(--accent);border:1px solid rgba(16,185,129,.3);}
+
+  /* â”€â”€ MAIN â”€â”€ */
+  #main{display:flex;flex:1;overflow:hidden;}
+
+  /* â”€â”€ TOOL PALETTE â”€â”€ */
+  #toolpal{width:var(--tool-w);background:var(--panel);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:1px;
+    flex-shrink:0;overflow-y:auto;}
+  .tgrp{width:100%;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0;}
+  .tgrp-sep{width:36px;height:1px;background:var(--border);margin:5px 0;}
+  .tbtn{width:44px;height:44px;border-radius:6px;cursor:pointer;border:none;
+    background:transparent;color:var(--text3);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2px;transition:.12s;position:relative;}
+  .tbtn:hover{background:var(--panel2);color:var(--text);}
+  .tbtn.active{background:var(--accent2);color:#fff;box-shadow:0 0 0 1px var(--accent);}
+  .tbtn-ico{font-size:15px;line-height:1;}
+  .tbtn-lbl{font-size:8px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;
+    opacity:.7;line-height:1;}
+  .tbtn.active .tbtn-lbl{opacity:1;}
+  .ttooltip{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);
+    background:#0a0b12;color:var(--text);padding:5px 10px;border-radius:5px;
+    white-space:nowrap;font-size:11px;pointer-events:none;z-index:200;
+    opacity:0;transition:opacity .15s;border:1px solid var(--border2);
+    box-shadow:0 4px 12px rgba(0,0,0,.6);}
+  .tbtn:hover .ttooltip{opacity:1;}
+  .ttooltip b{color:var(--accent);}
+
+  /* â”€â”€ CANVAS AREA â”€â”€ */
+  #canvas-wrap{flex:1;position:relative;overflow:hidden;background:#0c0d14;}
+  #three-canvas{display:block;width:100%;height:100%;}
+  #overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;}
+  .elabel{position:absolute;background:rgba(8,10,20,.9);color:var(--accent);
+    padding:2px 6px;border-radius:3px;font-size:10px;font-family:monospace;font-weight:600;
+    transform:translate(-50%,-50%);border:1px solid rgba(16,185,129,.25);white-space:nowrap;}
+  #brush-ring{position:absolute;border-radius:50%;border:1.5px dashed rgba(255,255,255,.5);
+    pointer-events:none;z-index:6;transform:translate(-50%,-50%);display:none;
+    box-shadow:0 0 0 1px rgba(0,0,0,.5);}
+  #notif{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+    background:rgba(16,185,129,.92);color:#fff;padding:6px 16px;
+    border-radius:20px;font-size:12px;z-index:50;display:none;pointer-events:none;
+    box-shadow:0 4px 16px rgba(0,0,0,.5);backdrop-filter:blur(4px);}
+
+  /* â”€â”€ PROP PANEL â”€â”€ */
+  #propanel{width:var(--prop-w);background:var(--panel);border-left:1px solid var(--border);
+    display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+  .psect{border-bottom:1px solid var(--border);}
+  .phdr{padding:7px 12px;font-size:10px;font-weight:700;text-transform:uppercase;
+    letter-spacing:1px;color:var(--text3);background:var(--panel);
+    display:flex;justify-content:space-between;align-items:center;cursor:default;}
+  .pbody{padding:10px 12px;}
+  .pscroll{flex:1;overflow-y:auto;}
+
+  .srow{display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:5px;font-size:12px;}
+  .slbl{color:var(--text2);}
+  .sval{color:var(--accent);font-family:monospace;font-weight:600;font-size:12px;}
+  .sval.good{color:var(--success);}
+  .sval.warn{color:var(--warn);}
+
+  .irow{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .irow label{font-size:11px;color:var(--text2);width:72px;flex-shrink:0;}
+  .irow input[type=number],.irow input[type=text],.irow select{
+    flex:1;padding:5px 8px;background:#0c0d14;border:1px solid var(--border);
+    color:var(--text);border-radius:4px;font-size:12px;font-family:monospace;}
+  .irow input[type=number]:focus,.irow select:focus{border-color:var(--accent);outline:none;}
+  .irow input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;}
+  .rval{font-size:11px;color:var(--accent);font-family:monospace;min-width:40px;text-align:right;}
+
+  /* Coord list */
+  #coord-list{max-height:200px;overflow-y:auto;}
+  .crow{display:flex;gap:4px;align-items:center;padding:3px 0;
+    border-bottom:1px solid rgba(255,255,255,.03);font-family:monospace;font-size:11px;}
+  .cnum{color:var(--text3);width:16px;flex-shrink:0;font-size:10px;}
+  .crow input{flex:1;width:0;padding:3px 5px;background:#0a0b14;
+    border:1px solid transparent;color:var(--text);border-radius:3px;font-family:monospace;font-size:11px;}
+  .crow input:focus{border-color:var(--accent);outline:none;}
+  .crow .cdel{background:none;border:none;color:var(--text3);cursor:pointer;
+    padding:2px 4px;font-size:13px;border-radius:2px;}
+  .crow .cdel:hover{color:var(--danger);background:rgba(239,68,68,.1);}
+
+  /* Buttons */
+  .btn{padding:6px 12px;border-radius:4px;border:none;cursor:pointer;
+    font-size:11px;font-weight:700;transition:.12s;text-transform:uppercase;letter-spacing:.4px;}
+  .btn-primary{background:var(--accent2);color:#fff;}
+  .btn-primary:hover{background:#046347;}
+  .btn-success{background:#047857;color:#fff;}
+  .btn-success:hover{background:#065f46;}
+  .btn-ghost{background:var(--panel2);color:var(--text2);border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-danger{background:#7f1d1d;color:#fff;}
+  .btn-danger:hover{background:#581c1c;}
+  .btn-sm{padding:4px 9px;font-size:10px;}
+  .btn-full{width:100%;margin-bottom:5px;display:block;}
+
+  /* â”€â”€ STATUS BAR â”€â”€ */
+  #statusbar{height:24px;background:var(--accent2);display:flex;align-items:center;
+    padding:0 12px;gap:12px;font-size:10px;flex-shrink:0;color:rgba(255,255,255,.95);}
+  .sseg{display:flex;align-items:center;gap:4px;}
+  .ssep{width:1px;height:12px;background:rgba(255,255,255,.25);}
+  #sb-tool{font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  #sb-hint{color:rgba(255,255,255,.6);margin-left:auto;}
+  .sb-val{font-family:monospace;font-weight:600;}
+
+  /* â”€â”€ CAMERA CONTROLS â”€â”€ */
+  .cam-ctrl {
+    position: absolute; right: 20px; bottom: 20px;
+    display: flex; flex-direction: column; gap: 8px; z-index: 50;
+  }
+  .cam-btn {
+    width: 36px; height: 36px; border-radius: 6px;
+    background: var(--panel2); color: var(--text);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: 0.2s;
+  }
+  .cam-btn:hover {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+
+  /* â”€â”€ MODALS â”€â”€ */
+  .mo{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;
+    display:none;align-items:center;justify-content:center;
+    backdrop-filter:blur(3px);}
+  .mo.open{display:flex;}
+  .modal{background:var(--panel);border:1px solid var(--border2);border-radius:8px;
+    min-width:520px;max-width:92vw;max-height:88vh;display:flex;flex-direction:column;
+    overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.9);}
+  .mhead{padding:13px 18px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    font-weight:700;font-size:13px;color:var(--accent);flex-shrink:0;}
+  .mbody{padding:16px;overflow-y:auto;flex:1;}
+
+  /* Mode colors */
+  .tool-raise .tbtn-ico{color:var(--raise);}
+  .tool-lower .tbtn-ico{color:var(--lower);}
+  .tool-flatten .tbtn-ico{color:var(--flat);}
+  .tool-smooth .tbtn-ico{color:var(--smooth);}
+</style>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+</script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- MENU BAR -->
+  <div id="menubar">
+    <div class="logo"><div class="logo-icon">ðŸ“</div>3D Land Planner</div>
+    
+    <button onclick="window.location.href='profile.html'" class="px-3 py-1.5 text-xs bg-zinc-800 hover:bg-zinc-700 rounded font-semibold text-gray-300 ml-4">
+      â† Back to Profile
+    </button>
+
+    <div class="m-spacer"></div>
+    <span id="hdr-phase" class="hdr-phase">PHASE 1 â€” BOUNDARY MAP</span>
+    <span id="hdr-coords" style="margin-left:10px;">X: â€” Y: â€” Z: â€”</span>
+  </div>
+
+  <!-- MAIN Layout -->
+  <div id="main">
+    
+    <!-- TOOL PALETTE -->
+    <div id="toolpal">
+      <div class="tgrp">
+        <button class="tbtn active" id="t-select" onclick="setTool('select')">
+          <span class="tbtn-ico">â†–</span><span class="tbtn-lbl">Select</span>
+          <div class="ttooltip">Select & Drag Points</div>
+        </button>
+        <button class="tbtn" id="t-navigate" onclick="setTool('navigate')">
+          <span class="tbtn-ico">âŸ³</span><span class="tbtn-lbl">Rotate</span>
+          <div class="ttooltip">Rotate & Zoom View</div>
+        </button>
+        <button class="tbtn" id="t-addpt" onclick="setTool('addpt')">
+          <span class="tbtn-ico">âŠ•</span><span class="tbtn-lbl">Add Pt</span>
+          <div class="ttooltip">Add Corner Point</div>
+        </button>
+      </div>
+
+      <div class="tgrp-sep"></div>
+
+      <!-- Sculpt Palette -->
+      <div class="tgrp">
+        <button class="tbtn tool-raise" id="t-raise" onclick="setTool('raise')">
+          <span class="tbtn-ico">â–²</span><span class="tbtn-lbl">Raise</span>
+          <div class="ttooltip">Raise (Medu)</div>
+        </button>
+        <button class="tbtn tool-lower" id="t-lower" onclick="setTool('lower')">
+          <span class="tbtn-ico">â–¼</span><span class="tbtn-lbl">Lower</span>
+          <div class="ttooltip">Lower (Pallam)</div>
+        </button>
+        <button class="tbtn tool-flatten" id="t-flatten" onclick="setTool('flatten')">
+          <span class="tbtn-ico">â–¬</span><span class="tbtn-lbl">Flatten</span>
+          <div class="ttooltip">Flatten</div>
+        </button>
+        <button class="tbtn tool-smooth" id="t-smooth" onclick="setTool('smooth')">
+          <span class="tbtn-ico">âˆ¿</span><span class="tbtn-lbl">Smooth</span>
+          <div class="ttooltip">Smooth Terrain</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- WebGL Canvas wrap -->
+    <div id="canvas-wrap">
+      <div id="overlay"></div>
+      <div id="brush-ring"></div>
+      <div id="notif"></div>
+      <div class="cam-ctrl">
+        <button class="cam-btn" onclick="zoomCamera(1)" title="Zoom In">+</button>
+        <button class="cam-btn" onclick="zoomCamera(-1)" title="Zoom Out">âˆ’</button>
+      </div>
+      <canvas id="three-canvas"></canvas>
+    </div>
+
+    <!-- Properties Panel -->
+    <div id="propanel">
+      <div class="pscroll">
+        <div class="psect">
+          <div class="phdr">ðŸ“ Land Dimensions</div>
+          <div class="pbody">
+            <div class="srow"><span class="slbl">Total Area</span><span class="sval" id="sv-area">0 sq ft</span></div>
+            <div class="srow"><span class="slbl">Perimeter</span><span class="sval" id="sv-perim">0 ft</span></div>
+            <div class="srow"><span class="slbl">Acres</span><span class="sval" id="sv-acres">0.0000</span></div>
+            <div class="srow"><span class="slbl">Corner Points</span><span class="sval" id="sv-pts">0</span></div>
+          </div>
+        </div>
+
+        <!-- Coordinates list -->
+        <div class="psect" id="sec-boundary">
+          <div class="phdr">ðŸ“ Boundary Editor</div>
+          <div class="pbody">
+            <div id="coord-list"></div>
+            <div class="flex gap-2 mt-3">
+              <button class="btn btn-ghost btn-sm btn-full" onclick="addPoint()">+ Add Point</button>
+              <button class="btn btn-primary btn-sm btn-full" onclick="generateTerrain()">â†’ Generate 3D</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Brush Settings -->
+        <div class="psect" id="sec-brush" style="display:none">
+          <div class="phdr">ðŸ–Œ Sculpt Settings</div>
+          <div class="pbody">
+            <div class="irow">
+              <label>Radius</label>
+              <input type="range" id="br-r" min="2" max="100" value="15" oninput="updBrush()">
+              <span class="rval" id="br-rv">15 ft</span>
+            </div>
+            <div class="irow">
+              <label>Strength</label>
+              <input type="range" id="br-s" min="1" max="30" value="5" oninput="updBrush()">
+              <span class="rval" id="br-sv">5</span>
+            </div>
+            <div class="irow" id="tgt-row" style="display:none">
+              <label>Height</label>
+              <input type="number" id="br-tgt" value="3.0" step="0.25">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 border-t border-white/5 bg-zinc-950/30 flex flex-col gap-2">
+        <button onclick="saveLandToDatabase()" class="btn btn-success btn-full py-2.5">ðŸ’¾ Save to Database</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Status Bar -->
+  <div id="statusbar">
+    <span class="sseg"><span id="sb-tool">SELECT</span></span>
+    <span class="ssep"></span>
+    <span id="sb-hint" class="sb-val">Drag corner points to match land boundaries.</span>
+  </div>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    let token = localStorage.getItem("token") || "";
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch(e) { console.error("Failed to parse user", e); }
+
+    const cvs = document.getElementById('three-canvas');
+    const wrap = document.getElementById('canvas-wrap');
+    const renderer = new THREE.WebGLRenderer({ canvas:cvs, antialias:true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.shadowMap.enabled = true;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0c0d14);
+
+    let gridH = new THREE.GridHelper(1000, 50, 0x252535, 0x15151f);
+    gridH.position.y = -0.5;
+    scene.add(gridH);
+
+    const camera = new THREE.PerspectiveCamera(45, wrap.clientWidth/wrap.clientHeight, .5, 5000);
+    camera.position.set(120, 500, 180);
+    camera.lookAt(100, 0, 100);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+
+    // Lights
+    const sun = new THREE.DirectionalLight(0xfff5e0, 1.5);
+    sun.position.set(300, 700, 250);
+    sun.castShadow = true;
+    scene.add(sun);
+    scene.add(new THREE.AmbientLight(0x2a3050, 1.2));
+
+    const S = {
+      phase: 'boundary',
+      tool: 'select',
+      pts: [{x:0,z:0},{x:200,z:0},{x:220,z:150},{x:120,z:210},{x:-10,z:160}],
+      brush: { r:15, s:5, tgt:3.0, fo:'smooth' },
+      dragPeg: -1
+    };
+
+    let pegs=[], bLine=null, landMesh=null, landGeo=null;
+    let tW=0, tH=0;
+    let sculpting=false;
+
+    const colors = {
+      deep:  new THREE.Color(0x1e3a24), // deep green
+      base:  new THREE.Color(0x2d6a4f),
+      mid:   new THREE.Color(0x40916c),
+      high:  new THREE.Color(0x52b788),
+      peak:  new THREE.Color(0x74c69d),
+      snow:  new THREE.Color(0xb7e4c7)
+    };
+
+    const ray = new THREE.Raycaster();
+    const M = new THREE.Vector2();
+    const dPlane = new THREE.Plane(new THREE.Vector3(0,1,0), 0);
+
+    const area2D = pts => {
+      let a=0;
+      for(let i=0;i<pts.length;i++){let j=(i+1)%pts.length;a+=pts[i].x*pts[j].z-pts[j].x*pts[i].z;}
+      return Math.abs(a/2);
+    };
+    const perim2D = pts => {
+      let p=0;
+      for(let i=0;i<pts.length;i++){let j=(i+1)%pts.length;p+=Math.hypot(pts[j].x-pts[i].x,pts[j].z-pts[i].z);}
+      return p;
+    };
+    const inside = (x,z,poly) => {
+      let ins=false;
+      for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+        const xi=poly[i].x,zi=poly[i].z,xj=poly[j].x,zj=poly[j].z;
+        if((zi>z)!=(zj>z)&&(x<(xj-xi)*(z-zi)/(zj-zi)+xi)) ins=!ins;
+      }
+      return ins;
+    };
+    const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+    function notify(msg) {
+      const n=document.getElementById('notif');
+      n.textContent=msg; n.style.display='block';
+      clearTimeout(n._t); n._t=setTimeout(()=>n.style.display='none',2000);
+    }
+
+    function vc(h) {
+      const c=new THREE.Color();
+      if(h<-3)      c.lerpColors(colors.deep, colors.base,  clamp((h+6)/3,0,1));
+      else if(h<0)  c.lerpColors(colors.base, colors.mid,   clamp((h+3)/3,0,1));
+      else if(h<4)  c.lerpColors(colors.mid,  colors.high,  clamp(h/4,0,1));
+      else if(h<10) c.lerpColors(colors.high, colors.peak,  clamp((h-4)/6,0,1));
+      else           c.lerpColors(colors.peak, colors.snow,  clamp((h-10)/5,0,1));
+      return c;
+    }
+
+    window.addPoint=function(){
+      const last=S.pts[S.pts.length-1];
+      S.pts.push({x:last.x+30,z:last.z+10});
+      buildCoordList(); updBoundary();
+    };
+
+    function buildCoordList() {
+      const el=document.getElementById('coord-list');
+      el.innerHTML='';
+      S.pts.forEach((p,i)=>{
+        const row=document.createElement('div');
+        row.className='crow';
+        row.innerHTML=`<span class="cnum">${i+1}</span>
+          <input type="number" value="${+p.x.toFixed(1)}" data-i="${i}" data-k="x">
+          <input type="number" value="${+p.z.toFixed(1)}" data-i="${i}" data-k="z">
+          <button class="cdel" data-i="${i}">Ã—</button>`;
+        el.appendChild(row);
+      });
+      el.querySelectorAll('input').forEach(inp=>{
+        inp.addEventListener('input',e=>{
+          const i=+e.target.dataset.i,k=e.target.dataset.k,v=parseFloat(e.target.value);
+          if(!isNaN(v)){S.pts[i][k]=v;updBoundary();}
+        });
+      });
+      el.querySelectorAll('.cdel').forEach(btn=>{
+        btn.addEventListener('click',e=>{
+          const i=+e.target.dataset.i;
+          if(S.pts.length<=3){alert('Min 3 points.');return;}
+          S.pts.splice(i,1); buildCoordList(); updBoundary();
+        });
+      });
+    }
+
+    function updBoundary() {
+      pegs.forEach(p=>scene.remove(p)); pegs=[];
+      if(bLine){scene.remove(bLine);bLine=null;}
+
+      const pg=new THREE.CylinderGeometry(4,4,3,12);
+      const pm=new THREE.MeshStandardMaterial({color:0x10b981});
+      const pts3=[];
+
+      S.pts.forEach((p,i)=>{
+        const peg=new THREE.Mesh(pg,pm);
+        peg.position.set(p.x,.5,p.z); peg.userData.idx=i;
+        scene.add(peg); pegs.push(peg);
+        pts3.push(new THREE.Vector3(p.x,1,p.z));
+      });
+
+      if(S.pts.length>2){
+        const cl=[...pts3,pts3[0]];
+        const lg=new THREE.BufferGeometry().setFromPoints(cl);
+        bLine=new THREE.Line(lg,new THREE.LineBasicMaterial({color:0x10b981}));
+        scene.add(bLine);
+      }
+      updStats();
+    }
+
+    function updStats(){
+      const a=Math.round(area2D(S.pts));
+      const p=Math.round(perim2D(S.pts)*10)/10;
+      document.getElementById('sv-area').textContent=a.toLocaleString()+' sq ft';
+      document.getElementById('sv-perim').textContent=p.toLocaleString()+' ft';
+      document.getElementById('sv-acres').textContent=(a/43560).toFixed(4);
+      document.getElementById('sv-pts').textContent=S.pts.length;
+    }
+
+    window.generateTerrain=function(savedHeights = null){
+      if(S.pts.length<3) return;
+      S.phase='sculpt';
+
+      pegs.forEach(p=>scene.remove(p)); pegs=[];
+      if(bLine){scene.remove(bLine);bLine=null;}
+
+      let mnX=Infinity,mxX=-Infinity,mnZ=Infinity,mxZ=-Infinity;
+      S.pts.forEach(p=>{mnX=Math.min(mnX,p.x);mxX=Math.max(mxX,p.x);mnZ=Math.min(mnZ,p.z);mxZ=Math.max(mxZ,p.z);});
+      const w=mxX-mnX, l=mxZ-mnZ, cX=(mxX+mnX)/2, cZ=(mxZ+mnZ)/2;
+
+      const maxSeg=120;
+      const segW=Math.min(Math.ceil(w),maxSeg);
+      const segL=Math.min(Math.ceil(l),maxSeg);
+      tW=segW+1; tH=segL+1;
+
+      landGeo=new THREE.PlaneGeometry(w,l,segW,segL);
+      landGeo.rotateX(-Math.PI/2);
+      landGeo.translate(cX,0,cZ);
+
+      const pos=landGeo.attributes.position;
+      const idx=landGeo.index;
+      const kept=[];
+      for(let i=0;i<idx.count;i+=3){
+        const a=idx.getX(i),b=idx.getX(i+1),c=idx.getX(i+2);
+        const ax=pos.getX(a),az=pos.getZ(a),bx=pos.getX(b),bz=pos.getZ(b),cx=pos.getX(c),cz=pos.getZ(c);
+        if(inside((ax+bx+cx)/3,(az+bz+cz)/3,S.pts)) kept.push(a,b,c);
+      }
+      landGeo.setIndex(kept);
+
+      const ca=new Float32Array(pos.count*3);
+      landGeo.setAttribute('color',new THREE.BufferAttribute(ca,3));
+      
+      for(let i=0;i<pos.count;i++){
+        let y = 0;
+        if (savedHeights && savedHeights[i] !== undefined) {
+          y = savedHeights[i];
+          pos.setY(i, y);
+        }
+        const c2=vc(y); ca[i*3]=c2.r;ca[i*3+1]=c2.g;ca[i*3+2]=c2.b;
+      }
+
+      const mat=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.9,metalness:.0,side:THREE.DoubleSide});
+      if(landMesh) scene.remove(landMesh);
+      landMesh=new THREE.Mesh(landGeo,mat);
+      landMesh.receiveShadow=landMesh.castShadow=true;
+      scene.add(landMesh);
+
+      document.getElementById('sec-boundary').style.display='none';
+      document.getElementById('sec-brush').style.display='block';
+      document.getElementById('hdr-phase').textContent='PHASE 2 â€” 3D SCULPTING';
+
+      controls.mouseButtons={LEFT:THREE.MOUSE.NONE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN};
+      const maxDim=Math.max(w,l);
+      controls.target.set(cX,0,cZ);
+      camera.position.set(cX,maxDim*.85,cZ+maxDim*.85);
+      controls.update();
+
+      setTool('raise');
+    };
+
+    function falloff(d,r,type){
+      const t=1-d/r;
+      return t*t*(3-2*t);
+    }
+
+    function brushApply(hit){
+      if(!landGeo) return;
+      const {r,s,tgt}=S.brush;
+      const pos=landGeo.attributes.position;
+      const col=landGeo.attributes.color;
+      const tool=S.tool;
+      let changed=false;
+
+      for(let i=0;i<pos.count;i++){
+        const vx=pos.getX(i),vz=pos.getZ(i);
+        const d=Math.hypot(vx-hit.x,vz-hit.z);
+        if(d>r) continue;
+        const w=falloff(d,r,'smooth')*s*.06;
+        let y=pos.getY(i);
+        if(tool==='raise')   y+=w;
+        else if(tool==='lower')   y-=w;
+        else if(tool==='flatten') y+=(tgt-y)*falloff(d,r,'smooth')*.35;
+        pos.setY(i,y);
+        const c2=vc(y); col.setXYZ(i,c2.r,c2.g,c2.b);
+        changed=true;
+      }
+      if(changed){ pos.needsUpdate=col.needsUpdate=true; landGeo.computeVertexNormals(); }
+    }
+
+    function brushSmooth(hit){
+      if(!landGeo||tW===0) return;
+      const {r,s}=S.brush;
+      const pos=landGeo.attributes.position;
+      const col=landGeo.attributes.color;
+      const count=pos.count;
+      const ny=new Float32Array(count);
+      for(let i=0;i<count;i++) ny[i]=pos.getY(i);
+
+      for(let i=0;i<count;i++){
+        const vx=pos.getX(i),vz=pos.getZ(i);
+        const d=Math.hypot(vx-hit.x,vz-hit.z);
+        if(d>r) continue;
+        const w=falloff(d,r,'smooth');
+        const row=Math.floor(i/tW), col2=i%tW;
+        let sum=pos.getY(i),cnt=1;
+        for(let dr=-2;dr<=2;dr++) for(let dc=-2;dc<=2;dc++){
+          const nr=row+dr,nc=col2+dc;
+          if(nr<0||nc<0||nr>=tH||nc>=tW) continue;
+          sum+=pos.getY(nr*tW+nc); cnt++;
+        }
+        ny[i]=pos.getY(i)+(sum/cnt-pos.getY(i))*w*(s/30);
+      }
+
+      for(let i=0;i<count;i++){
+        pos.setY(i,ny[i]);
+        const c2=vc(ny[i]); col.setXYZ(i,c2.r,c2.g,c2.b);
+      }
+      pos.needsUpdate=col.needsUpdate=true;
+      landGeo.computeVertexNormals();
+    }
+
+    window.setTool=function(tool){
+      S.tool=tool;
+      document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+      const el=document.getElementById('t-'+tool);
+      if(el) el.classList.add('active');
+
+      document.getElementById('sb-tool').textContent=tool.toUpperCase();
+
+      const isSculpt=['raise','lower','flatten','smooth'].includes(tool);
+      const ring=document.getElementById('brush-ring');
+      ring.style.display=isSculpt?'block':'none';
+      document.getElementById('sec-brush').style.display=isSculpt&&S.phase==='sculpt'?'block':'none';
+      document.getElementById('tgt-row').style.display=tool==='flatten'?'flex':'none';
+      
+      if (['select', 'navigate'].includes(tool)) {
+        controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+      } else {
+        controls.mouseButtons = { LEFT: THREE.MOUSE.NONE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+      }
+    };
+
+    window.zoomCamera = function(dir) {
+      const dist = camera.position.distanceTo(controls.target);
+      const move = dist * 0.2 * -dir; 
+      const vec = new THREE.Vector3().subVectors(camera.position, controls.target).normalize();
+      camera.position.addScaledVector(vec, move);
+      controls.update();
+    };
+
+    window.updBrush=function(){
+      S.brush.r=+document.getElementById('br-r').value;
+      S.brush.s=+document.getElementById('br-s').value;
+      S.brush.tgt=+document.getElementById('br-tgt').value;
+      document.getElementById('br-rv').textContent=S.brush.r+' ft';
+      document.getElementById('br-sv').textContent=S.brush.s;
+    };
+
+    wrap.addEventListener('mousemove',e=>{
+      const r=wrap.getBoundingClientRect();
+      M.x=((e.clientX-r.left)/r.width)*2-1;
+      M.y=-((e.clientY-r.top)/r.height)*2+1;
+      ray.setFromCamera(M,camera);
+
+      const isSculpt=['raise','lower','flatten','smooth'].includes(S.tool);
+      if(isSculpt&&S.phase==='sculpt'){
+        const ring=document.getElementById('brush-ring');
+        ring.style.left=(e.clientX-r.left)+'px';
+        ring.style.top=(e.clientY-r.top)+'px';
+        const dist=camera.position.y;
+        const fovRad=camera.fov*Math.PI/180;
+        const viewH=2*dist*Math.tan(fovRad/2);
+        const pxPerFt=r.height/viewH;
+        const pxR=Math.max(16,S.brush.r*pxPerFt*1.1);
+        ring.style.width=ring.style.height=(pxR*2)+'px';
+      }
+
+      let hit=null;
+      if(landMesh){const hs=ray.intersectObject(landMesh);if(hs.length) hit=hs[0].point;}
+      else{const pt=new THREE.Vector3();ray.ray.intersectPlane(dPlane,pt);if(pt) hit=pt;}
+
+      if(hit){
+        document.getElementById('sb-hint').textContent=`Coords: X:${hit.x.toFixed(1)} Y:${hit.y.toFixed(2)} Z:${hit.z.toFixed(1)}`;
+      }
+
+      if(sculpting&&isSculpt&&landMesh&&hit){
+        if(S.tool==='smooth') brushSmooth(hit);
+        else brushApply(hit);
+      }
+
+      if(S.phase==='boundary'&&S.dragPeg!==-1){
+        const pt=new THREE.Vector3();
+        ray.ray.intersectPlane(dPlane,pt);
+        if(pt){
+          S.pts[S.dragPeg]={x:pt.x,z:pt.z};
+          buildCoordList();
+          updBoundary();
+        }
+      }
+    });
+
+    wrap.addEventListener('mousedown',e=>{
+      if(e.button!==0) return;
+      const r=wrap.getBoundingClientRect();
+      M.x=((e.clientX-r.left)/r.width)*2-1;
+      M.y=-((e.clientY-r.top)/r.height)*2+1;
+      ray.setFromCamera(M,camera);
+
+      const isSculpt=['raise','lower','flatten','smooth'].includes(S.tool);
+
+      if(S.phase==='boundary'){
+        const hs=ray.intersectObjects(pegs);
+        if(hs.length){S.dragPeg=hs[0].object.userData.idx;controls.enabled=false;}
+        return;
+      }
+
+      if(isSculpt){
+        sculpting=true;
+        if(landMesh){
+          const hs=ray.intersectObject(landMesh);
+          if(hs.length){if(S.tool==='smooth') brushSmooth(hs[0].point);else brushApply(hs[0].point);}
+        }
+      }
+    });
+
+    window.addEventListener('mouseup',()=>{
+      sculpting=false; S.dragPeg=-1;
+      if(S.phase==='boundary') controls.enabled=true;
+    });
+
+    window.saveLandToDatabase = async function() {
+      const terrainHeights = [];
+      if (landGeo) {
+        const pos = landGeo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          terrainHeights.push(pos.getY(i));
+        }
+      }
+
+      const body = {
+        pts: S.pts,
+        terrainHeights,
+        tW,
+        tH
+      };
+
+      try {
+        const res = await fetch("/api/land3d", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in prosurvey.html', e); }
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("âœ“ Land 3D saved successfully!");
+          window.location.href = "profile.html";
+        }
+      } catch (err) {
+        alert("Communication failed during save.");
+      }
+    };
+
+    async function loadLandFromDatabase() {
+      try {
+        const res = await fetch("/api/land3d", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const landResText = await res.text(); let land = null; try { land = JSON.parse(landResText); } catch(e) { land = null; }
+        if (land && land.pts) {
+          S.pts = land.pts;
+          buildCoordList();
+          updBoundary();
+          
+          if (land.terrainHeights && land.terrainHeights.length) {
+            window.generateTerrain(land.terrainHeights);
+          }
+        } else {
+          buildCoordList();
+          updBoundary();
+        }
+      } catch (err) {
+        buildCoordList();
+        updBoundary();
+      }
+    }
+
+    function animate(){
+      requestAnimationFrame(animate);
+      if(controls.enabled) controls.update();
+      renderer.render(scene,camera);
+    }
+
+    loadLandFromDatabase();
+    animate();
+  </script>
+  <!-- Global Icon Fix -->
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+      const obs = new MutationObserver(m => {
+        let n = false;
+        for (let x of m) {
+          if (x.addedNodes.length) {
+            for (let node of x.addedNodes) {
+              if (node.nodeType === 1 && ((node.tagName === 'I' && node.hasAttribute('data-lucide')) || node.querySelector('i[data-lucide]'))) {
+                n = true; break;
+              }
+            }
+          }
+          if (n) break;
+        }
+        if (n) lucide.createIcons();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  </script>
+  <script src="/theme-engine.js"></script>
+</body>
+</html>
+

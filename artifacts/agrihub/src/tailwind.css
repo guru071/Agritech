@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@source "../index.html";
+@source "../community.html";
+@source "../land-market.html";
+@source "../profile.html";
+@source "../admin/dashboard.html";
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

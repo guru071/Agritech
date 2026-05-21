@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub Pro - YouTube Academy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* CSS Variables for Themes */
+    body.theme-emerald {
+      --bg-color: #0A0D14;
+      --glass-bg: rgba(15, 23, 42, 0.8);
+      --primary: #10B981;
+      --primary-rgb: 16, 185, 129;
+      --accent: #14B8A6;
+    }
+    body.theme-sunset {
+      --bg-color: #0F0A14;
+      --glass-bg: rgba(24, 15, 30, 0.85);
+      --primary: #D946EF;
+      --primary-rgb: 217, 70, 239;
+      --accent: #F43F5E;
+    }
+    body.theme-cyberpunk {
+      --bg-color: #000000;
+      --glass-bg: rgba(10, 10, 10, 0.95);
+      --primary: #06B6D4;
+      --primary-rgb: 6, 182, 212;
+      --accent: #F43F5E;
+    }
+    body.theme-classic {
+      --bg-color: #0B132B;
+      --glass-bg: rgba(20, 30, 55, 0.8);
+      --primary: #3B82F6;
+      --primary-rgb: 59, 130, 246;
+      --accent: #60A5FA;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color) !important;
+      color: #F1F1F1;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .glass {
+      background: var(--glass-bg) !important;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .text-primary {
+      color: var(--primary) !important;
+    }
+    .bg-primary {
+      background-color: var(--primary) !important;
+    }
+    .border-primary {
+      border-color: var(--primary) !important;
+    }
+    .bg-primary-glow {
+      background-color: rgba(var(--primary-rgb), 0.1) !important;
+    }
+    .border-primary-glow {
+      border-color: rgba(var(--primary-rgb), 0.2) !important;
+    }
+    .yt-input {
+      background-color: #121212;
+      border: 1px solid #303030;
+    }
+    .yt-input:focus {
+      border-color: var(--primary) !important;
+    }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    select option { background-color: #18181b; color: #ffffff; }
+  </style>
+  <script type="importmap">
+  {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+  </script>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
+  <script>
+    (function() {
+      const t = localStorage.getItem("theme") || "cyberpunk";
+      document.body.classList.add("theme-" + t);
+    })();
+  </script>
+
+  <!-- YouTube Navigation Header -->
+  <nav class="glass sticky top-0 z-40 px-6 py-3.5 flex justify-between items-center border-b border-white/5">
+    <div class="flex items-center gap-4">
+      <a href="home.html" class="flex items-center gap-2">
+      <div class="p-1.5 bg-red-500/20 rounded-lg">
+        <i data-lucide="play" class="w-5 h-5 text-red-500"></i>
+      </div>
+      <span class="text-xl font-black tracking-tight text-white">AgriHub <span class="text-red-500">Academy</span></span>
+    </a>
+    </div>
+    
+    <div class="hidden md:flex gap-8 text-sm font-medium">
+      <a href="home.html" class="text-gray-400 transition hover:text-white" id="nav-home">Home</a>
+      <a href="index.html" class="text-gray-400 transition hover:text-white" id="nav-market">Marketplace</a>
+      <a href="community.html" class="text-gray-400 transition hover:text-white" id="nav-feed">Social Feed</a>
+      <a href="land-market.html" class="text-gray-400 transition hover:text-white" id="nav-land">Real Estate</a>
+      <a href="profile.html" class="text-gray-400 transition hover:text-white" id="nav-analytics">Profile</a>
+      <a href="learning.html" class="text-white font-semibold transition hover:text-white" id="nav-learn">Academy</a>
+      <a href="smart-home.html" class="text-gray-400 transition hover:text-white" id="nav-smarthome">Smart Home</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div id="auth-actions" class="flex gap-2">
+        <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-white text-black hover:bg-gray-100 rounded transition">Sign In</button>
+      </div>
+      <button onclick="toggleLang()" id="lang-btn" class="px-3 py-2 text-xs font-bold bg-white/5 hover:bg-white/10 text-gray-300 rounded border border-white/10 transition">à®¤à®®à®¿à®´à¯</button>
+      <a href="profile.html" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-gray-300" title="Settings & Profile">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Academy Section -->
+  <main class="container mx-auto px-6 py-6 flex-grow max-w-7xl">
+    
+    <!-- AI Assist Banner Search -->
+    <div class="glass p-5 rounded-2xl border border-white/5 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div class="max-w-lg">
+        <h3 class="text-md font-bold text-white flex items-center gap-2">
+          <span>âœ¨ YouTube AI Natural Search</span>
+          <span class="text-[9px] font-normal bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded">Semantic Match</span>
+        </h3>
+        <p class="text-xs text-gray-400 mt-0.5">Use natural phrases to filter guides (e.g. "how to fix water pipes in Tamil" or "sugarcane guides").</p>
+      </div>
+      <div class="w-full md:w-80 flex flex-col gap-2">
+        <input type="text" id="ai-search-input" oninput="performAISearch()" placeholder="ðŸ” Ask AI Assistant..." class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition">
+        
+        <div class="flex gap-2 text-[10px] font-bold">
+          <select id="category-filter" onchange="performAISearch()" class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-gray-300">
+            <option value="All">All Categories</option>
+            <option value="Irrigation">Irrigation</option>
+            <option value="Soil Health">Soil Health</option>
+            <option value="Pest Control">Pest Control</option>
+            <option value="Crop Yield">Crop Yield</option>
+          </select>
+          <select id="lang-filter" onchange="performAISearch()" class="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-gray-300">
+            <option value="All">All Languages</option>
+            <option value="EN">English</option>
+            <option value="à®¤à®®à®¿à®´à¯">à®¤à®®à®¿à®´à¯</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- YouTube Workspace Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- LEFT COLUMN: Main Video Player & Metadata & Comments -->
+      <section class="lg:col-span-2 flex flex-col gap-5">
+        
+        <!-- Large Video Player Frame -->
+        <div class="w-full aspect-video rounded-xl overflow-hidden bg-black shadow-2xl relative">
+          <iframe id="main-video-player" class="w-full h-full border-0" src="" allowfullscreen></iframe>
+        </div>
+
+        <!-- Video Info Header -->
+        <div class="flex flex-col gap-2.5 pb-4 border-b border-white/5">
+          <h2 class="text-lg font-black leading-snug text-white" id="main-video-title">Select a video from the academy catalog to begin</h2>
+          
+          <div class="flex flex-wrap justify-between items-center gap-4">
+            <!-- Channel Details -->
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-sm text-red-500">ðŸŒ¾</div>
+              <div>
+                <h4 class="text-xs font-bold text-white">AgriHub Academy Channel</h4>
+                <span class="text-[10px] text-gray-400">1.24M Subscribers</span>
+              </div>
+              <button onclick="alert('Subscribed to AgriHub Academy!')" class="ml-4 px-4 py-2 bg-white text-black hover:bg-gray-200 text-xs font-bold rounded-full transition">Subscribe</button>
+            </div>
+            
+            <!-- Video Actions (Like, Dislike, Share) -->
+            <div class="flex items-center gap-2">
+              <div class="flex rounded-full bg-zinc-800 overflow-hidden text-xs font-bold">
+                <button onclick="handleLike()" class="px-4 py-2 hover:bg-zinc-700 transition border-r border-zinc-700 flex items-center gap-1.5">
+                  ðŸ‘ <span id="main-video-likes">0</span>
+                </button>
+                <button onclick="handleDislike()" class="px-3 py-2 hover:bg-zinc-700 transition">ðŸ‘Ž</button>
+              </div>
+              <button onclick="alert('Share link copied!')" class="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-xs font-bold transition">Share</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapsible Description Box -->
+        <div class="p-4 rounded-xl bg-zinc-800 hover:bg-zinc-800/80 transition text-xs flex flex-col gap-2">
+          <div class="flex gap-4 font-bold text-gray-300">
+            <span id="main-video-views">0 views</span>
+            <span id="main-video-date">Oct 12, 2025</span>
+            <span id="main-video-cat-badge" class="bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20">Category</span>
+          </div>
+          <p id="main-video-desc" class="text-gray-400 leading-relaxed mt-1">Select a video from the sidebar playlist to view the full descriptions.</p>
+        </div>
+
+        <!-- 3D Plant Growth Simulation Box -->
+        <div class="glass p-6 rounded-2xl border border-white/10 shadow-lg">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-sm font-extrabold text-white flex items-center gap-2">
+                <span>ðŸŒ± 3D Live Plant Growth Simulator</span>
+                <span class="text-[9px] font-normal bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded" id="simulation-crop-label">Active Crop: Rice</span>
+              </h3>
+              <p class="text-[10px] text-gray-400 mt-0.5">Drag the simulator slider to preview plant canopy height, health density, and ripening stage on your 3D farm model.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Canvas Preview -->
+            <div class="md:col-span-2 h-[260px] bg-black/50 rounded-xl overflow-hidden border border-white/5 relative" id="simulator-canvas-wrapper">
+              <div id="sim-no-land-overlay" class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-zinc-950/85 z-10 hidden">
+                <span class="text-2xl mb-2">ðŸ”ï¸</span>
+                <h5 class="text-xs font-bold text-gray-200">Using standard test field model</h5>
+                <p class="text-[10px] text-gray-400 max-w-xs mt-1">Create a custom 3D land model in your profile page to load your actual dimensions.</p>
+              </div>
+              <canvas id="simulator-canvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Controller -->
+            <div class="md:col-span-1 flex flex-col justify-between py-1 bg-white/5 p-4 rounded-xl border border-white/5">
+              <div class="flex flex-col gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Growth Day Tracker</label>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-2xl font-black text-emerald-400" id="sim-day-text">Day 1</span>
+                    <span class="text-xs text-gray-500" id="sim-max-days">/ 120 Days</span>
+                  </div>
+                  <input type="range" id="sim-day-slider" min="1" max="120" value="1" oninput="updateSimulation()" class="w-full mt-2 accent-emerald-500">
+                </div>
+
+                <div class="text-xs text-gray-300">
+                  <span class="text-gray-500 font-bold block uppercase text-[9px] mb-1">Biological Stage</span>
+                  <p class="font-semibold text-white" id="sim-stage-title">Sprouting</p>
+                  <p class="text-[10px] text-gray-400 leading-normal mt-1" id="sim-stage-desc">Small green sprouts emerge from the soil. Focus on soil moisture and weed control.</p>
+                </div>
+              </div>
+
+              <div class="flex gap-2 mt-4">
+                <button onclick="startAutoSim()" id="sim-play-btn" class="flex-grow py-2 bg-emerald-500 hover:bg-emerald-600 rounded text-black font-bold text-xs transition">Play Animation</button>
+                <button onclick="stopAutoSim()" class="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 rounded text-gray-300 font-bold text-xs transition">Pause</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- YouTube Comment Section -->
+        <div class="flex flex-col gap-4 mt-2">
+          <h3 class="text-sm font-extrabold text-white">Comments</h3>
+          
+          <!-- Post Comment Input -->
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-white">ðŸ‘¤</div>
+            <form onsubmit="postCustomComment(event)" class="flex-grow flex gap-2">
+              <input type="text" id="comment-input" required placeholder="Add a public comment..." class="flex-grow bg-transparent border-b border-zinc-700 py-1.5 text-xs text-white focus:outline-none focus:border-white transition">
+              <button type="submit" class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 rounded text-xs font-bold transition">Comment</button>
+            </form>
+          </div>
+
+          <!-- Video Comments Container -->
+          <div class="flex flex-col gap-4 mt-4" id="comments-container">
+            <!-- Simulated list -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT COLUMN: Playlist / Up Next Video Cards & Seed Calculator -->
+      <section class="lg:col-span-1 flex flex-col gap-6">
+        
+        <!-- Interactive Seed & Alarm Config (Floating panel) -->
+        <div class="glass p-5 rounded-2xl border border-white/5 shadow-lg">
+          <h3 class="text-sm font-bold text-white mb-2">Seed & Growth Alarm</h3>
+          <p class="text-[10px] text-gray-400 mb-4">Input acreage to check target seed weight and activate local alerts.</p>
+          
+          <div class="flex flex-col gap-3">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[9px] font-bold text-gray-400 mb-1">Acres</label>
+                <input type="number" id="calc-land-acres" value="1.0" min="0.1" step="0.1" oninput="calculateEstimates()" class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500 transition">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-gray-400 mb-1">Crop</label>
+                <select id="calc-crop-select" onchange="calculateEstimates(); syncSimCrop();" class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500 transition">
+                  <option value="Rice">Rice (à®¨à¯†à®²à¯)</option>
+                  <option value="Sugar Cane">Sugar Cane (à®•à®°à¯à®®à¯à®ªà¯)</option>
+                  <option value="Groundnut">Groundnut (à®¨à®¿à®²à®•à¯à®•à®Ÿà®²à¯ˆ)</option>
+                  <option value="Cotton">Cotton (à®ªà®°à¯à®¤à¯à®¤à®¿)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="p-3 bg-red-500/5 border border-red-500/10 rounded flex flex-col gap-1 text-[11px] text-gray-300">
+              <div class="flex justify-between"><span>Seeds Weight:</span><span class="font-bold text-red-400" id="est-seeds">20 Kg</span></div>
+              <div class="flex justify-between"><span>Growth Cycle:</span><span class="font-bold text-red-400" id="est-days">120 Days</span></div>
+              <div class="flex justify-between"><span>Water Interval:</span><span class="font-bold text-red-400" id="est-water">Every 3 Days</span></div>
+            </div>
+
+            <button onclick="startCalculatedTracker()" class="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded text-[10px] transition">Activate Alarm Alarm</button>
+          </div>
+        </div>
+
+        <!-- YouTube Playlist / Recommended list -->
+        <div class="flex flex-col gap-3">
+          <h3 class="text-sm font-bold text-white mb-2">Up Next</h3>
+          <div class="flex flex-col gap-3.5" id="playlist-container">
+            <!-- Dynamically populated cards -->
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Registration / Login Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/85 backdrop-blur-sm px-4">
+    <div class="glass max-w-sm w-full rounded-2xl p-8 relative shadow-2xl">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      
+      <!-- Tab Headers -->
+      <div class="flex gap-4 border-b border-white/10 pb-3 mb-6">
+        <button id="tab-login" onclick="setAuthTab('login')" class="text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm">Login</button>
+        <button id="tab-register" onclick="setAuthTab('register')" class="text-gray-400 hover:text-white pb-1.5 transition text-sm">Register</button>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+          <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Email Address</label>
+          <input type="email" id="auth-email" required placeholder="name@farm.com" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div id="field-phone" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Phone Number</label>
+          <input type="tel" id="auth-phone" placeholder="+91 98765 43210" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Password</label>
+          <input type="password" id="auth-password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded text-white font-semibold transition mt-2">Proceed</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass border-t border-white/5 text-center py-6 text-xs text-gray-500 mt-auto">
+    &copy; 2026 AgriHub Pro Academy. YouTube Clone layout.
+  </footer>
+
+  <!-- Standard Global Script for Navigation and Dialogs -->
+  <script>
+    let currentLang = localStorage.getItem("lang") || "EN";
+    let token = localStorage.getItem("token") || "";
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch(e) { console.error("Failed to parse user", e); }
+    let activeAuthTab = "login";
+    
+    let allTutorials = [];
+    let currentFilteredTutorials = [];
+    let currentMainVideo = null;
+    let mainVideoLikesCount = 0;
+
+    function selectVideoByIndex(index) {
+      const video = currentFilteredTutorials[index];
+      if (video) selectVideo(video);
+    }
+
+    const videoComments = [
+      { author: "Ramesh Kumar", text: "This video guide helped me save 30% water in my paddy fields!", time: "2 months ago" },
+      { author: "Anjali M", text: "Very clear steps, Tamil explanation is extremely thorough.", time: "3 months ago" },
+      { author: "Govind Swamy", text: "What is the recommended seed drill machine for Cotton crop?", time: "4 months ago" }
+    ];
+
+    function checkActiveSubscription() {
+      if (user && user.subscriptionStatus !== "Active") {
+        window.location.href = "payment.html";
+        return false;
+      }
+      return true;
+    }
+
+    const dict = {
+      EN: {
+        navHome: "Home", navMarket: "Marketplace", navFeed: "Social Feed", navLand: "Real Estate", navAnalytics: "Profile", navLearn: "Academy", navSmarthome: "Smart Home",
+        langBtn: "à®¤à®®à®¿à®´à¯"
+      },
+      à®¤à®®à®¿à®´à¯: {
+        navHome: "à®®à¯à®•à®ªà¯à®ªà¯", navMarket: "à®šà®¨à¯à®¤à¯ˆ", navFeed: "à®šà®®à¯‚à®• à®Šà®Ÿà®•à®®à¯", navLand: "à®°à®¿à®¯à®²à¯ à®Žà®¸à¯à®Ÿà¯‡à®Ÿà¯", navAnalytics: "à®µà®¿à®µà®°à®•à¯à®•à¯à®±à®¿à®ªà¯à®ªà¯", navLearn: "à®ªà®¯à®¿à®±à¯à®šà®¿", navSmarthome: "à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯",
+        langBtn: "English"
+      }
+    };
+
+    function applyTranslations() {
+      const d = dict[currentLang];
+      const elements = {
+        "nav-home": d.navHome,
+        "nav-market": d.navMarket,
+        "nav-feed": d.navFeed,
+        "nav-land": d.navLand,
+        "nav-analytics": d.navAnalytics,
+        "nav-learn": d.navLearn,
+        "nav-smarthome": d.navSmarthome,
+        "lang-btn": d.langBtn
+      };
+      for (const [id, text] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el && text) el.innerText = text;
+      }
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === "EN" ? "à®¤à®®à®¿à®´à¯" : "EN";
+      localStorage.setItem("lang", currentLang);
+      applyTranslations();
+    }
+
+    function openAuthModal() {
+      document.getElementById("auth-modal").classList.remove("hidden");
+    }
+    function closeAuthModal() {
+      document.getElementById("auth-modal").classList.add("hidden");
+    }
+
+    function setAuthTab(tab) {
+      activeAuthTab = tab;
+      const loginTab = document.getElementById("tab-login");
+      const regTab = document.getElementById("tab-register");
+      const nameField = document.getElementById("field-name");
+      const phoneField = document.getElementById("field-phone");
+
+      if (tab === "login") {
+        loginTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        regTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.add("hidden");
+        phoneField.classList.add("hidden");
+      } else {
+        regTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        loginTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.remove("hidden");
+        phoneField.classList.remove("hidden");
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      const endpoint = activeAuthTab === "login" ? "/api/auth/login" : "/api/auth/register";
+      
+      const body = { email, password };
+      if (activeAuthTab === "register") {
+        body.name = document.getElementById("auth-name").value;
+        body.phone = document.getElementById("auth-phone").value;
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in learning.html', e); }
+        
+        if (data.error) {
+          alert(data.error);
+        } else {
+          token = data.token;
+          user = data.user;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+          closeAuthModal();
+          updateAuthUI();
+          
+          if (user.subscriptionStatus === "Pending_Payment") {
+            window.location.href = "payment.html";
+          } else {
+            location.reload();
+          }
+        }
+      } catch (err) {
+        alert("Authentication failed.");
+      }
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById("auth-actions");
+      if (token && user) {
+        container.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-gray-300 font-semibold bg-white/5 px-3 py-2 rounded border border-white/10">ðŸ‘¤ ${user.name}</span>
+            <button onclick="logout()" class="px-3 py-2 text-xs font-semibold rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition">Logout</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-white text-black hover:bg-gray-100 rounded transition">Sign In</button>`;
+      }
+    }
+
+    function logout() {
+      token = "";
+      user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      updateAuthUI();
+      location.reload();
+    }
+
+    const cropSpecs = {
+      "Rice": { seedPerAcre: 20, days: 120, waterInterval: 3, fertDays: [15, 45, 75] },
+      "Sugar Cane": { seedPerAcre: 3000, days: 360, waterInterval: 10, fertDays: [30, 90, 180] },
+      "Groundnut": { seedPerAcre: 40, days: 105, waterInterval: 7, fertDays: [20, 50] },
+      "Cotton": { seedPerAcre: 2.5, days: 150, waterInterval: 5, fertDays: [25, 75] }
+    };
+
+    function calculateEstimates() {
+      const acres = parseFloat(document.getElementById("calc-land-acres").value) || 0;
+      const crop = document.getElementById("calc-crop-select").value;
+      const specs = cropSpecs[crop];
+
+      if (!specs) return;
+
+      const seedsNeeded = (specs.seedPerAcre * acres).toFixed(1);
+      document.getElementById("est-seeds").innerText = `${seedsNeeded} Kg`;
+      document.getElementById("est-days").innerText = `${specs.days} Days`;
+      document.getElementById("est-water").innerText = `Every ${specs.waterInterval} Days`;
+    }
+
+    async function startCalculatedTracker() {
+      if (!token) return openAuthModal();
+      if (!checkActiveSubscription()) return;
+
+      const acres = parseFloat(document.getElementById("calc-land-acres").value) || 0;
+      const cropName = document.getElementById("calc-crop-select").value;
+      const specs = cropSpecs[cropName];
+
+      const seedsNeeded = specs.seedPerAcre * acres;
+      const waterDays = [];
+      for (let i = 1; i <= specs.days; i += specs.waterInterval) {
+        waterDays.push(i);
+      }
+
+      const body = {
+        cropName,
+        wateringDays: waterDays.join(","),
+        fertilizerDays: specs.fertDays.join(","),
+        landSizeAcres: acres,
+        seedRequiredKg: seedsNeeded,
+        totalFarmingDays: specs.days
+      };
+
+      try {
+        const res = await fetch("/api/tracker/start", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in learning.html', e); }
+        
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(`Growth cycle tracking alarm set for ${cropName}!`);
+        }
+      } catch (err) {
+        alert("Failed to start tracker.");
+      }
+    }
+
+    function selectVideo(video) {
+      currentMainVideo = video;
+      document.getElementById("main-video-player").src = video.videoUrl;
+      document.getElementById("main-video-title").innerText = video.title;
+      document.getElementById("main-video-desc").innerText = video.description;
+      
+      const seedViews = Math.round(Math.random() * 200000 + 5000);
+      document.getElementById("main-video-views").innerText = `${seedViews.toLocaleString()} views`;
+      document.getElementById("main-video-cat-badge").innerText = video.category;
+      
+      mainVideoLikesCount = Math.round(seedViews * 0.05);
+      document.getElementById("main-video-likes").innerText = mainVideoLikesCount.toLocaleString();
+
+      loadComments();
+    }
+
+    function handleLike() {
+      mainVideoLikesCount++;
+      document.getElementById("main-video-likes").innerText = mainVideoLikesCount.toLocaleString();
+    }
+
+    function handleDislike() {
+      alert("Disliked!");
+    }
+
+    function loadComments() {
+      const container = document.getElementById("comments-container");
+      container.innerHTML = videoComments.map(c => `
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-xs text-white">${c.author[0]}</div>
+          <div>
+            <div class="flex gap-2 items-center">
+              <span class="text-xs font-bold text-white">${c.author}</span>
+              <span class="text-[9px] text-gray-500">${c.time || "Just now"}</span>
+            </div>
+            <p class="text-xs text-gray-300 mt-1 leading-normal">${c.text}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function postCustomComment(e) {
+      e.preventDefault();
+      const input = document.getElementById("comment-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      const commenter = user ? user.name : "Anonymous Farmer";
+      videoComments.unshift({ author: commenter, text, time: "Just now" });
+      input.value = "";
+      loadComments();
+    }
+
+    function performAISearch() {
+      const query = document.getElementById("ai-search-input").value.toLowerCase().trim();
+      const category = document.getElementById("category-filter").value;
+      const lang = document.getElementById("lang-filter").value;
+      const playlist = document.getElementById("playlist-container");
+      
+      const synonyms = {
+        irrigation: ["water", "drip", "hose", "pipe", "à®ªà®¾à®šà®©à®®à¯", "à®¨à¯€à®°à¯", "à®•à¯à®´à®¾à®¯à¯"],
+        soil: ["soil", "dirt", "fertilizer", "nutrient", "à®‰à®°à®®à¯", "à®®à®£à¯", "à®šà¯à®´à®±à¯à®šà®¿"],
+        pest: ["bug", "pest", "worm", "insect", "spray", "à®ªà¯‚à®šà¯à®šà®¿"],
+        yield: ["yield", "grow", "harvest", "cotton", "à®šà®¾à®•à¯à®ªà®Ÿà®¿", "à®…à®±à¯à®µà®Ÿà¯ˆ"]
+      };
+
+      const matchedList = allTutorials.map(t => {
+        let score = 100;
+        if (query) {
+          score = 0;
+          const tokens = query.split(/\s+/);
+          
+          tokens.forEach(token => {
+            if (t.title.toLowerCase().includes(token)) score += 40;
+            if (t.description.toLowerCase().includes(token)) score += 20;
+            if (t.category.toLowerCase().includes(token)) score += 30;
+            if (t.language.toLowerCase().includes(token) || (token === "tamil" && t.language === "à®¤à®®à®¿à®´à¯") || (token === "english" && t.language === "EN")) {
+              score += 30;
+            }
+
+            for (const [key, list] of Object.entries(synonyms)) {
+              if (list.includes(token)) {
+                if (t.category.toLowerCase() === key.replace("pest", "pest control").replace("soil", "soil health").replace("yield", "crop yield")) {
+                  score += 35;
+                }
+              }
+            }
+          });
+          score = Math.min(99, Math.max(0, score));
+        }
+        return { ...t, aiMatchScore: score };
+      });
+
+      const filtered = matchedList.filter(t => {
+        const catMatch = category === "All" || t.category === category;
+        const langMatch = lang === "All" || t.language === lang;
+        const searchMatch = !query || t.aiMatchScore > 0;
+        return catMatch && langMatch && searchMatch;
+      });
+
+      filtered.sort((a, b) => b.aiMatchScore - a.aiMatchScore);
+      currentFilteredTutorials = filtered;
+
+      if (!filtered.length) {
+        playlist.innerHTML = `<div class="text-xs text-gray-500 text-center py-6 font-bold">No data found. Please try a different search or filter.</div>`;
+        return;
+      }
+
+      playlist.innerHTML = filtered.map((t, index) => {
+        const matchBadge = query 
+          ? `<span class="bg-purple-600/30 text-purple-300 px-1.5 py-0.5 rounded text-[8px] font-bold">âœ¨ AI: ${t.aiMatchScore}%</span>`
+          : "";
+
+        return `
+          <div onclick="selectVideoByIndex(${index})" class="flex gap-3 cursor-pointer group hover:bg-white/5 p-1.5 rounded transition">
+            <div class="w-28 h-16 bg-zinc-800 rounded overflow-hidden flex-shrink-0 relative flex items-center justify-center font-bold text-sm text-red-500 border border-white/5">
+              â–¶
+              <span class="absolute bottom-1 right-1 bg-black text-white text-[8px] font-bold px-1 rounded">10:45</span>
+            </div>
+            <div class="flex-grow min-w-0">
+              <h4 class="text-xs font-bold text-white group-hover:text-red-400 transition leading-tight line-clamp-2">${t.title}</h4>
+              <span class="text-[10px] text-gray-400 block mt-1">AgriHub Channel</span>
+              <div class="flex gap-1.5 items-center mt-1 flex-wrap">
+                <span class="text-[9px] text-gray-500">${t.language}</span>
+                ${matchBadge}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (filtered.length && !currentMainVideo) {
+        selectVideo(filtered[0]);
+      }
+    }
+
+    async function loadAcademy() {
+      try {
+        const res = await fetch("/api/learning/tutorials");
+        const tutResText = await res.text(); try { allTutorials = JSON.parse(tutResText); if(!Array.isArray(allTutorials)) allTutorials = allTutorials?.tutorials || []; } catch(e) { allTutorials = []; }
+        performAISearch();
+      } catch (err) {
+        console.error("Failed to load tutorials.");
+      }
+    }
+
+    // Initialize triggers
+    // Theme Switcher Helpers
+    const themes = ["emerald", "sunset", "cyberpunk", "classic"];
+    let currentTheme = localStorage.getItem("theme") || "emerald";
+
+    function applyTheme() {
+      themes.forEach(t => document.body.classList.remove(`theme-${t}`));
+      document.body.classList.add(`theme-${currentTheme}`);
+      
+      const themeBtn = document.getElementById("theme-btn");
+      const themeNames = {
+        emerald: "â˜˜ï¸ Emerald",
+        sunset: "ðŸŒ† Sunset",
+        cyberpunk: "ðŸ‘¾ Cyberpunk",
+        classic: "ðŸ“˜ Classic"
+      };
+      if (themeBtn) themeBtn.innerText = themeNames[currentTheme];
+    }
+
+    function cycleTheme() {
+      const index = themes.indexOf(currentTheme);
+      currentTheme = themes[(index + 1) % themes.length];
+      localStorage.setItem("theme", currentTheme);
+      applyTheme();
+    }
+
+    // Dynamic translation hook for mobile navigation
+    const origApplyTranslations = applyTranslations;
+    applyTranslations = function() {
+      origApplyTranslations();
+      const d = dict[currentLang];
+      if (document.getElementById("m-nav-market")) document.getElementById("m-nav-market").innerText = d.navMarket;
+      if (document.getElementById("m-nav-feed")) document.getElementById("m-nav-feed").innerText = d.navFeed;
+      if (document.getElementById("m-nav-land")) document.getElementById("m-nav-land").innerText = d.navLand;
+      if (document.getElementById("m-nav-profile")) document.getElementById("m-nav-profile").innerText = d.navAnalytics;
+      if (document.getElementById("m-nav-learn")) document.getElementById("m-nav-learn").innerText = d.navLearn;
+      if (document.getElementById("m-nav-smart")) document.getElementById("m-nav-smart").innerText = d.navSmarthome;
+    };
+
+    applyTranslations();
+    updateAuthUI();
+    applyTheme();
+    loadAcademy();
+  </script>
+
+  <!-- Three.js Scoped Module Script for 3D simulation -->
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    let simScene, simCamera, simRenderer, simControls;
+    let landMesh = null;
+    let plantGroup = null;
+    let isAutoSimRunning = false;
+    let autoSimTimer = null;
+
+    const cropSpecs = {
+      "Rice": { seedPerAcre: 20, days: 120, waterInterval: 3, fertDays: [15, 45, 75] },
+      "Sugar Cane": { seedPerAcre: 3000, days: 360, waterInterval: 10, fertDays: [30, 90, 180] },
+      "Groundnut": { seedPerAcre: 40, days: 105, waterInterval: 7, fertDays: [20, 50] },
+      "Cotton": { seedPerAcre: 2.5, days: 150, waterInterval: 5, fertDays: [25, 75] }
+    };
+
+    async function initPlantSimulator() {
+      const wrapper = document.getElementById("simulator-canvas-wrapper");
+      const canvas = document.getElementById("simulator-canvas");
+
+      const wWidth = wrapper.clientWidth;
+      const wHeight = wrapper.clientHeight;
+
+      simRenderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      simRenderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      simRenderer.setSize(wWidth, wHeight);
+
+      simScene = new THREE.Scene();
+      simScene.background = new THREE.Color(0x0a0b10);
+
+      simCamera = new THREE.PerspectiveCamera(45, wWidth / wHeight, 0.5, 3000);
+
+      simControls = new OrbitControls(simCamera, simRenderer.domElement);
+      simControls.enableDamping = true;
+      simControls.dampingFactor = 0.05;
+
+      const sun = new THREE.DirectionalLight(0xfff5e0, 1.4);
+      sun.position.set(200, 500, 200);
+      simScene.add(sun);
+      simScene.add(new THREE.AmbientLight(0x2a3050, 1.2));
+
+      plantGroup = new THREE.Group();
+      simScene.add(plantGroup);
+
+      const token = localStorage.getItem("token") || "";
+      let land = null;
+      if (token) {
+        try {
+          const res = await fetch("/api/land3d", {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          const landResText = await res.text();
+          try { land = JSON.parse(landResText); } catch(e) { land = null; }
+        } catch(e) {
+          console.error("No 3D land found, loading standard field.");
+        }
+      }
+
+      let width = 200, length = 200, cX = 100, cZ = 100;
+      let pts = [{x:0,z:0},{x:200,z:0},{x:200,z:200},{x:0,z:200}];
+      let heights = [];
+      let tW = 20, tH = 20;
+
+      if (land && land.pts) {
+        pts = land.pts;
+        heights = land.terrainHeights;
+        tW = land.tW;
+        tH = land.tH;
+        let mnX = Infinity, mxX = -Infinity, mnZ = Infinity, mxZ = -Infinity;
+        pts.forEach(p => {
+          mnX = Math.min(mnX, p.x); mxX = Math.max(mxX, p.x);
+          mnZ = Math.min(mnZ, p.z); mxZ = Math.max(mxZ, p.z);
+        });
+        width = mxX - mnX; length = mxZ - mnZ;
+        cX = (mxX + mnX) / 2; cZ = (mxZ + mnZ) / 2;
+      } else {
+        document.getElementById("sim-no-land-overlay").classList.remove("hidden");
+        for (let i = 0; i < tW * tH; i++) heights.push(0);
+      }
+
+      const landGeo = new THREE.PlaneGeometry(width, length, tW - 1, tH - 1);
+      landGeo.rotateX(-Math.PI / 2);
+      landGeo.translate(cX, 0, cZ);
+
+      const inside = (x, z, poly) => {
+        let ins = false;
+        for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+          const xi = poly[i].x, zi = poly[i].z, xj = poly[j].x, zj = poly[j].z;
+          if ((zi > z) != (zj > z) && (x < (xj - xi) * (z - zi) / (zj - zi) + xi)) ins = !ins;
+        }
+        return ins;
+      };
+
+      const pos = landGeo.attributes.position;
+      const idx = landGeo.index;
+      const kept = [];
+      for (let i = 0; i < idx.count; i += 3) {
+        const a = idx.getX(i), b = idx.getX(i + 1), c = idx.getX(i + 2);
+        if (inside((pos.getX(a) + pos.getX(b) + pos.getX(c)) / 3, (pos.getZ(a) + pos.getZ(b) + pos.getZ(c)) / 3, pts)) {
+          kept.push(a, b, c);
+        }
+      }
+      landGeo.setIndex(kept);
+
+      const ca = new Float32Array(pos.count * 3);
+      landGeo.setAttribute('color', new THREE.BufferAttribute(ca, 3));
+      
+      const colors = {
+        deep:  new THREE.Color(0x1e3a24),
+        base:  new THREE.Color(0x2d6a4f),
+        mid:   new THREE.Color(0x40916c),
+        high:  new THREE.Color(0x52b788),
+        peak:  new THREE.Color(0x74c69d),
+        snow:  new THREE.Color(0xb7e4c7)
+      };
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+      for (let i = 0; i < pos.count; i++) {
+        const y = heights[i] || 0;
+        pos.setY(i, y);
+        const c = new THREE.Color();
+        if(y < -3)      c.lerpColors(colors.deep, colors.base, clamp((y+6)/3,0,1));
+        else if(y < 0)  c.lerpColors(colors.base, colors.mid,  clamp((y+3)/3,0,1));
+        else if(y < 4)  c.lerpColors(colors.mid,  colors.high, clamp(y/4,0,1));
+        else if(y < 10) c.lerpColors(colors.high, colors.peak, clamp((y-4)/6,0,1));
+        else            c.lerpColors(colors.peak, colors.snow, clamp((y-10)/5,0,1));
+        ca[i * 3] = c.r; ca[i * 3 + 1] = c.g; ca[i * 3 + 2] = c.b;
+      }
+
+      landGeo.computeVertexNormals();
+      const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, side: THREE.DoubleSide });
+      landMesh = new THREE.Mesh(landGeo, mat);
+      simScene.add(landMesh);
+
+      const spawnCount = Math.min(pos.count, 120);
+      const step = Math.floor(pos.count / spawnCount) || 1;
+      
+      for (let i = 0; i < pos.count; i += step) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        const z = pos.getZ(i);
+
+        const plant = new THREE.Group();
+        plant.position.set(x, y, z);
+
+        const stalkGeo = new THREE.CylinderGeometry(0.15, 0.25, 6, 5);
+        stalkGeo.translate(0, 3, 0);
+        const stalkMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b });
+        const stalk = new THREE.Mesh(stalkGeo, stalkMat);
+        stalk.name = "stalk";
+        plant.add(stalk);
+
+        const leafGeo = new THREE.SphereGeometry(2.5, 5, 5);
+        leafGeo.translate(0, 6, 0);
+        const leafMat = new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 0.8 });
+        const leaf = new THREE.Mesh(leafGeo, leafMat);
+        leaf.name = "leaf";
+        plant.add(leaf);
+
+        plant.scale.set(0, 0, 0);
+        plantGroup.add(plant);
+      }
+
+      const maxDim = Math.max(width, length);
+      simControls.target.set(cX, 0, cZ);
+      simCamera.position.set(cX, maxDim * 1.0, cZ + maxDim * 1.0);
+      simControls.update();
+
+      const animateSim = () => {
+        requestAnimationFrame(animateSim);
+        simControls.update();
+        simRenderer.render(simScene, simCamera);
+      };
+      animateSim();
+
+      window.addEventListener('resize', () => {
+        simRenderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+        simCamera.aspect = wrapper.clientWidth / wrapper.clientHeight;
+        simCamera.updateProjectionMatrix();
+      });
+
+      updateSimulation();
+    }
+
+    function updateSimulation() {
+      const day = parseInt(document.getElementById("sim-day-slider").value);
+      document.getElementById("sim-day-text").innerText = `Day ${day}`;
+
+      const crop = document.getElementById("calc-crop-select").value;
+      const specs = cropSpecs[crop] || { days: 120 };
+
+      const pct = day / specs.days;
+      let stage = "Sprouting";
+      let desc = "Small green sprouts emerge from the soil. Focus on soil moisture and weed control.";
+      let leafColor = 0x55aa33;
+
+      if (pct > 0.1 && pct <= 0.5) {
+        stage = "Vegetative Growth";
+        desc = "Plants are growing stalks rapidly, building deep roots. Apply organic fertilizers.";
+        leafColor = 0x22aa33;
+      } else if (pct > 0.5 && pct <= 0.85) {
+        stage = "Flowering Phase";
+        desc = "Flower heads emerge. Maintain optimal moisture. Spray bio-pest repellent.";
+        leafColor = 0xddcc33;
+      } else if (pct > 0.85) {
+        stage = "Ripening / Harvest Ready";
+        desc = "Yields turn golden yellow and dry. Ready for harvest and direct sourcing.";
+        leafColor = 0xeecc22;
+      }
+
+      document.getElementById("sim-stage-title").innerText = stage;
+      document.getElementById("sim-stage-desc").innerText = desc;
+
+      if (plantGroup && plantGroup.children.length) {
+        const scaleVal = Math.min(1.5, pct * 1.5);
+        plantGroup.children.forEach(plant => {
+          plant.scale.set(scaleVal, scaleVal, scaleVal);
+          const leafMesh = plant.getObjectByName("leaf");
+          if (leafMesh) {
+            leafMesh.material.color.setHex(leafColor);
+          }
+        });
+      }
+    }
+
+    function syncSimCrop() {
+      const crop = document.getElementById("calc-crop-select").value;
+      const specs = cropSpecs[crop];
+      if (specs) {
+        document.getElementById("sim-max-days").innerText = `/ ${specs.days} Days`;
+        document.getElementById("sim-day-slider").max = specs.days;
+        document.getElementById("simulation-crop-label").innerText = `Active Crop: ${crop}`;
+        updateSimulation();
+      }
+    }
+
+    function startAutoSim() {
+      if (isAutoSimRunning) return;
+      isAutoSimRunning = true;
+      document.getElementById("sim-play-btn").innerText = "Animating...";
+      
+      const slider = document.getElementById("sim-day-slider");
+      const crop = document.getElementById("calc-crop-select").value;
+      const specs = cropSpecs[crop] || { days: 120 };
+
+      autoSimTimer = setInterval(() => {
+        let val = parseInt(slider.value);
+        val += 2;
+        if (val > specs.days) val = 1;
+        slider.value = val;
+        updateSimulation();
+      }, 100);
+    }
+
+    function stopAutoSim() {
+      isAutoSimRunning = false;
+      document.getElementById("sim-play-btn").innerText = "Play Animation";
+      clearInterval(autoSimTimer);
+    }
+
+    // Expose simulation controls to global scope
+    window.updateSimulation = updateSimulation;
+    window.syncSimCrop = syncSimCrop;
+    window.startAutoSim = startAutoSim;
+    window.stopAutoSim = stopAutoSim;
+
+    initPlantSimulator();
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+  <!-- Mobile Bottom Page Navigation Bar (Instagram/YouTube Style) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 flex justify-around items-center py-2 md:hidden bg-zinc-950/95 shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-market">Market</span>
+    </a>
+    <a href="community.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="layout-list" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-feed">Feed</span>
+    </a>
+    <a href="learning.html" class="flex flex-col items-center gap-1 text-primary font-bold transition">
+      <i data-lucide="play-circle" class="w-5 h-5"></i>
+      <span class="text-[9px]" id="m-nav-learn">Academy</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-profile">Profile</span>
+    </a>
+  </nav>
+  <!-- Global Icon Fix -->
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+      const obs = new MutationObserver(m => {
+        let n = false;
+        for (let x of m) {
+          if (x.addedNodes.length) {
+            for (let node of x.addedNodes) {
+              if (node.nodeType === 1 && ((node.tagName === 'I' && node.hasAttribute('data-lucide')) || node.querySelector('i[data-lucide]'))) {
+                n = true; break;
+              }
+            }
+          }
+          if (n) break;
+        }
+        if (n) lucide.createIcons();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  </script>
+  <script src="/theme-engine.js"></script>
+</body>
+</html>
+

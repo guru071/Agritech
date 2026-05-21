@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub Pro - Complete Subscription Activation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #0B0F19;
+      color: #E5E7EB;
+    }
+    .glass {
+      background: rgba(31, 41, 55, 0.5);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 py-12">
+
+  <div class="glass max-w-md w-full rounded-3xl p-8 relative shadow-2xl flex flex-col items-center text-center border border-white/10">
+    <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-3xl font-extrabold mb-6 shadow shadow-emerald-500/20">
+      ðŸŒ¾
+    </div>
+    
+    <h2 class="text-2xl font-extrabold text-white">Activate AgriHub Pro</h2>
+    <p class="text-xs text-gray-400 mt-2 max-w-xs">AgriHub Pro requires an active yearly subscription to maintain direct-to-consumer logistics operations.</p>
+    
+    <!-- Subscription Card details -->
+    <div class="w-full my-6 p-6 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 flex flex-col gap-4 text-left">
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-emerald-300 font-bold uppercase tracking-wider">Yearly Membership plan</span>
+        <span class="px-2 py-0.5 bg-emerald-500 text-white font-bold text-[9px] rounded">12 MONTHS</span>
+      </div>
+      <div class="flex items-baseline gap-1">
+        <span class="text-4xl font-extrabold text-white">â‚¹700</span>
+        <span class="text-xs text-gray-400">/ year</span>
+      </div>
+      <div class="border-t border-white/5 pt-3">
+        <ul class="text-[11px] text-gray-300 space-y-1.5 list-inside list-disc">
+          <li>Full marketplace logistics fulfillment</li>
+          <li>Direct AgriHub Thanjavur wholesale payments</li>
+          <li>Growth tracking alarms & push notifications</li>
+          <li>Unlimited community stories & trade network sharing</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="p-4 bg-white rounded-2xl mb-6 shadow shadow-lg flex items-center justify-center max-w-[180px]">
+      <!-- Beautiful simulated QR code -->
+      <svg class="w-36 h-36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0H30V10H10V30H0V0ZM70 0H100V30H90V10H70V0ZM0 70H10V90H30V100H0V70ZM90 90H70V100H100V70H90V90Z" fill="#1F2937"/>
+        <rect x="15" y="15" width="20" height="20" rx="3" fill="#10B981" />
+        <rect x="65" y="15" width="20" height="20" rx="3" fill="#10B981" />
+        <rect x="15" y="65" width="20" height="20" rx="3" fill="#10B981" />
+        <rect x="40" y="40" width="20" height="20" rx="3" fill="#1F2937" />
+        <path d="M35 15H45V25H35V15ZM55 15H60V25H55V15ZM35 35H40V45H35V35ZM45 65H55V75H45V65ZM65 55H75V60H65V55ZM55 75H65V85H55V75Z" fill="#1F2937" />
+      </svg>
+    </div>
+
+    <p class="text-[10px] text-gray-500 mb-6">Scan the UPI QR code above with any payment app (GPay, PhonePe, Paytm) or simulate transaction below.</p>
+
+    <!-- Simulation Button -->
+    <button onclick="verifyPayment()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-white font-semibold shadow-lg shadow-emerald-500/25 transition">
+      I Have Completed Payment
+    </button>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("agrihub_token") || "";
+    
+    if (!token) {
+      alert("Registration error. Directing back to home page.");
+      window.location.href = "index.html";
+    }
+
+    async function verifyPayment() {
+      try {
+        const res = await fetch("/api/auth/pay", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in payment.html', e); }
+        
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Payment verified! Your account is now active.");
+          localStorage.setItem("agrihub_token", data.token);
+          localStorage.setItem("agrihub_user", JSON.stringify(data.user));
+          window.location.href = "index.html";
+        }
+      } catch (err) {
+        alert("Server failed to activate subscription ledger.");
+      }
+    }
+  </script>
+  <script src="/theme-engine.js"></script>
+</body>
+</html>
+

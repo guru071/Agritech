@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro â€” My Profile</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/src/tailwind.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .lang-btn.active{background:#059669!important;color:#fff!important;}
+    .modal-overlay{display:none;}.modal-overlay.open{display:flex;}
+    .progress-bar{transition:width 0.6s ease;}
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans pb-16 md:pb-0">
+
+<nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <a href="/index.html" class="flex items-center gap-2 text-xl font-bold">
+      <span class="text-2xl">ðŸŒ¾</span><span data-t="brand">AgriHub Pro</span>
+    </a>
+    <div class="hidden md:flex items-center gap-5 text-sm font-medium">
+      <a href="/index.html" class="hover:text-green-200 transition" data-t="nav_market">Marketplace</a>
+      <a href="/community.html" class="hover:text-green-200 transition" data-t="nav_community">Community</a>
+      <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
+      <a href="/learning.html" class="hover:text-green-200 transition" data-t="nav_learn">Academy</a>
+      <a href="/smart-home.html" class="hover:text-green-200 transition" data-t="nav_smarthome">Smart Home</a>
+      <a href="/profile.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_profile">My Profile</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
+        <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">à®¤à®®à®¿à®´à¯</button>
+      </div>
+      <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition max-w-32 truncate" data-t="login">Login</button>
+    </div>
+  </div>
+  <div class="md:hidden border-t border-green-700/70 bg-green-900">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-xs font-semibold">
+      <a href="/index.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_market">Marketplace</a>
+      <a href="/community.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_community">Community</a>
+      <a href="/land-market.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_land">Land Market</a>
+      <a href="/learning.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_learn">Academy</a>
+      <a href="/smart-home.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_smarthome">Smart Home</a>
+      <a href="/profile.html" class="shrink-0 rounded-md bg-white/15 px-3 py-2 text-white" data-t="nav_profile">My Profile</a>
+    </div>
+  </div>
+</nav>
+
+<!-- AUTH REQUIRED -->
+<div id="auth-required" class="hidden max-w-lg mx-auto px-4 py-24 text-center">
+  <p class="text-7xl mb-4">ðŸ”</p>
+  <h2 class="text-2xl font-bold text-gray-800 mb-2" data-t="auth_required_title">Login Required</h2>
+  <p class="text-gray-500 mb-6" data-t="auth_required_sub">Please login to access your farmer profile and analytics.</p>
+  <a href="/index.html" class="inline-block bg-green-700 hover:bg-green-600 text-white font-bold px-8 py-3 rounded-xl transition" data-t="go_login">Go to Login</a>
+</div>
+
+<!-- PROFILE CONTENT -->
+<div id="profile-content" class="hidden max-w-6xl mx-auto px-4 py-8">
+
+  <!-- PROFILE HEADER -->
+  <div class="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row items-center md:items-start gap-6 border border-gray-100">
+    <div id="profile-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-white text-4xl font-extrabold shrink-0 shadow-md">F</div>
+    <div class="flex-1 text-center md:text-left">
+      <h1 id="profile-name" class="text-2xl font-extrabold text-gray-800 mb-1">Farmer</h1>
+      <p id="profile-email" class="text-gray-400 text-sm mb-3"></p>
+      <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+        <span id="tier-badge" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold"></span>
+        <span id="profile-phone" class="text-sm text-gray-500 flex items-center gap-1">ðŸ“ž <span id="phone-text"></span></span>
+      </div>
+    </div>
+    <div class="text-center flex flex-col gap-2 shrink-0">
+      <button onclick="openTrackerModal()" class="bg-green-700 hover:bg-green-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-sm" data-t="track_crop">+ Track a Crop</button>
+      <button onclick="openEditBankModal()" class="border border-green-700 hover:bg-green-50 text-green-700 font-semibold px-5 py-2 rounded-xl text-sm transition" data-t="edit_payout_settings">Edit Payout Settings</button>
+      <button id="upgrade-btn" onclick="doUpgrade()" class="hidden bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-yellow-900 font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-sm" data-t="upgrade_premium">Upgrade to Premium â­</button>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE TABS NAVIGATION -->
+  <div class="border-b border-gray-200 mb-6 flex justify-center gap-2 md:gap-6 text-sm font-semibold select-none">
+    <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-4 md:px-6 py-3 border-b-2 border-green-600 text-green-700 transition" data-t="tab_overview">Overview</button>
+    <button onclick="switchTab('model3d')" id="tab-model3d" class="tab-btn px-4 md:px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition" data-t="tab_3d">3D Model</button>
+    <button onclick="switchTab('payouts')" id="tab-payouts" class="tab-btn px-4 md:px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition" data-t="tab_payouts">Payouts</button>
+  </div>
+
+  <!-- TAB 1: OVERVIEW -->
+  <section id="sect-overview" class="tab-panel space-y-6">
+    <!-- STATS ROW -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats-row">
+      <div class="bg-white rounded-2xl shadow p-5 text-center border border-gray-100 shadow-sm">
+        <p class="text-3xl font-extrabold text-green-700" id="stat-earnings">â‚¹0</p>
+        <p class="text-xs text-gray-500 mt-1" data-t="lifetime_earnings">Lifetime Earnings</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center border border-gray-100 shadow-sm">
+        <p class="text-3xl font-extrabold text-blue-600" id="stat-weight">0 kg</p>
+        <p class="text-xs text-gray-500 mt-1" data-t="total_weight_sold">Total Weight Sold</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center border border-gray-100 shadow-sm">
+        <p class="text-3xl font-extrabold text-purple-600" id="stat-crops">0</p>
+        <p class="text-xs text-gray-500 mt-1" data-t="crops_delivered">Crops Delivered</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center border border-gray-100 shadow-sm">
+        <p class="text-3xl font-extrabold text-amber-600" id="stat-tracked">0</p>
+        <p class="text-xs text-gray-500 mt-1" data-t="active_tracking">Active Trackings</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- DOUGHNUT CHART -->
+      <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+        <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="crop_distribution">Crop Distribution</h2>
+        <div id="chart-empty" class="hidden text-center py-10">
+          <p class="text-4xl mb-2">ðŸŒ±</p>
+          <p class="text-gray-400 text-sm" data-t="no_crop_data">No crop data yet. List and deliver crops to see your distribution.</p>
+        </div>
+        <div id="chart-container" class="relative h-64 flex items-center justify-center">
+          <canvas id="cropChart"></canvas>
+        </div>
+      </div>
+
+      <!-- ACTIVE CROP TRACKER -->
+      <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+        <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="crop_tracker">Active Crop Tracker</h2>
+        <div id="tracker-loading" class="text-center py-8">
+          <div class="inline-block w-6 h-6 border-[3px] border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <div id="tracker-list" class="space-y-3 hidden"></div>
+        <div id="tracker-empty" class="hidden text-center py-8">
+          <p class="text-4xl mb-2">ðŸŒ¾</p>
+          <p class="text-gray-400 text-sm" data-t="no_tracking">No crops being tracked yet.</p>
+          <button onclick="openTrackerModal()" class="mt-3 text-green-700 font-semibold text-sm hover:underline" data-t="start_tracking">Start Tracking a Crop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT PRODUCTS -->
+    <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="my_listings">My Crop Listings</h2>
+      <div id="products-loading" class="text-center py-8">
+        <div class="inline-block w-6 h-6 border-[3px] border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      <div id="products-table" class="hidden overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead><tr class="border-b border-gray-100 text-left">
+            <th class="pb-3 font-semibold text-gray-500" data-t="col_crop">Crop</th>
+            <th class="pb-3 font-semibold text-gray-500" data-t="col_weight">Weight (kg)</th>
+            <th class="pb-3 font-semibold text-gray-500" data-t="col_units">Units</th>
+            <th class="pb-3 font-semibold text-gray-500" data-t="col_status">Status</th>
+          </tr></thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+      <div id="products-empty" class="hidden text-center py-8 text-gray-400" data-t="no_listings_yet">No listings yet. <a href="/index.html" class="text-green-700 font-semibold hover:underline">Go to Marketplace</a> to list your first crop.</div>
+    </div>
+  </section>
+
+  <!-- TAB 2: 3D MODEL -->
+  <section id="sect-model3d" class="tab-panel hidden space-y-6">
+    <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <span>ðŸ”ï¸</span><span data-t="tab_3d_title">Farm Boundary & 3D Contour Map</span>
+          </h2>
+          <p class="text-xs text-gray-400" data-t="tab_3d_sub">Generated using high-precision corner vertices.</p>
+        </div>
+        <button onclick="window.location.href='prosurvey.html'" class="px-4 py-2.5 bg-green-700 hover:bg-green-600 rounded-xl text-xs font-bold text-white transition shadow-sm" data-t="edit_elevation_profile">
+          âœï¸ Edit Elevation Profile
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 h-[400px] bg-gray-900 rounded-2xl overflow-hidden relative border border-gray-200 shadow-inner" id="preview-wrapper">
+          <div id="no-land-overlay" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10 bg-gray-950/95 text-white">
+            <span class="text-5xl mb-3">â›°ï¸</span>
+            <h5 class="text-base font-bold text-gray-200" data-t="no_land_title">No 3D Model Saved</h5>
+            <p class="text-xs text-gray-400 max-w-xs mt-2" data-t="no_land_sub">Design a 3D model to map your boundaries, sculpt elevation ridges (Medu) and water depressions (Pallam).</p>
+          </div>
+          <canvas id="preview-canvas" class="w-full h-full block hidden"></canvas>
+        </div>
+
+        <div class="lg:col-span-1 flex flex-col justify-between py-1 bg-gray-50 p-5 rounded-2xl border border-gray-200 text-sm text-gray-700 space-y-4 shadow-sm">
+          <div class="flex flex-col gap-4">
+            <div class="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+              <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider block" data-t="total_area_label">Total Area</span>
+              <span class="text-xl font-black text-gray-800 mt-1 block" id="land-area-display">0 sq ft</span>
+              <span class="text-xs text-green-600 font-semibold" id="land-acres-display">0.0000 acres</span>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+              <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider block" data-t="height_contours">Contours Height</span>
+              <div class="flex justify-between mt-2"><span class="text-gray-400" data-t="max_height">Max Height:</span><span class="font-bold text-green-600" id="land-max-el">0.0 ft</span></div>
+              <div class="flex justify-between mt-1"><span class="text-gray-400" data-t="min_height">Min Height:</span><span class="font-bold text-blue-500" id="land-min-el">0.0 ft</span></div>
+            </div>
+          </div>
+          <p class="text-[10px] text-gray-400 italic mt-auto border-t border-gray-200/60 pt-3">*Persisted in your database block, active in learning simulator.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: PAYOUTS -->
+  <section id="sect-payouts" class="tab-panel hidden space-y-6">
+    <div class="bg-white rounded-2xl shadow p-6 border border-gray-100">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-100 pb-4 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-gray-800" data-t="payout_logs_title">Logistics Payout & Transfer Status</h2>
+          <p class="text-xs text-gray-400" data-t="payout_logs_sub">View payout coordinates and status for all fulfilled deliveries.</p>
+        </div>
+        <button onclick="openEditBankModal()" class="bg-green-700 hover:bg-green-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-sm" data-t="edit_payout_settings">Edit Payout Settings</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-center shadow-sm">
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1" data-t="upi_label">UPI Address</p>
+          <p class="text-sm font-semibold text-gray-800 select-all" id="upi-display">â€”</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-center shadow-sm">
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1" data-t="bank_acc_label">Bank Account Number</p>
+          <p class="text-sm font-semibold text-gray-800 select-all" id="bank-acc-display">â€”</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 text-center shadow-sm">
+          <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1" data-t="ifsc_label">IFSC Bank Code</p>
+          <p class="text-sm font-semibold text-gray-800 select-all" id="ifsc-display">â€”</p>
+        </div>
+      </div>
+
+      <!-- Ledger Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-gray-100 text-left text-gray-500">
+              <th class="pb-3 font-semibold" data-t="col_crop">Crop</th>
+              <th class="pb-3 font-semibold" data-t="col_package_count">Package Count</th>
+              <th class="pb-3 font-semibold" data-t="col_weight">Weight</th>
+              <th class="pb-3 font-semibold" data-t="col_payout_status">Payout Status</th>
+              <th class="pb-3 font-semibold" data-t="col_payout_details">Payout Details / Txn ID</th>
+            </tr>
+          </thead>
+          <tbody id="payout-table-body" class="divide-y divide-gray-50 text-gray-700">
+            <tr>
+              <td colspan="5" class="py-8 text-center text-gray-400" data-t="no_payout_logs">No active delivery logs available.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- TRACKER MODAL -->
+<div id="tracker-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[95vh]">
+    <div class="bg-green-800 text-white p-6">
+      <h2 class="text-xl font-bold" data-t="tracker_title">Start Tracking a Crop</h2>
+      <p class="text-green-200 text-sm mt-1" data-t="tracker_sub">Set up daily watering and fertilizer alerts</p>
+    </div>
+    <form id="tracker-form" onsubmit="submitTracker(event)" class="p-6 space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="crop_name_label">Crop Name</label>
+          <input name="cropName" type="text" required placeholder="e.g., Paddy" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="variety_label">Variety</label>
+          <input name="variety" type="text" placeholder="e.g., IR64" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="planted_date_label">Planted Date</label>
+          <input name="plantedDate" type="date" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="field_size_label">Field Size (acres)</label>
+          <input name="fieldSize" type="number" min="0.01" step="0.01" placeholder="2.5" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="watering_days_label">Watering Days (comma-separated day numbers)</label>
+        <input name="wateringDays" type="text" placeholder="e.g., 7,14,21,28,35" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        <p class="text-xs text-gray-400 mt-1" data-t="watering_days_hint">Day numbers from planting (Day 0). Notifications will fire on these days.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="fertilizer_days_label">Fertilizer Days (comma-separated)</label>
+        <input name="fertilizerDays" type="text" placeholder="e.g., 10,25,45" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="fertilizer_names_label">Fertilizer Names (comma-separated)</label>
+        <input name="fertilizerNames" type="text" placeholder="e.g., Urea,DAP,Potash" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div id="tracker-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeTrackerModal()" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition" data-t="cancel">Cancel</button>
+        <button type="submit" id="tracker-submit" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition" data-t="start_tracking_btn">Start Tracking</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT BANK CREDENTIALS MODAL -->
+<div id="edit-bank-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100">
+    <div class="bg-green-800 text-white p-6 relative">
+      <button onclick="closeEditBankModal()" class="absolute top-4 right-4 text-white hover:text-green-200 text-xl font-bold">&times;</button>
+      <h3 class="text-lg font-bold" data-t="payout_settings">Payout Settings</h3>
+      <p class="text-green-200 text-xs mt-1" data-t="payout_settings_sub">Modify Bank and UPI coordinates to route verification payouts directly into your accounts.</p>
+    </div>
+    <form id="bank-form" onsubmit="updateBankDetails(event)" class="p-6 space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 mb-1" data-t="upi_label">UPI Address (GPay / PhonePe / Paytm)</label>
+        <input type="text" id="upi-id" placeholder="e.g. farmer@upi" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-t="bank_acc_label">Bank Account Number</label>
+          <input type="text" id="account-no" placeholder="987654321012" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-600 mb-1" data-t="ifsc_label">IFSC Bank Code</label>
+          <input type="text" id="ifsc-code" placeholder="SBIN0001234" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+        </div>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="closeEditBankModal()" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition" data-t="cancel">Cancel</button>
+        <button type="submit" class="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition" data-t="save_payout_btn">Save Payout Coordinates</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+  <span>âœ“</span><span id="toast-msg"></span>
+</div>
+
+<!-- Mobile Bottom Page Navigation Bar (Instagram/YouTube Style) -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-green-900 border-t border-green-800 flex justify-around items-center py-2 md:hidden shadow-2xl">
+  <a href="/index.html" class="flex flex-col items-center gap-1 text-green-200/80 hover:text-white transition">
+    <span class="text-lg">ðŸ›’</span>
+    <span class="text-[9px] font-semibold" data-t="nav_market">Market</span>
+  </a>
+  <a href="/community.html" class="flex flex-col items-center gap-1 text-green-200/80 hover:text-white transition">
+    <span class="text-lg">ðŸ‘¥</span>
+    <span class="text-[9px] font-semibold" data-t="nav_community">Feed</span>
+  </a>
+  <a href="/learning.html" class="flex flex-col items-center gap-1 text-green-200/80 hover:text-white transition">
+    <span class="text-lg">ðŸŽ¥</span>
+    <span class="text-[9px] font-semibold" data-t="nav_learn">Academy</span>
+  </a>
+  <a href="/profile.html" class="flex flex-col items-center gap-1 text-white font-bold transition">
+    <span class="text-lg">ðŸ‘¤</span>
+    <span class="text-[9px]" data-t="nav_profile">Profile</span>
+  </a>
+</nav>
+
+<script>
+const API_BASE='/api';
+let token=localStorage.getItem('agrihub_token')||'', user=JSON.parse(localStorage.getItem('agrihub_user')||'null');
+let currentLang='en', cropChart=null;
+
+const T={
+  en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',nav_learn:'Academy',nav_smarthome:'Smart Home',
+    login:'Login',auth_required_title:'Login Required',auth_required_sub:'Please login to access your farmer profile.',go_login:'Go to Login',
+    lifetime_earnings:'Lifetime Earnings (est.)',total_weight_sold:'Total Weight Delivered',crops_delivered:'Deliveries',
+    active_tracking:'Active Trackings',crop_distribution:'Crop Distribution',no_crop_data:'No crop data yet.',
+    crop_tracker:'Active Crop Tracker',no_tracking:'No crops being tracked yet.',start_tracking:'Start Tracking a Crop',
+    my_listings:'My Crop Listings',col_crop:'Crop',col_weight:'Weight (kg)',col_units:'Units',col_status:'Status',
+    no_listings_yet:'No listings yet.',track_crop:'+ Track a Crop',upgrade_premium:'Upgrade to Premium â­',
+    tracker_title:'Start Tracking a Crop',tracker_sub:'Set up daily watering and fertilizer alerts',
+    crop_name_label:'Crop Name',variety_label:'Variety',planted_date_label:'Planted Date',field_size_label:'Field Size (acres)',
+    watering_days_label:'Watering Days',watering_days_hint:'Day numbers from planting. Notifications fire on these days.',
+    fertilizer_days_label:'Fertilizer Days',fertilizer_names_label:'Fertilizer Names',cancel:'Cancel',start_tracking_btn:'Start Tracking',
+    status_awaiting:'Awaiting Delivery',status_paid:'Received & Paid',status_retail:'Listed for Retail',
+    day:'Day',days_since:'days since planting',water_today:'Water today!',fertilize_today:'Apply fertilizer today!',
+    delete_tracker:'Remove',
+    tab_overview:'Overview',tab_3d:'3D Model',tab_payouts:'Payouts',
+    tab_3d_title:'Farm Boundary & 3D Contour Map',tab_3d_sub:'Generated using high-precision corner vertices.',
+    edit_elevation_profile:'âœï¸ Edit Elevation Profile',no_land_title:'No 3D Model Saved',
+    no_land_sub:'Design a 3D model to map your boundaries, sculpt elevation ridges (Medu) and water depressions (Pallam).',
+    total_area_label:'Total Area',height_contours:'Contours Height',max_height:'Max Height',min_height:'Min Height',
+    payout_logs_title:'Logistics Payout & Transfer Status',payout_logs_sub:'View payout coordinates and status for all fulfilled deliveries.',
+    edit_payout_settings:'Edit Payout Settings',upi_label:'UPI Address',bank_acc_label:'Bank Account Number',ifsc_label:'IFSC Bank Code',
+    col_package_count:'Package Count',col_payout_status:'Payout Status',col_payout_details:'Payout Details / Txn ID',
+    no_payout_logs:'No active delivery logs available.',save_payout_btn:'Save Payout Coordinates',
+    payout_settings:'Payout Settings',payout_settings_sub:'Modify Bank and UPI coordinates to route verification payouts directly into your accounts.',
+    payout_settings_saved:'Payout settings updated successfully.',payout_settings_failed:'Failed to update payout settings.',
+    payout_settings_loading_failed:'Failed to load bank credentials.'},
+  ta:{brand:'à®…à®•à¯à®°à®¿à®¹à®ªà¯ à®ªà¯à®°à¯‹',nav_market:'à®šà®¨à¯à®¤à¯ˆ',nav_community:'à®šà®®à¯‚à®•à®®à¯',nav_land:'à®¨à®¿à®² à®šà®¨à¯à®¤à¯ˆ',nav_profile:'à®Žà®©à¯ à®šà¯à®¯à®µà®¿à®µà®°à®®à¯',nav_learn:'à®ªà®¯à®¿à®±à¯à®šà®¿',nav_smarthome:'à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯',
+    login:'à®‰à®³à¯à®¨à¯à®´à¯ˆà®•',auth_required_title:'à®‰à®³à¯à®¨à¯à®´à¯ˆà®µà¯ à®¤à¯‡à®µà¯ˆ',auth_required_sub:'à®‰à®™à¯à®•à®³à¯ à®µà®¿à®µà®šà®¾à®¯ à®šà¯à®¯à®µà®¿à®µà®°à®¤à¯à®¤à¯ˆ à®…à®£à¯à®• à®‰à®³à¯à®¨à¯à®´à¯ˆà®¯à®µà¯à®®à¯.',go_login:'à®‰à®³à¯à®¨à¯à®´à¯ˆà®•',
+    lifetime_earnings:'à®†à®¯à¯à®³à¯à®•à®¾à®² à®µà®°à¯à®µà®¾à®¯à¯ (à®®à®¤à®¿à®ªà¯à®ªà¯€à®Ÿà¯)',total_weight_sold:'à®®à¯Šà®¤à¯à®¤ à®Žà®Ÿà¯ˆ',crops_delivered:'à®µà®¿à®¨à®¿à®¯à¯‹à®•à®™à¯à®•à®³à¯',
+    active_tracking:'à®šà¯†à®¯à®²à®¿à®²à¯ à®‰à®³à¯à®³ à®•à®£à¯à®•à®¾à®£à®¿à®ªà¯à®ªà¯à®•à®³à¯',crop_distribution:'à®ªà®¯à®¿à®°à¯ à®µà®¿à®¨à®¿à®¯à¯‹à®•à®®à¯',no_crop_data:'à®‡à®©à¯à®©à¯à®®à¯ à®ªà®¯à®¿à®°à¯ à®¤à®°à®µà¯ à®‡à®²à¯à®²à¯ˆ.',
+    crop_tracker:'à®šà¯†à®¯à®²à®¿à®²à¯ à®‰à®³à¯à®³ à®ªà®¯à®¿à®°à¯ à®•à®£à¯à®•à®¾à®£à®¿à®ªà¯à®ªà®¿',no_tracking:'à®•à®£à¯à®•à®¾à®£à®¿à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®®à¯ à®ªà®¯à®¿à®°à¯à®•à®³à¯ à®‡à®²à¯à®²à¯ˆ.',start_tracking:'à®ªà®¯à®¿à®°à¯ˆ à®•à®£à¯à®•à®¾à®£à®¿à®•à¯à®• à®¤à¯Šà®Ÿà®™à¯à®•à¯à®™à¯à®•à®³à¯',
+    my_listings:'à®Žà®©à¯ à®ªà®¯à®¿à®°à¯ à®ªà®Ÿà¯à®Ÿà®¿à®¯à®²à¯à®•à®³à¯',col_crop:'à®ªà®¯à®¿à®°à¯',col_weight:'à®Žà®Ÿà¯ˆ (à®•à®¿à®²à¯‹)',col_units:'à®…à®²à®•à¯à®•à®³à¯',col_status:'à®¨à®¿à®²à¯ˆ',
+    no_listings_yet:'à®ªà®Ÿà¯à®Ÿà®¿à®¯à®²à¯à®•à®³à¯ à®‡à®²à¯à®²à¯ˆ.',track_crop:'+ à®ªà®¯à®¿à®°à¯ˆ à®•à®£à¯à®•à®¾à®£à®¿',upgrade_premium:'à®ªà®¿à®°à¯€à®®à®¿à®¯à®¤à¯à®¤à®¿à®±à¯à®•à¯ à®®à¯‡à®®à¯à®ªà®Ÿà¯à®¤à¯à®¤à®µà¯à®®à¯ â­',
+    tracker_title:'à®ªà®¯à®¿à®°à¯ˆ à®•à®£à¯à®•à®¾à®£à®¿à®•à¯à®• à®¤à¯Šà®Ÿà®™à¯à®•à®µà¯à®®à¯',tracker_sub:'à®¤à®¿à®©à®šà®°à®¿ à®¨à¯€à®°à¯à®ªà¯à®ªà®¾à®šà®© à®®à®±à¯à®±à¯à®®à¯ à®‰à®° à®…à®±à®¿à®µà®¿à®ªà¯à®ªà¯à®•à®³à¯ˆ à®…à®®à¯ˆà®•à¯à®•à®µà¯à®®à¯',
+    crop_name_label:'à®ªà®¯à®¿à®°à¯ à®ªà¯†à®¯à®°à¯',variety_label:'à®°à®•à®®à¯',planted_date_label:'à®¨à®Ÿà¯à®Ÿ à®¤à¯‡à®¤à®¿',field_size_label:'à®¨à®¿à®² à®…à®³à®µà¯ (à®à®•à¯à®•à®°à¯)',
+    watering_days_label:'à®¨à¯€à®°à¯à®ªà¯à®ªà®¾à®šà®© à®¨à®¾à®Ÿà¯à®•à®³à¯',watering_days_hint:'à®¨à®Ÿà¯à®Ÿ à®¨à®¾à®³à®¿à®²à®¿à®°à¯à®¨à¯à®¤à¯ à®¨à®¾à®³à¯ à®Žà®£à¯à®•à®³à¯.',
+    fertilizer_days_label:'à®‰à®° à®¨à®¾à®Ÿà¯à®•à®³à¯',fertilizer_names_label:'à®‰à®° à®ªà¯†à®¯à®°à¯à®•à®³à¯',cancel:'à®°à®¤à¯à®¤à¯',start_tracking_btn:'à®•à®£à¯à®•à®¾à®£à®¿à®ªà¯à®ªà¯ˆ à®¤à¯Šà®Ÿà®™à¯à®•à¯',
+    status_awaiting:'à®Ÿà¯†à®²à®¿à®µà®°à®¿ à®•à®¾à®¤à¯à®¤à®¿à®°à¯à®•à¯à®•à®¿à®±à®¤à¯',status_paid:'à®ªà¯†à®±à®ªà¯à®ªà®Ÿà¯à®Ÿà®¤à¯ & à®šà¯†à®²à¯à®¤à¯à®¤à®ªà¯à®ªà®Ÿà¯à®Ÿà®¤à¯',status_retail:'à®šà®¿à®²à¯à®²à®°à¯ˆ à®µà®¿à®±à¯à®ªà®©à¯ˆà®•à¯à®•à¯',
+    day:'à®¨à®¾à®³à¯',days_since:'à®¨à®Ÿà¯à®Ÿà¯ à®¨à®¾à®Ÿà¯à®•à®³à¯ à®†à®•à®¿à®±à®¤à¯',water_today:'à®‡à®©à¯à®±à¯ à®¨à¯€à®°à¯à®ªà¯à®ªà®¾à®šà®©à®®à¯ à®šà¯†à®¯à¯à®¯à®µà¯à®®à¯!',fertilize_today:'à®‡à®©à¯à®±à¯ à®‰à®°à®®à¯ à®ªà¯‹à®Ÿà®µà¯à®®à¯!',
+    delete_tracker:'à®¨à¯€à®•à¯à®•à¯',
+    tab_overview:'à®•à®£à¯à®£à¯‹à®Ÿà¯à®Ÿà®®à¯',tab_3d:'3D à®®à®¾à®¤à®¿à®°à®¿',tab_payouts:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®±à®™à¯à®•à®³à¯',
+    tab_3d_title:'à®µà®¿à®µà®šà®¾à®¯ à®¨à®¿à®² à®Žà®²à¯à®²à¯ˆ & 3D à®‰à®¯à®° à®µà®°à¯ˆà®ªà®Ÿà®®à¯',tab_3d_sub:'à®¨à®¿à®² à®Žà®²à¯à®²à¯ˆ à®®à¯à®©à¯ˆà®•à®³à®¿à®©à¯ à®…à®Ÿà®¿à®ªà¯à®ªà®Ÿà¯ˆà®¯à®¿à®²à¯ à®‰à®°à¯à®µà®¾à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®Ÿà®¤à¯.',
+    edit_elevation_profile:'âœï¸ à®‰à®¯à®° à®µà®¿à®µà®°à®•à¯à®•à¯à®±à®¿à®ªà¯à®ªà¯ˆà®¤à¯ à®¤à®¿à®°à¯à®¤à¯à®¤à¯',no_land_title:'3D à®®à®¾à®¤à®¿à®°à®¿ à®šà¯‡à®®à®¿à®•à¯à®•à®ªà¯à®ªà®Ÿà®µà®¿à®²à¯à®²à¯ˆ',
+    no_land_sub:'à®‰à®™à¯à®•à®³à¯ à®Žà®²à¯à®²à¯ˆà®•à®³à¯ˆ à®µà®°à¯ˆà®ªà®Ÿà®®à®¾à®•à¯à®•à®µà¯à®®à¯, à®‰à®¯à®° à®®à¯à®•à®Ÿà¯à®•à®³à¯ à®®à®±à¯à®±à¯à®®à¯ à®¨à¯€à®°à¯ à®¤à®¾à®´à¯à®¨à®¿à®²à¯ˆà®•à®³à¯ˆ à®šà¯†à®¤à¯à®•à¯à®•à®µà¯à®®à¯ 3D à®®à®¾à®¤à®¿à®°à®¿à®¯à¯ˆ à®µà®Ÿà®¿à®µà®®à¯ˆà®•à¯à®•à®µà¯à®®à¯.',
+    total_area_label:'à®®à¯Šà®¤à¯à®¤ à®ªà®°à®ªà¯à®ªà®³à®µà¯',height_contours:'à®‰à®¯à®° à®µà®¿à®³à®¿à®®à¯à®ªà¯à®•à®³à¯',max_height:'à®…à®¤à®¿à®•à®ªà®Ÿà¯à®š à®‰à®¯à®°à®®à¯',min_height:'à®•à¯à®±à¯ˆà®¨à¯à®¤à®ªà®Ÿà¯à®š à®‰à®¯à®°à®®à¯',
+    payout_logs_title:'à®¤à®³à®µà®¾à®Ÿà®™à¯à®•à®³à¯ à®šà¯†à®²à¯à®¤à¯à®¤à¯à®¤à®²à¯ à®®à®±à¯à®±à¯à®®à¯ à®ªà®°à®¿à®®à®¾à®±à¯à®± à®¨à®¿à®²à¯ˆ',payout_logs_sub:'à®…à®©à¯ˆà®¤à¯à®¤à¯ à®µà®¿à®¨à®¿à®¯à¯‹à®•à®™à¯à®•à®³à®¿à®©à¯ à®¨à®¿à®²à¯ˆ à®®à®±à¯à®±à¯à®®à¯ à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®®à¯à®•à®µà®°à®¿à®•à®³à¯ˆ à®•à®¾à®£à¯à®•.',
+    edit_payout_settings:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯',upi_label:'UPI à®®à¯à®•à®µà®°à®¿',bank_acc_label:'à®µà®™à¯à®•à®¿ à®•à®£à®•à¯à®•à¯ à®Žà®£à¯',ifsc_label:'IFSC à®µà®™à¯à®•à®¿ à®•à¯à®±à®¿à®¯à¯€à®Ÿà¯',
+    col_package_count:'à®¤à¯Šà®•à¯à®ªà¯à®ªà¯ à®Žà®£à¯à®£à®¿à®•à¯à®•à¯ˆ',col_payout_status:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®¨à®¿à®²à¯ˆ',col_payout_details:'à®ªà®°à®¿à®µà®°à¯à®¤à¯à®¤à®©à¯ˆ à®à®Ÿà®¿ / à®µà®¿à®µà®°à®®à¯',
+    no_payout_logs:'à®šà¯†à®¯à®²à®¿à®²à¯ à®‰à®³à¯à®³ à®µà®¿à®¨à®¿à®¯à¯‹à®• à®ªà®¤à®¿à®µà¯à®•à®³à¯ à®‡à®²à¯à®²à¯ˆ.',save_payout_btn:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®’à®°à¯à®™à¯à®•à®¿à®£à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ˆ à®šà¯‡à®®à®¿',
+    payout_settings:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯',payout_settings_sub:'à®šà®°à®¿à®ªà®¾à®°à¯à®ªà¯à®ªà¯ à®•à¯Šà®Ÿà¯à®ªà¯à®ªà®©à®µà¯à®•à®³à¯ˆ à®‰à®™à¯à®•à®³à¯ à®•à®£à®•à¯à®•à¯à®•à®³à®¿à®²à¯ à®šà¯†à®²à¯à®¤à¯à®¤ à®‰à®™à¯à®•à®³à¯ à®µà®™à¯à®•à®¿ à®®à®±à¯à®±à¯à®®à¯ UPI à®’à®°à¯à®™à¯à®•à®¿à®£à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ˆ à®®à®¾à®±à¯à®±à®µà¯à®®à¯.',
+    payout_settings_saved:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ à®µà¯†à®±à¯à®±à®¿à®•à®°à®®à®¾à®• à®ªà¯à®¤à¯à®ªà¯à®ªà®¿à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®Ÿà®©.',payout_settings_failed:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ˆà®ªà¯ à®ªà¯à®¤à¯à®ªà¯à®ªà®¿à®•à¯à®• à®®à¯à®Ÿà®¿à®¯à®µà®¿à®²à¯à®²à¯ˆ.',
+    payout_settings_loading_failed:'à®µà®™à¯à®•à®¿à®šà¯ à®šà®¾à®©à¯à®±à¯à®•à®³à¯ˆ à®à®±à¯à®±à¯à®µà®¤à®¿à®²à¯ à®¤à¯‹à®²à¯à®µà®¿.'}
+};
+function t(k){return T[currentLang][k]||T.en[k]||k;}
+function setLang(lang){
+  currentLang=lang;
+  ['en','ta'].forEach(l=>document.getElementById(`btn-${l}`).classList.toggle('active',l===lang));
+  document.querySelectorAll('[data-t]').forEach(el=>{const v=T[lang][el.dataset.t];if(v)el.textContent=v;});
+}
+function handleAuthBtn(){if(user&&token)doLogout();else{window.location.href='/index.html';}}
+function doLogout(){token='';user=null;localStorage.removeItem('agrihub_token');localStorage.removeItem('agrihub_user');localStorage.removeItem('token');localStorage.removeItem('user');window.location.href='/index.html';}
+
+function checkAuth(){
+  if(!token||!user){
+    document.getElementById('auth-required').classList.remove('hidden');
+    document.getElementById('profile-content').classList.add('hidden');
+    return false;
+  }
+  document.getElementById('auth-required').classList.add('hidden');
+  document.getElementById('profile-content').classList.remove('hidden');
+  const btn=document.getElementById('auth-btn');
+  btn.textContent=user.name.split(' ')[0]; btn.onclick=doLogout;
+  document.getElementById('profile-avatar').textContent=user.name[0].toUpperCase();
+  document.getElementById('profile-name').textContent=user.name;
+  document.getElementById('profile-email').textContent=user.email;
+  document.getElementById('phone-text').textContent=user.phone||'';
+  const tierBadge=document.getElementById('tier-badge');
+  if(user.subscriptionTier==='Premium'){
+    tierBadge.textContent='â­ Premium Member';
+    tierBadge.className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border border-yellow-300';
+    document.getElementById('upgrade-btn').classList.add('hidden');
+  } else {
+    tierBadge.textContent='ðŸŒ± Free Member';
+    tierBadge.className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-green-100 text-green-800 border border-green-300';
+    document.getElementById('upgrade-btn').classList.remove('hidden');
+  }
+  return true;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+  document.getElementById(`sect-${tabName}`).classList.remove('hidden');
+  
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.className = "tab-btn px-4 md:px-6 py-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition";
+  });
+  
+  const activeBtn = document.getElementById(`tab-${tabName}`);
+  if (activeBtn) {
+    activeBtn.className = "tab-btn px-4 md:px-6 py-3 border-b-2 border-green-600 text-green-700 transition";
+  }
+
+  if (tabName === 'model3d') {
+    window.dispatchEvent(new CustomEvent('init-3d-preview'));
+  }
+}
+
+async function loadAnalytics(){
+  try {
+    const res=await fetch(`${API_BASE}/users/me/analytics`,{headers:{Authorization:`Bearer ${token}`}});
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    const stats=data.lifetimeStats||{};
+    const dist=data.cropDistribution||[];
+    const recent=data.recentProducts||[];
+
+    document.getElementById('stat-earnings').textContent='â‚¹'+Math.round(stats.estimatedEarnings||0).toLocaleString('en-IN');
+    document.getElementById('stat-weight').textContent=(stats.totalWeightKg||0).toFixed(1)+' kg';
+    document.getElementById('stat-crops').textContent=stats.totalProducts||0;
+
+    if(dist.length===0){
+      document.getElementById('chart-empty').classList.remove('hidden');
+      document.getElementById('chart-container').classList.add('hidden');
+    } else {
+      document.getElementById('chart-empty').classList.add('hidden');
+      document.getElementById('chart-container').classList.remove('hidden');
+      renderDoughnutChart(dist);
+    }
+
+    renderProductsTable(recent);
+  } catch(e) {
+    document.getElementById('products-loading').innerHTML='<p class="text-red-400 text-sm">Failed to load analytics.</p>';
+  }
+}
+
+function renderDoughnutChart(dist){
+  const ctx=document.getElementById('cropChart').getContext('2d');
+  if(cropChart) cropChart.destroy();
+  const colors=['#059669','#10b981','#34d399','#6ee7b7','#f59e0b','#f97316','#8b5cf6','#ec4899','#3b82f6','#06b6d4'];
+  cropChart=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:dist.map(d=>d._id),
+      datasets:[{data:dist.map(d=>d.totalWeight),backgroundColor:colors.slice(0,dist.length),borderWidth:2,borderColor:'#fff'}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11},padding:12}},
+        tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed.toFixed(1)} kg`}}
+      }
+    }
+  });
+}
+
+function renderProductsTable(products){
+  const tbody=document.getElementById('products-tbody');
+  document.getElementById('products-loading').classList.add('hidden');
+  if(!products.length){document.getElementById('products-empty').classList.remove('hidden');return;}
+  document.getElementById('products-table').classList.remove('hidden');
+  const statusMap={
+    'Awaiting_Hub_Delivery':'<span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Awaiting Delivery</span>',
+    'Received_And_Paid':'<span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">Received & Paid</span>',
+    'Listed_For_Retail':'<span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded-full">Listed for Retail</span>',
+  };
+  tbody.innerHTML=products.map(p=>`
+    <tr class="border-b border-gray-50 hover:bg-gray-50">
+      <td class="py-3 font-medium text-gray-800">${p.cropTitle}</td>
+      <td class="py-3 text-gray-600">${p.totalWeightKg||'â€”'}</td>
+      <td class="py-3 text-gray-600">${p.calculatedTotalUnits||'â€”'}</td>
+      <td class="py-3">${statusMap[p.adminVerificationStatus]||p.adminVerificationStatus}</td>
+    </tr>`).join('');
+}
+
+async function loadTrackerCrops(){
+  try {
+    const res=await fetch(`${API_BASE}/tracker`,{headers:{Authorization:`Bearer ${token}`}});
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    const crops=data.crops||[];
+    document.getElementById('stat-tracked').textContent=crops.length;
+    document.getElementById('tracker-loading').classList.add('hidden');
+    if(!crops.length){document.getElementById('tracker-empty').classList.remove('hidden');return;}
+    document.getElementById('tracker-list').classList.remove('hidden');
+    renderTrackerCards(crops);
+    checkCropAlarms(crops);
+  } catch {
+    document.getElementById('tracker-loading').innerHTML='<p class="text-red-400 text-xs">Failed to load trackers.</p>';
+  }
+}
+
+function renderTrackerCards(crops){
+  const list=document.getElementById('tracker-list');
+  list.innerHTML=crops.map(c=>{
+    const planted=new Date(c.plantedDate);
+    const daysElapsed=Math.floor((Date.now()-planted.getTime())/(1000*60*60*24));
+    const needsWater=c.wateringDays.includes(daysElapsed);
+    const needsFertilizer=c.fertilizerDays.includes(daysElapsed);
+    const nextWater=c.wateringDays.find(d=>d>daysElapsed)||null;
+    const totalDays=Math.max(...[...c.wateringDays,...c.fertilizerDays,90],1);
+    const progress=Math.min((daysElapsed/totalDays)*100,100);
+    return `<div class="border border-gray-200 rounded-xl p-4 ${needsWater||needsFertilizer?'border-yellow-400 bg-yellow-50':''}">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h3 class="font-bold text-gray-800">${c.cropName}${c.variety?` <span class="text-xs text-gray-400">(${c.variety})</span>`:''}</h3>
+          <p class="text-xs text-gray-500">Day ${daysElapsed} Â· ${t('days_since')}</p>
+        </div>
+        <button onclick="deleteTracker('${c._id}')" class="text-xs text-gray-400 hover:text-red-500 transition">${t('delete_tracker')}</button>
+      </div>
+      ${needsWater?`<div class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 inline-block">ðŸ’§ ${t('water_today')}</div>`:''}
+      ${needsFertilizer?`<div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 ml-1 inline-block">ðŸŒ¿ ${t('fertilize_today')}</div>`:''}
+      <div class="mt-2">
+        <div class="flex justify-between text-xs text-gray-400 mb-1">
+          <span>${t('day')} 0</span>
+          <span>${t('day')} ${daysElapsed}</span>
+          ${nextWater?`<span class="text-blue-500">ðŸ’§ ${t('day')} ${nextWater}</span>`:''}
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5">
+          <div class="progress-bar bg-gradient-to-r from-green-500 to-emerald-400 h-2.5 rounded-full" style="width:${progress}%"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkCropAlarms(crops){
+  if(!('Notification' in window)||Notification.permission!=='granted') return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  crops.forEach(c=>{
+    const planted=new Date(c.plantedDate); planted.setHours(0,0,0,0);
+    const daysElapsed=Math.floor((today-planted)/(1000*60*60*24));
+    if(c.wateringDays.includes(daysElapsed)){
+      new Notification(`ðŸ’§ AgriHub: Water Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to water your ${c.cropName}${c.variety?' ('+c.variety+')':''}.`,tag:`water-${c._id}-${daysElapsed}`});
+    }
+    if(c.fertilizerDays.includes(daysElapsed)){
+      const fertName=c.fertilizerNames[c.fertilizerDays.indexOf(daysElapsed)]||'fertilizer';
+      new Notification(`ðŸŒ¿ AgriHub: Fertilize Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to apply ${fertName} to your ${c.cropName}.`,tag:`fert-${c._id}-${daysElapsed}`});
+    }
+  });
+}
+
+async function deleteTracker(id){
+  try {
+    const res=await fetch(`${API_BASE}/tracker/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    if(res.ok){showToast('Crop tracking removed');loadTrackerCrops();}
+  } catch { showToast('Failed to remove tracking'); }
+}
+
+function openTrackerModal(){document.getElementById('tracker-modal').classList.add('open');const today=new Date().toISOString().split('T')[0];document.querySelector('[name="plantedDate"]').max=today;}
+function closeTrackerModal(){document.getElementById('tracker-modal').classList.remove('open');document.getElementById('tracker-form').reset();document.getElementById('tracker-error').classList.add('hidden');}
+
+async function submitTracker(e){
+  e.preventDefault();
+  const btn=document.getElementById('tracker-submit');btn.disabled=true;btn.textContent='Starting...';
+  const err=document.getElementById('tracker-error');err.classList.add('hidden');
+  const fd=new FormData(e.target);
+  const body={cropName:fd.get('cropName'),variety:fd.get('variety'),plantedDate:fd.get('plantedDate'),fieldSize:fd.get('fieldSize'),wateringDays:fd.get('wateringDays'),fertilizerDays:fd.get('fertilizerDays'),fertilizerNames:fd.get('fertilizerNames')};
+  try {
+    const res=await fetch(`${API_BASE}/tracker/start`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    closeTrackerModal();showToast(`Now tracking ${body.cropName}!`);loadTrackerCrops();
+    if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+  } catch { err.textContent='Network error.';err.classList.remove('hidden'); }
+  finally{btn.disabled=false;btn.textContent=t('start_tracking_btn');}
+}
+
+async function doUpgrade(){
+  try {
+    const res=await fetch(`${API_BASE}/auth/upgrade`,{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    if(res.ok){
+      token=data.token;user={...user,subscriptionTier:'Premium'};
+      localStorage.setItem('agrihub_token',token);localStorage.setItem('agrihub_user',JSON.stringify(user));
+      localStorage.setItem('token',token);localStorage.setItem('user',JSON.stringify(user));
+      checkAuth();showToast('ðŸŽ‰ Welcome to Premium!');
+    }
+  } catch { showToast('Upgrade failed'); }
+}
+
+function showToast(msg,dur=3500){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),dur);}
+
+function openEditBankModal() { document.getElementById('edit-bank-modal').classList.add('open'); }
+function closeEditBankModal() { document.getElementById('edit-bank-modal').classList.remove('open'); }
+
+async function loadProfileBankDetails() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    const u = data.user || data;
+    if (u) {
+      document.getElementById("upi-id").value = u.upiId || "";
+      document.getElementById("account-no").value = u.bankAccountNumber || "";
+      document.getElementById("ifsc-code").value = u.ifscCode || "";
+
+      document.getElementById("upi-display").textContent = u.upiId || "â€”";
+      document.getElementById("bank-acc-display").textContent = u.bankAccountNumber || "â€”";
+      document.getElementById("ifsc-display").textContent = u.ifscCode || "â€”";
+    }
+  } catch (err) {
+    console.error(t('payout_settings_loading_failed'));
+  }
+}
+
+async function updateBankDetails(e) {
+  e.preventDefault();
+  const upiId = document.getElementById("upi-id").value;
+  const bankAccountNumber = document.getElementById("account-no").value;
+  const ifscCode = document.getElementById("ifsc-code").value;
+
+  try {
+    const res = await fetch(`${API_BASE}/users/me/bank`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ upiId, bankAccountNumber, ifscCode })
+    });
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    if (data.error) {
+      showToast(data.error);
+    } else {
+      showToast(t('payout_settings_saved'));
+      closeEditBankModal();
+      loadProfileBankDetails();
+    }
+  } catch (err) {
+    showToast(t('payout_settings_failed'));
+  }
+}
+
+async function loadPayoutLedger() {
+  if (!token) return;
+  try {
+    const res = await fetch(`${API_BASE}/users/me/deliveries`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+    const tbody = document.getElementById("payout-table-body");
+
+    if (!data || !data.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-8 text-center text-gray-400" data-t="no_payout_logs">${t('no_payout_logs')}</td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = data.map(d => {
+      const isSettled = d.payoutStatus === "Settled";
+      const statusBadge = isSettled
+        ? `<span class="inline-flex bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">Settled & Paid</span>`
+        : `<span class="inline-flex bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Awaiting Settlement</span>`;
+
+      const detailsText = isSettled
+        ? `<span class="font-mono text-gray-500 text-xs">${d.payoutTransactionId}</span>`
+        : `<span class="text-gray-400 italic">Processing...</span>`;
+
+      return `
+        <tr class="border-b border-gray-50 hover:bg-gray-50">
+          <td class="py-4 font-medium text-gray-800">${d.cropTitle}</td>
+          <td class="py-4 text-gray-600">${d.calculatedTotalUnits} Units (${d.packagingUnitType})</td>
+          <td class="py-4 text-gray-600">${d.totalWeightKg} Kg</td>
+          <td class="py-4">${statusBadge}</td>
+          <td class="py-4">${detailsText}</td>
+        </tr>
+      `;
+    }).join("");
+  } catch (err) {
+    console.error("Failed to load payout ledger:", err);
+  }
+}
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+setLang('en');
+if(checkAuth()){ 
+  loadAnalytics(); 
+  loadTrackerCrops(); 
+  loadProfileBankDetails();
+  loadPayoutLedger();
+}
+</script>
+
+<!-- Scoped 3D Contour Preview script using absolute imports to ensure zero Vite build constraints -->
+<script type="module">
+  import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
+  import { OrbitControls } from 'https://unpkg.com/three@0.158.0/examples/jsm/controls/OrbitControls.js';
+
+  let previewLoaded = false;
+  
+  async function load3DPreview() {
+    if (previewLoaded) return;
+    const token = localStorage.getItem("agrihub_token") || localStorage.getItem("token") || "";
+    if (!token) return;
+    try {
+      const res = await fetch("/api/land3d", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const landResText = await res.text(); let land = null; try { land = JSON.parse(landResText); } catch(e) { land = null; }
+      
+      if (land && land.pts && land.terrainHeights && land.terrainHeights.length) {
+        document.getElementById("no-land-overlay").classList.add("hidden");
+        const canvas = document.getElementById("preview-canvas");
+        canvas.classList.remove("hidden");
+
+        const wrapper = document.getElementById("preview-wrapper");
+        const wWidth = wrapper.clientWidth;
+        const wHeight = wrapper.clientHeight;
+
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        renderer.setSize(wWidth, wHeight);
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x111827); // Deep gray matching tailwind bg-gray-900
+
+        const camera = new THREE.PerspectiveCamera(45, wWidth / wHeight, 0.5, 3000);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        const sun = new THREE.DirectionalLight(0xfff5e0, 1.4);
+        sun.position.set(200, 500, 200);
+        scene.add(sun);
+        scene.add(new THREE.AmbientLight(0x3a3f58, 1.2));
+
+        let mnX = Infinity, mxX = -Infinity, mnZ = Infinity, mxZ = -Infinity;
+        land.pts.forEach(p => {
+          mnX = Math.min(mnX, p.x); mxX = Math.max(mxX, p.x);
+          mnZ = Math.min(mnZ, p.z); mxZ = Math.max(mxZ, p.z);
+        });
+        const width = mxX - mnX, length = mxZ - mnZ;
+        const cX = (mxX + mnX) / 2, cZ = (mxZ + mnZ) / 2;
+
+        const area = Math.round(width * length);
+        document.getElementById("land-area-display").innerText = `${area.toLocaleString()} sq ft`;
+        document.getElementById("land-acres-display").innerText = `${(area / 43560).toFixed(4)} acres`;
+
+        const landGeo = new THREE.PlaneGeometry(width, length, land.tW - 1, land.tH - 1);
+        landGeo.rotateX(-Math.PI / 2);
+        landGeo.translate(cX, 0, cZ);
+
+        const inside = (x, z, poly) => {
+          let ins = false;
+          for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+            const xi = poly[i].x, zi = poly[i].z, xj = poly[j].x, zj = poly[j].z;
+            if ((zi > z) != (zj > z) && (x < (xj - xi) * (z - zi) / (zj - zi) + xi)) ins = !ins;
+          }
+          return ins;
+        };
+
+        const pos = landGeo.attributes.position;
+        const idx = landGeo.index;
+        const kept = [];
+        for (let i = 0; i < idx.count; i += 3) {
+          const a = idx.getX(i), b = idx.getX(i + 1), c = idx.getX(i + 2);
+          if (inside((pos.getX(a) + pos.getX(b) + pos.getX(c)) / 3, (pos.getZ(a) + pos.getZ(b) + pos.getZ(c)) / 3, land.pts)) {
+            kept.push(a, b, c);
+          }
+        }
+        landGeo.setIndex(kept);
+
+        const ca = new Float32Array(pos.count * 3);
+        landGeo.setAttribute('color', new THREE.BufferAttribute(ca, 3));
+        
+        const colors = {
+          deep:  new THREE.Color(0x1e3a24),
+          base:  new THREE.Color(0x2d6a4f),
+          mid:   new THREE.Color(0x40916c),
+          high:  new THREE.Color(0x52b788),
+          peak:  new THREE.Color(0x74c69d),
+          snow:  new THREE.Color(0xb7e4c7)
+        };
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+        let maxVal = -Infinity, minVal = Infinity;
+
+        for (let i = 0; i < pos.count; i++) {
+          const y = land.terrainHeights[i] || 0;
+          pos.setY(i, y);
+          maxVal = Math.max(maxVal, y);
+          minVal = Math.min(minVal, y);
+
+          const c = new THREE.Color();
+          if(y < -3)      c.lerpColors(colors.deep, colors.base, clamp((y+6)/3,0,1));
+          else if(y < 0)  c.lerpColors(colors.base, colors.mid,  clamp((y+3)/3,0,1));
+          else if(y < 4)  c.lerpColors(colors.mid,  colors.high, clamp(y/4,0,1));
+          else if(y < 10) c.lerpColors(colors.high, colors.peak, clamp((y-4)/6,0,1));
+          else            c.lerpColors(colors.peak, colors.snow, clamp((y-10)/5,0,1));
+          ca[i * 3] = c.r; ca[i * 3 + 1] = c.g; ca[i * 3 + 2] = c.b;
+        }
+
+        document.getElementById("land-max-el").innerText = `${maxVal.toFixed(1)} ft`;
+        document.getElementById("land-min-el").innerText = `${minVal.toFixed(1)} ft`;
+
+        landGeo.computeVertexNormals();
+        const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, side: THREE.DoubleSide });
+        const landMesh = new THREE.Mesh(landGeo, mat);
+        scene.add(landMesh);
+
+        const maxDim = Math.max(width, length);
+        controls.target.set(cX, 0, cZ);
+        camera.position.set(cX, maxDim * 1.0, cZ + maxDim * 1.0);
+        controls.update();
+
+        const animatePreview = () => {
+          requestAnimationFrame(animatePreview);
+          controls.update();
+          renderer.render(scene, camera);
+        };
+        animatePreview();
+        previewLoaded = true;
+
+        window.addEventListener('resize', () => {
+          renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+          camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
+          camera.updateProjectionMatrix();
+        });
+      }
+    } catch (err) {
+      console.error("3D land preview load error:", err);
+    }
+  }
+
+  window.addEventListener('init-3d-preview', () => {
+    load3DPreview();
+  });
+</script>
+<script src="/theme-engine.js"></script>
+</body>
+</html>
+

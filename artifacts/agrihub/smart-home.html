@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub Pro - Smart Farm Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <style>
+    /* CSS Variables for Themes */
+    body.theme-emerald {
+      --bg-color: #0A0D14;
+      --glass-bg: rgba(15, 23, 42, 0.8);
+      --primary: #10B981;
+      --primary-rgb: 16, 185, 129;
+      --accent: #14B8A6;
+    }
+    body.theme-sunset {
+      --bg-color: #0F0A14;
+      --glass-bg: rgba(24, 15, 30, 0.85);
+      --primary: #D946EF;
+      --primary-rgb: 217, 70, 239;
+      --accent: #F43F5E;
+    }
+    body.theme-cyberpunk {
+      --bg-color: #000000;
+      --glass-bg: rgba(10, 10, 10, 0.95);
+      --primary: #06B6D4;
+      --primary-rgb: 6, 182, 212;
+      --accent: #F43F5E;
+    }
+    body.theme-classic {
+      --bg-color: #0B132B;
+      --glass-bg: rgba(20, 30, 55, 0.8);
+      --primary: #3B82F6;
+      --primary-rgb: 59, 130, 246;
+      --accent: #60A5FA;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color) !important;
+      color: #E2E8F0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .glass {
+      background: var(--glass-bg) !important;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .text-primary {
+      color: var(--primary) !important;
+    }
+    .bg-primary {
+      background-color: var(--primary) !important;
+    }
+    .border-primary {
+      border-color: var(--primary) !important;
+    }
+    .bg-primary-glow {
+      background-color: rgba(var(--primary-rgb), 0.1) !important;
+    }
+    .border-primary-glow {
+      border-color: rgba(var(--primary-rgb), 0.2) !important;
+    }
+    .indicator-glow {
+      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4) !important;
+    }
+    .indicator-glow-off {
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    }
+    .toggle-dot {
+      transition: transform 0.3s ease-in-out;
+    }
+    input:checked ~ .toggle-bg {
+      background-color: var(--primary) !important;
+    }
+    input:checked ~ .toggle-dot {
+      transform: translateX(100%);
+    }
+    /* Smooth transitions for tabs */
+    .tab-content {
+      transition: opacity 0.2s ease-in-out;
+    }
+    select option { background-color: #18181b; color: #ffffff; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-28 md:pb-0">
+  <script>
+    (function() {
+      const t = localStorage.getItem("theme") || "cyberpunk";
+      document.body.classList.add("theme-" + t);
+    })();
+  </script>
+
+  <!-- Desktop Navigation Bar (Hidden on Mobile) -->
+  <nav class="glass sticky top-0 z-45 px-6 py-4 hidden md:flex justify-between items-center shadow-lg border-b border-white/5">
+    <a href="home.html" class="flex items-center gap-2">
+      <div class="p-1.5 bg-cyan-500/20 rounded-lg">
+        <i data-lucide="sprout" class="w-5 h-5 text-emerald-400"></i>
+      </div>
+      <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">AgriHub IoT</span>
+    </a>
+    <div class="flex gap-8 text-sm font-medium">
+      <a href="home.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-home">Home</a>
+      <a href="index.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-market">Marketplace</a>
+      <a href="community.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-feed">Social Feed</a>
+      <a href="land-market.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-land">Real Estate</a>
+      <a href="profile.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-analytics">Profile</a>
+      <a href="learning.html" class="text-gray-300 transition hover:text-emerald-300" id="nav-learn">Academy</a>
+      <a href="smart-home.html" class="text-emerald-400 font-semibold transition hover:text-emerald-300" id="nav-smarthome">Smart Home</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <div id="auth-actions" class="flex gap-2">
+        <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-primary hover:opacity-90 rounded transition text-white shadow-md" id="login-nav-btn">Login / Register</button>
+      </div>
+      <button onclick="toggleLang()" id="lang-btn" class="px-3 py-2 text-xs font-bold bg-white/5 hover:bg-white/10 text-gray-300 rounded border border-white/10 transition">à®¤à®®à®¿à®´à¯</button>
+      <a href="profile.html" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-gray-300" title="Settings & Profile">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Header (Shows Logo & Auth Actions) -->
+  <header class="glass sticky top-0 z-40 px-6 py-4 flex md:hidden justify-between items-center border-b border-white/5 shadow-md">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="p-1.5 bg-emerald-500/20 rounded-lg">
+        <i data-lucide="sprout" class="w-4 h-4 text-emerald-400"></i>
+      </div>
+      <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">AgriHub Pro</span>
+    </a>
+    <div class="flex items-center gap-3">
+      <div id="auth-actions-mobile">
+        <!-- Loaded dynamically -->
+      </div>
+      <button onclick="toggleLang()" id="lang-btn-mobile" class="px-2 py-1 text-[10px] font-bold bg-white/5 hover:bg-white/10 text-gray-300 rounded border border-white/10 transition">à®¤à®®à®¿à®´à¯</button>
+      <a href="profile.html" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-gray-300" title="Settings">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Premium Gate Overlay (shown to non-Premium users) -->
+  <div id="premium-gate" class="hidden fixed inset-0 z-40 bg-black/80 backdrop-blur-md flex items-center justify-center px-4">
+    <div class="glass max-w-md w-full rounded-3xl p-8 border border-emerald-500/30 text-center shadow-2xl">
+      <div class="text-6xl mb-4">ðŸŒ¾</div>
+      <h2 class="text-2xl font-black text-white mb-2">Smart Farm Hub</h2>
+      <p class="text-sm text-gray-400 mb-1">IoT sensor telemetry, device controls, and automation rules</p>
+      <div class="mt-5 mb-6 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+        <p class="text-emerald-400 font-bold text-sm">ðŸ”’ Premium Feature</p>
+        <p class="text-xs text-gray-400 mt-1">Upgrade to AgriHub Premium to unlock real-time IoT monitoring for your farm.</p>
+      </div>
+      <div class="flex flex-col gap-3">
+        <button onclick="document.getElementById('auth-modal').classList.remove('hidden')" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/30">Login / Register</button>
+        <a href="payment.html" class="w-full block py-3 bg-amber-400 hover:bg-amber-300 text-black font-bold rounded-xl transition">Upgrade to Premium</a>
+        <a href="/index.html" class="text-sm text-gray-500 hover:text-gray-300 transition mt-1">â† Back to Marketplace</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Smart Home Dashboard -->
+  <main class="container mx-auto px-4 py-6 md:py-8 flex-grow max-w-6xl">
+    
+    <!-- Header Title Status (With Live Telemetry Badge) -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div>
+        <h2 class="text-2xl font-black text-white flex items-center gap-2.5">
+          <span>ðŸ–¥ï¸ IoT Smart Farm Control Hub</span>
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 animate-pulse">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Live Telemetry
+          </span>
+        </h2>
+        <p class="text-xs text-gray-400 mt-1" id="dash-subtitle">Monitor soil health, atmospheric values, and toggle water pumps, valves, and automated parameters.</p>
+      </div>
+    </div>
+
+    <!-- SECTION 1: Overview Tab / Home (Default Mode) -->
+    <div id="smart-sect-overview" class="tab-content mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Automation Switch Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 flex flex-col justify-between min-h-[170px]">
+          <div>
+            <h3 class="text-sm font-bold text-white mb-2" id="lbl-auto-title">Automation System</h3>
+            <p class="text-[11px] text-gray-400 leading-relaxed" id="lbl-auto-desc">When active, smart sensors automatically trigger the drip irrigation pump and exhaust fans to protect crop yields.</p>
+          </div>
+          <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+            <span class="text-xs font-bold text-gray-300" id="lbl-auto-status-text">System Status:</span>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+              <input type="checkbox" id="auto-rules-toggle" onchange="toggleIotSwitch('autoRulesEnabled')" class="sr-only">
+              <div class="w-11 h-6 bg-zinc-800 rounded-full toggle-bg border border-white/10"></div>
+              <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full toggle-dot shadow-md"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- System Overview Status Circle Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 flex flex-col items-center justify-center text-center min-h-[170px]">
+          <div class="relative w-20 h-20 flex items-center justify-center rounded-full border-4 border-emerald-500/20 bg-emerald-500/5">
+            <span class="text-3xl">ðŸŒ¾</span>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-500 animate-spin"></div>
+          </div>
+          <h4 class="text-xs font-bold text-white mt-4" id="lbl-sys-health">Farm Health: Nominal</h4>
+          <p class="text-[10px] text-emerald-400 mt-0.5">All local nodes reporting active connection</p>
+        </div>
+
+        <!-- Quick Summary Metrics Mini-card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 flex flex-col justify-between min-h-[170px]">
+          <div>
+            <h3 class="text-xs font-bold text-white mb-3 uppercase tracking-wider" id="lbl-quick-metrics">Quick Metrics</h3>
+            <div class="flex flex-col gap-2.5 text-xs">
+              <div class="flex justify-between"><span class="text-gray-400">Moisture:</span><span class="font-bold text-emerald-400" id="quick-moisture">-- %</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Temp:</span><span class="font-bold text-amber-400" id="quick-temp">-- Â°C</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Tank Level:</span><span class="font-bold text-blue-400" id="quick-tank">-- %</span></div>
+            </div>
+          </div>
+          <span class="text-[9px] text-gray-500">Last sync: Just now</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Desktop Grid Layout Grid Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- SECTION 2: Sensors (COLUMN 1 & 2 on Desktop) -->
+      <div id="smart-sect-sensors" class="tab-content lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Soil Moisture Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block" id="lbl-soil-moisture">Soil Moisture</span>
+              <span class="text-3xl font-black text-white mt-1 block" id="telemetry-moisture">-- %</span>
+            </div>
+            <span class="text-2xl p-2 bg-blue-500/10 rounded-lg">ðŸ’§</span>
+          </div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full mt-4 overflow-hidden">
+            <div id="progress-moisture" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <span class="text-[10px] text-gray-400 mt-2 block" id="lbl-soil-status">Optimal Range: 35% - 60%</span>
+        </div>
+
+        <!-- Temperature Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block" id="lbl-temp">Temperature</span>
+              <span class="text-3xl font-black text-white mt-1 block" id="telemetry-temp">-- Â°C</span>
+            </div>
+            <span class="text-2xl p-2 bg-amber-500/10 rounded-lg">â˜€ï¸</span>
+          </div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full mt-4 overflow-hidden">
+            <div id="progress-temp" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <span class="text-[10px] text-gray-400 mt-2 block" id="lbl-temp-status">Optimal Range: 22Â°C - 35Â°C</span>
+        </div>
+
+        <!-- Humidity Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block" id="lbl-humidity">Air Humidity</span>
+              <span class="text-3xl font-black text-white mt-1 block" id="telemetry-humidity">-- %</span>
+            </div>
+            <span class="text-2xl p-2 bg-teal-500/10 rounded-lg">ðŸŒ«ï¸</span>
+          </div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full mt-4 overflow-hidden">
+            <div id="progress-humidity" class="bg-teal-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <span class="text-[10px] text-gray-400 mt-2 block">Optimal Range: 50% - 80%</span>
+        </div>
+
+        <!-- Water Tank Level Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block" id="lbl-tank">Water Tank Level</span>
+              <span class="text-3xl font-black text-white mt-1 block" id="telemetry-tank">-- %</span>
+            </div>
+            <span class="text-2xl p-2 bg-indigo-500/10 rounded-lg">ðŸ›¢ï¸</span>
+          </div>
+          <div class="w-full bg-zinc-800 h-2 rounded-full mt-4 overflow-hidden">
+            <div id="progress-tank" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <span class="text-[10px] text-gray-400 mt-2 block" id="lbl-tank-status">Auto-refills when below 20%</span>
+        </div>
+
+        <!-- NPK Soil Nutrients Card -->
+        <div class="glass p-6 rounded-2xl border border-white/5 col-span-full">
+          <h3 class="text-xs font-bold text-white mb-4 uppercase tracking-wider" id="lbl-npk">NPK Soil Nutrients (PPM)</h3>
+          <div class="grid grid-cols-3 gap-4">
+            
+            <div class="bg-zinc-900/50 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+              <span class="text-[9px] font-bold text-gray-400 uppercase">Nitrogen (N)</span>
+              <span class="text-xl font-extrabold text-emerald-400" id="npk-n">-- PPM</span>
+              <span class="text-[9px] text-gray-500">Target: 40 - 50 PPM</span>
+            </div>
+
+            <div class="bg-zinc-900/50 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+              <span class="text-[9px] font-bold text-gray-400 uppercase">Phosphorus (P)</span>
+              <span class="text-xl font-extrabold text-blue-400" id="npk-p">-- PPM</span>
+              <span class="text-[9px] text-gray-500">Target: 30 - 38 PPM</span>
+            </div>
+
+            <div class="bg-zinc-900/50 p-4 rounded-xl border border-white/5 flex flex-col gap-1">
+              <span class="text-[9px] font-bold text-gray-400 uppercase">Potassium (K)</span>
+              <span class="text-xl font-extrabold text-amber-400" id="npk-k">-- PPM</span>
+              <span class="text-[9px] text-gray-500">Target: 50 - 60 PPM</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR (COLUMN 3 on Desktop) -->
+      <div class="flex flex-col gap-6 lg:col-span-1">
+        
+        <!-- SECTION 3: Controls / Interactive Switches -->
+        <div id="smart-sect-controls" class="tab-content glass p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-xs font-bold text-white mb-6 uppercase tracking-wider" id="lbl-devices">Interactive Switches</h3>
+            
+            <div class="flex flex-col gap-5">
+              
+              <!-- Drip Pump -->
+              <div class="flex justify-between items-center p-3 bg-zinc-900/50 rounded-xl border border-white/5">
+                <div class="flex items-center gap-3">
+                  <span id="indicator-pump" class="w-2.5 h-2.5 rounded-full bg-rose-500 indicator-glow-off"></span>
+                  <div>
+                    <span class="text-xs font-bold text-white block" id="lbl-pump">Drip Irrigation Pump</span>
+                    <span class="text-[9px] text-gray-500" id="pump-subtext">Main field water supply</span>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                  <input type="checkbox" id="pump-toggle" onchange="toggleIotSwitch('pumpStatus')" class="sr-only">
+                  <div class="w-9 h-5 bg-zinc-800 rounded-full toggle-bg border border-white/10"></div>
+                  <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full toggle-dot shadow-md"></div>
+                </label>
+              </div>
+
+              <!-- Fertigation Valve -->
+              <div class="flex justify-between items-center p-3 bg-zinc-900/50 rounded-xl border border-white/5">
+                <div class="flex items-center gap-3">
+                  <span id="indicator-valve" class="w-2.5 h-2.5 rounded-full bg-rose-500 indicator-glow-off"></span>
+                  <div>
+                    <span class="text-xs font-bold text-white block" id="lbl-valve">Fertigation Valve</span>
+                    <span class="text-[9px] text-gray-500">NPK liquid dispenser</span>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                  <input type="checkbox" id="valve-toggle" onchange="toggleIotSwitch('valveStatus')" class="sr-only">
+                  <div class="w-9 h-5 bg-zinc-800 rounded-full toggle-bg border border-white/10"></div>
+                  <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full toggle-dot shadow-md"></div>
+                </label>
+              </div>
+
+              <!-- Pest Repellent Fogger -->
+              <div class="flex justify-between items-center p-3 bg-zinc-900/50 rounded-xl border border-white/5">
+                <div class="flex items-center gap-3">
+                  <span id="indicator-fogger" class="w-2.5 h-2.5 rounded-full bg-rose-500 indicator-glow-off"></span>
+                  <div>
+                    <span class="text-xs font-bold text-white block" id="lbl-fogger">Bio-Pest Fogger</span>
+                    <span class="text-[9px] text-gray-500">Neem oil dispenser spray</span>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                  <input type="checkbox" id="fogger-toggle" onchange="toggleIotSwitch('foggerStatus')" class="sr-only">
+                  <div class="w-9 h-5 bg-zinc-800 rounded-full toggle-bg border border-white/10"></div>
+                  <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full toggle-dot shadow-md"></div>
+                </label>
+              </div>
+
+              <!-- Greenhouse Fan -->
+              <div class="flex justify-between items-center p-3 bg-zinc-900/50 rounded-xl border border-white/5">
+                <div class="flex items-center gap-3">
+                  <span id="indicator-fan" class="w-2.5 h-2.5 rounded-full bg-rose-500 indicator-glow-off"></span>
+                  <div>
+                    <span class="text-xs font-bold text-white block" id="lbl-fan">Greenhouse Exhaust Fan</span>
+                    <span class="text-[9px] text-gray-500">Heat ventilation fan</span>
+                  </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                  <input type="checkbox" id="fan-toggle" onchange="toggleIotSwitch('fanStatus')" class="sr-only">
+                  <div class="w-9 h-5 bg-zinc-800 rounded-full toggle-bg border border-white/10"></div>
+                  <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full toggle-dot shadow-md"></div>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Operational Status Note -->
+          <div class="mt-6 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10 text-[10px] text-emerald-400 flex items-start gap-2.5">
+            <span>ðŸ’¡</span>
+            <p class="leading-normal" id="status-footer-note">All switches trigger digital solenoids on your physical field node immediately.</p>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Activity Logs -->
+        <div id="smart-sect-logs" class="tab-content glass p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xs font-bold text-white uppercase tracking-wider" id="lbl-log">IoT Device & Rule Activity Logs</h3>
+              <button onclick="clearActivityLogs()" class="text-[10px] font-bold text-rose-400 hover:text-rose-300 transition">Clear Logs</button>
+            </div>
+            
+            <div class="bg-black/40 rounded-xl p-4 font-mono text-[10px] text-gray-400 h-48 overflow-y-auto flex flex-col gap-2" id="logs-container">
+              <!-- Dynamic system logs populated here -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Mobile Bottom Sub-Navigation Tab Bar (Overview, Sensors, Controls, Logs) -->
+  <div class="fixed bottom-14 left-0 right-0 z-45 glass border-t border-white/5 flex justify-around items-center py-2 md:hidden bg-zinc-950/90 shadow-2xl">
+    <button onclick="switchSmartTab('overview')" id="btn-tab-overview" class="flex flex-col items-center gap-0.5 text-primary font-bold transition">
+      <i data-lucide="layout-dashboard" class="w-4.5 h-4.5"></i>
+      <span class="text-[8px]" id="lbl-tab-overview-text">Overview</span>
+    </button>
+    <button onclick="switchSmartTab('sensors')" id="btn-tab-sensors" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition">
+      <i data-lucide="activity" class="w-4.5 h-4.5"></i>
+      <span class="text-[8px]" id="lbl-tab-sensors-text">Sensors</span>
+    </button>
+    <button onclick="switchSmartTab('controls')" id="btn-tab-controls" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition">
+      <i data-lucide="sliders" class="w-4.5 h-4.5"></i>
+      <span class="text-[8px]" id="lbl-tab-controls-text">Controls</span>
+    </button>
+    <button onclick="switchSmartTab('logs')" id="btn-tab-logs" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition">
+      <i data-lucide="terminal" class="w-4.5 h-4.5"></i>
+      <span class="text-[8px]" id="lbl-tab-logs-text">Logs</span>
+    </button>
+  </div>
+
+  <!-- Mobile Bottom Page Navigation Bar (Instagram/YouTube Style) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 flex justify-around items-center py-2 md:hidden bg-zinc-950/95 shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-market">Market</span>
+    </a>
+    <a href="community.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="layout-list" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-feed">Feed</span>
+    </a>
+    <a href="learning.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="play-circle" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-learn">Academy</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span class="text-[9px] font-semibold" id="m-nav-profile">Profile</span>
+    </a>
+  </nav>
+
+  <!-- Login Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <div class="glass max-w-sm w-full rounded-2xl p-8 relative shadow-2xl">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      
+      <!-- Tab Headers -->
+      <div class="flex gap-4 border-b border-white/10 pb-3 mb-6">
+        <button id="tab-login" onclick="setAuthTab('login')" class="text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm">Login</button>
+        <button id="tab-register" onclick="setAuthTab('register')" class="text-gray-400 hover:text-white pb-1.5 transition text-sm">Register</button>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+          <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Email Address</label>
+          <input type="email" id="auth-email" required placeholder="name@farm.com" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div id="field-phone" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Phone Number</label>
+          <input type="tel" id="auth-phone" placeholder="+91 98765 43210" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Password</label>
+          <input type="password" id="auth-password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded text-white font-semibold transition mt-2">Proceed</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer (Desktop Only) -->
+  <footer class="glass border-t border-white/10 text-center py-6 text-xs text-gray-500 mt-auto hidden md:block">
+    &copy; 2026 AgriHub Pro Smart Ecosystem. All Rights Reserved. Built for high-fidelity IoT monitoring.
+  </footer>
+
+  <script>
+    let currentLang = localStorage.getItem("lang") || "EN";
+    let token = localStorage.getItem("token") || "";
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch(e) { console.error("Failed to parse user", e); }
+    // NOTE: Do NOT set auto-guest-token here â€” IoT routes require a real Premium JWT.
+    // Guest users will see the Premium upgrade prompt instead of hitting 403 errors.
+    let isPremiumUser = token && token !== "auto-guest-token" && user && user.subscriptionTier === "Premium";
+    let activeAuthTab = "login";
+    
+    let activeTelemetryTimer = null;
+    let localActivityLogs = [
+      `[${new Date().toLocaleTimeString()}] IoT core started. Waiting for telemetry sync...`,
+      `[${new Date().toLocaleTimeString()}] Solenoid connection check - OK.`
+    ];
+
+    const dict = {
+      EN: {
+        navHome: "Home", navMarket: "Marketplace", navFeed: "Social Feed", navLand: "Real Estate", navAnalytics: "Profile", navLearn: "Academy", navSmarthome: "Smart Home",
+        langBtn: "à®¤à®®à®¿à®´à¯", dashSubtitle: "Monitor soil health, atmospheric values, and toggle water pumps, valves, and automated parameters.",
+        lblAutoMode: "Automation System", lblAutoModeDesc: "Triggers devices based on sensor limits",
+        lblSoilMoisture: "Soil Moisture", lblSoilStatus: "Optimal Range: 35% - 60%", lblTemp: "Temperature", lblTempStatus: "Optimal Range: 22Â°C - 35Â°C",
+        lblHumidity: "Air Humidity", lblTank: "Water Tank Level", lblTankStatus: "Auto-refills when below 20%",
+        lblNpk: "NPK Soil Nutrients (PPM)", lblDevices: "Interactive Switches", lblPump: "Drip Irrigation Pump", pumpSubtext: "Main field water supply",
+        lblValve: "Fertigation Valve", lblFogger: "Bio-Pest Fogger", lblFan: "Greenhouse Exhaust Fan",
+        statusFooterNote: "All switches trigger digital solenoids on your physical field node immediately.",
+        lblLog: "IoT Device & Rule Activity Logs",
+        lblAutoTitle: "Automation System",
+        lblAutoStatusText: "System Status:",
+        lblSysHealth: "Farm Health: Nominal",
+        lblQuickMetrics: "Quick Metrics",
+        lblTabOverview: "Overview",
+        lblTabSensors: "Sensors",
+        lblTabControls: "Controls",
+        lblTabLogs: "Logs"
+      },
+      à®¤à®®à®¿à®´à¯: {
+        navHome: "à®®à¯à®•à®ªà¯à®ªà¯", navMarket: "à®šà®¨à¯à®¤à¯ˆ", navFeed: "à®šà®®à¯‚à®• à®Šà®Ÿà®•à®®à¯", navLand: "à®°à®¿à®¯à®²à¯ à®Žà®¸à¯à®Ÿà¯‡à®Ÿà¯", navAnalytics: "à®µà®¿à®µà®°à®™à¯à®•à®³à¯", navLearn: "à®ªà®¯à®¿à®±à¯à®šà®¿", navSmarthome: "à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯",
+        langBtn: "English", dashSubtitle: "à®®à®£à¯à®£à®¿à®©à¯ à®ˆà®°à®ªà¯à®ªà®¤à®®à¯, à®µà¯†à®ªà¯à®ªà®¨à®¿à®²à¯ˆ à®®à®±à¯à®±à¯à®®à¯ à®ªà®¾à®šà®© à®ªà®®à¯à®ªà¯à®•à®³à¯, à®µà®¾à®²à¯à®µà¯à®•à®³à®¿à®©à¯ à®šà¯†à®¯à®²à¯à®ªà®¾à®Ÿà¯à®Ÿà¯ˆ à®•à®£à¯à®•à®¾à®£à®¿à®•à¯à®•à®µà¯à®®à¯.",
+        lblAutoMode: "à®¤à®¾à®©à®¿à®¯à®™à¯à®•à®¿ à®®à¯à®±à¯ˆ", lblAutoModeDesc: "à®šà¯†à®©à¯à®šà®¾à®°à¯ à®µà®°à®®à¯à®ªà¯à®•à®³à®¿à®©à¯ à®…à®Ÿà®¿à®ªà¯à®ªà®Ÿà¯ˆà®¯à®¿à®²à¯ à®šà¯à®µà®¿à®Ÿà¯à®šà¯à®•à®³à¯ˆ à®•à®Ÿà¯à®Ÿà¯à®ªà¯à®ªà®Ÿà¯à®¤à¯à®¤à¯à®•à®¿à®±à®¤à¯",
+        lblSoilMoisture: "à®®à®£à¯ à®ˆà®°à®ªà¯à®ªà®¤à®®à¯", lblSoilStatus: "à®šà®°à®¿à®¯à®¾à®© à®µà®°à®®à¯à®ªà¯: 35% - 60%", lblTemp: "à®µà¯†à®ªà¯à®ªà®¨à®¿à®²à¯ˆ", lblTempStatus: "à®šà®°à®¿à®¯à®¾à®© à®µà®°à®®à¯à®ªà¯: 22Â°C - 35Â°C",
+        lblHumidity: "à®•à®¾à®±à¯à®±à¯ à®ˆà®°à®ªà¯à®ªà®¤à®®à¯", lblTank: "à®¤à®£à¯à®£à¯€à®°à¯ à®¤à¯Šà®Ÿà¯à®Ÿà®¿ à®…à®³à®µà¯", lblTankStatus: "20%à®•à¯à®•à¯ à®•à¯€à®´à¯‡ à®ªà¯‹à®•à¯à®®à¯à®ªà¯‹à®¤à¯ à®¤à®¾à®©à®¾à®•à®µà¯‡ à®¨à®¿à®°à®®à¯à®ªà¯à®®à¯",
+        lblNpk: "NPK à®®à®£à¯à®£à®¿à®©à¯ à®Šà®Ÿà¯à®Ÿà®šà¯à®šà®¤à¯à®¤à¯à®•à¯à®•à®³à¯ (PPM)", lblDevices: "à®•à®Ÿà¯à®Ÿà¯à®ªà¯à®ªà®¾à®Ÿà¯à®Ÿà¯ à®šà¯à®µà®¿à®Ÿà¯à®šà¯à®•à®³à¯", lblPump: "à®šà¯Šà®Ÿà¯à®Ÿà¯ à®¨à¯€à®°à¯ à®ªà®¾à®šà®© à®ªà®®à¯à®ªà¯", pumpSubtext: "à®®à¯à®•à¯à®•à®¿à®¯ à®¨à®¿à®² à®¨à¯€à®°à¯ à®µà®¿à®¨à®¿à®¯à¯‹à®•à®®à¯",
+        lblValve: "à®‰à®° à®µà®¾à®²à¯à®µà¯", lblFogger: "à®‰à®¯à®¿à®°à®¿à®¯à®²à¯ à®ªà¯‚à®šà¯à®šà®¿ à®¤à¯†à®³à®¿à®ªà¯à®ªà®¾à®©à¯", lblFan: "à®•à®¿à®°à¯€à®©à¯à®¹à®µà¯à®¸à¯ à®µà®¿à®šà®¿à®±à®¿",
+        statusFooterNote: "à®…à®©à¯ˆà®¤à¯à®¤à¯ à®šà¯à®µà®¿à®Ÿà¯à®šà¯à®•à®³à¯à®®à¯ à®‰à®™à¯à®•à®³à¯ à®µà®¿à®µà®šà®¾à®¯ à®¨à®¿à®²à®¤à¯à®¤à®¿à®©à¯ à®®à®¿à®©à¯ à®šà®¾à®¤à®©à®™à¯à®•à®³à¯ˆ à®‰à®Ÿà®©à®Ÿà®¿à®¯à®¾à®• à®‡à®¯à®•à¯à®•à¯à®•à®¿à®©à¯à®±à®©.",
+        lblLog: "à®šà®¾à®¤à®© à®®à®±à¯à®±à¯à®®à¯ à®¤à®¾à®©à®¿à®¯à®™à¯à®•à®¿ à®šà¯†à®¯à®²à¯à®ªà®¾à®Ÿà¯à®Ÿà¯ à®ªà®¤à®¿à®µà¯à®•à®³à¯",
+        lblAutoTitle: "à®¤à®¾à®©à®¿à®¯à®™à¯à®•à®¿ à®®à¯à®±à¯ˆ",
+        lblAutoStatusText: "à®•à®£à®¿à®©à®¿ à®¨à®¿à®²à¯ˆ:",
+        lblSysHealth: "à®µà®¿à®µà®šà®¾à®¯ à®†à®°à¯‹à®•à¯à®•à®¿à®¯à®®à¯: à®šà®¾à®¤à®¾à®°à®£à®®à®¾à®©à®¤à¯",
+        lblQuickMetrics: "à®µà®¿à®°à¯ˆà®µà®¾à®© à®…à®³à®µà¯€à®Ÿà¯à®•à®³à¯",
+        lblTabOverview: "à®®à¯‡à®²à¯‹à®Ÿà¯à®Ÿà®®à¯",
+        lblTabSensors: "à®šà¯†à®©à¯à®šà®¾à®°à¯à®•à®³à¯",
+        lblTabControls: "à®šà¯à®µà®¿à®Ÿà¯à®šà¯à®•à®³à¯",
+        lblTabLogs: "à®ªà®¤à®¿à®µà¯à®•à®³à¯"
+      }
+    };
+
+    function applyTranslations() {
+      const d = dict[currentLang];
+      const elements = {
+        "nav-home": d.navHome,
+        "nav-market": d.navMarket,
+        "nav-feed": d.navFeed,
+        "nav-land": d.navLand,
+        "nav-analytics": d.navAnalytics,
+        "nav-learn": d.navLearn,
+        "nav-smarthome": d.navSmarthome,
+        "lang-btn": d.langBtn,
+        "lang-btn-mobile": d.langBtn,
+        
+        "dash-subtitle": d.dashSubtitle,
+        "lbl-auto-title": d.lblAutoTitle,
+        "lbl-auto-status-text": d.lblAutoStatusText,
+        "lbl-sys-health": d.lblSysHealth,
+        "lbl-soil-moisture": d.lblSoilMoisture,
+        "lbl-soil-status": d.lblSoilStatus,
+        "lbl-temp": d.lblTemp,
+        "lbl-temp-status": d.lblTempStatus,
+        "lbl-humidity": d.lblHumidity,
+        "lbl-tank": d.lblTank,
+        "lbl-tank-status": d.lblTankStatus,
+        "lbl-npk": d.lblNpk,
+        "lbl-devices": d.lblDevices,
+        "lbl-pump": d.lblPump,
+        "pump-subtext": d.pumpSubtext,
+        "lbl-valve": d.lblValve,
+        "lbl-fogger": d.lblFogger,
+        "lbl-fan": d.lblFan,
+        "status-footer-note": d.statusFooterNote,
+        "lbl-log": d.lblLog,
+        
+        "lbl-tab-overview-text": d.lblTabOverview,
+        "lbl-tab-sensors-text": d.lblTabSensors,
+        "lbl-tab-controls-text": d.lblTabControls,
+        "lbl-tab-logs-text": d.lblTabLogs,
+
+        "m-nav-market": d.navMarket,
+        "m-nav-feed": d.navFeed,
+        "m-nav-land": d.navLand,
+        "m-nav-profile": d.navAnalytics,
+        "m-nav-learn": d.navLearn,
+        "m-nav-smart": d.navSmarthome
+      };
+
+      for (const [id, text] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el && text) el.innerText = text;
+      }
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === "EN" ? "à®¤à®®à®¿à®´à¯" : "EN";
+      localStorage.setItem("lang", currentLang);
+      applyTranslations();
+    }
+
+    function checkActiveSubscription() {
+      if (user && user.subscriptionStatus !== "Active") {
+        window.location.href = "payment.html";
+        return false;
+      }
+      return true;
+    }
+
+    function openAuthModal() {
+      document.getElementById("auth-modal").classList.remove("hidden");
+    }
+    function closeAuthModal() {
+      document.getElementById("auth-modal").classList.add("hidden");
+    }
+
+    function setAuthTab(tab) {
+      activeAuthTab = tab;
+      const loginTab = document.getElementById("tab-login");
+      const regTab = document.getElementById("tab-register");
+      const nameField = document.getElementById("field-name");
+      const phoneField = document.getElementById("field-phone");
+
+      if (tab === "login") {
+        loginTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        regTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.add("hidden");
+        phoneField.classList.add("hidden");
+      } else {
+        regTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        loginTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.remove("hidden");
+        phoneField.classList.remove("hidden");
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      const endpoint = activeAuthTab === "login" ? "/api/auth/login" : "/api/auth/register";
+      
+      const body = { email, password };
+      if (activeAuthTab === "register") {
+        body.name = document.getElementById("auth-name").value;
+        body.phone = document.getElementById("auth-phone").value;
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in smart-home.html', e); }
+        
+        if (data.error) {
+          alert(data.error);
+        } else {
+          token = data.token;
+          user = data.user;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+          closeAuthModal();
+          updateAuthUI();
+          
+          if (user.subscriptionStatus === "Pending_Payment") {
+            window.location.href = "payment.html";
+          } else {
+            location.reload();
+          }
+        }
+      } catch (err) {
+        alert("Authentication failed.");
+      }
+    }
+
+    function logout() {
+      token = "";
+      user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      updateAuthUI();
+      location.reload();
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById("auth-actions");
+      const containerMobile = document.getElementById("auth-actions-mobile");
+      
+      const uiHtml = token && user ? `
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-gray-300 font-semibold bg-white/5 px-3 py-2 rounded border border-white/10 hidden md:inline">ðŸ‘¤ ${user.name}</span>
+          <button onclick="logout()" class="px-3 py-1.5 text-xs font-semibold rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition">Logout</button>
+        </div>
+      ` : `<button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-emerald-500 hover:bg-emerald-600 rounded transition text-white shadow-md shadow-emerald-500/20">Login</button>`;
+      
+      if (container) container.innerHTML = uiHtml;
+      if (containerMobile) containerMobile.innerHTML = uiHtml;
+    }
+
+    // IoT Dashboard Operations
+    function showPremiumGate() {
+      if (activeTelemetryTimer) { clearInterval(activeTelemetryTimer); activeTelemetryTimer = null; }
+      const gate = document.getElementById("premium-gate");
+      if (gate) gate.classList.remove("hidden");
+    }
+
+    async function loadIotStatus() {
+      if (!isPremiumUser) { showPremiumGate(); return; }
+
+      try {
+        const res = await fetch("/api/iot/status", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.status === 403 || res.status === 401) {
+          showPremiumGate(); return;
+        }
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in smart-home.html', e); }
+        if (data && !data.error) {
+          document.getElementById("pump-toggle").checked = data.pumpStatus;
+          document.getElementById("valve-toggle").checked = data.valveStatus;
+          document.getElementById("fogger-toggle").checked = data.foggerStatus;
+          document.getElementById("fan-toggle").checked = data.fanStatus;
+          document.getElementById("auto-rules-toggle").checked = data.autoRulesEnabled;
+          
+          updateIndicatorGlow("pump", data.pumpStatus);
+          updateIndicatorGlow("valve", data.valveStatus);
+          updateIndicatorGlow("fogger", data.foggerStatus);
+          updateIndicatorGlow("fan", data.fanStatus);
+        }
+      } catch (err) {
+        console.error("Failed to load IoT statuses.");
+      }
+    }
+
+    async function toggleIotSwitch(fieldName) {
+      if (!token) {
+        openAuthModal();
+        loadIotStatus();
+        return;
+      }
+      if (!checkActiveSubscription()) return;
+
+      let elId = "";
+      if (fieldName === 'pumpStatus') elId = "pump-toggle";
+      else if (fieldName === 'valveStatus') elId = "valve-toggle";
+      else if (fieldName === 'foggerStatus') elId = "fogger-toggle";
+      else if (fieldName === 'fanStatus') elId = "fan-toggle";
+      else if (fieldName === 'autoRulesEnabled') elId = "auto-rules-toggle";
+
+      const val = document.getElementById(elId).checked;
+      const body = {};
+      body[fieldName] = val;
+
+      try {
+        const res = await fetch("/api/iot/status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in smart-home.html', e); }
+        if (data) {
+          const actionText = val ? "ON" : "OFF";
+          const devText = fieldName.replace("Status", "").replace("autoRulesEnabled", "Auto Automation Mode");
+          addLogEntry(`[USER] Set ${devText} to ${actionText}`);
+          
+          if (fieldName !== 'autoRulesEnabled') {
+            updateIndicatorGlow(fieldName.replace("Status", ""), val);
+          }
+        }
+      } catch (err) {
+        console.error("Switch update error:", err);
+        addLogEntry("[ERROR] Device request timeout.");
+      }
+    }
+
+    function updateIndicatorGlow(device, status) {
+      const el = document.getElementById(`indicator-${device}`);
+      if (!el) return;
+      if (status) {
+        el.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 indicator-glow";
+      } else {
+        el.className = "w-2.5 h-2.5 rounded-full bg-rose-500 indicator-glow-off";
+      }
+    }
+
+    function addLogEntry(msg) {
+      const timestamp = new Date().toLocaleTimeString();
+      localActivityLogs.unshift(`[${timestamp}] ${msg}`);
+      if (localActivityLogs.length > 50) localActivityLogs.pop();
+      renderLogs();
+    }
+
+    function renderLogs() {
+      const container = document.getElementById("logs-container");
+      if (container) {
+        container.innerHTML = localActivityLogs.map(l => `<div>${l}</div>`).join("");
+      }
+    }
+
+    window.clearActivityLogs = function() {
+      localActivityLogs = [];
+      addLogEntry("Logs cleared.");
+    }
+
+    async function syncTelemetryData() {
+      if (!isPremiumUser) { showPremiumGate(); return; }
+      try {
+        const res = await fetch("/api/iot/telemetry", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.status === 403 || res.status === 401) {
+          showPremiumGate(); return;
+        }
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in smart-home.html', e); }
+        if (data && !data.error) {
+          // Update details view
+          document.getElementById("telemetry-moisture").innerText = `${data.soilMoisture}%`;
+          document.getElementById("progress-moisture").style.width = `${data.soilMoisture}%`;
+          
+          document.getElementById("telemetry-temp").innerText = `${data.temperature}Â°C`;
+          document.getElementById("progress-temp").style.width = `${Math.min(100, data.temperature * 2.2)}%`;
+          
+          document.getElementById("telemetry-humidity").innerText = `${data.humidity}%`;
+          document.getElementById("progress-humidity").style.width = `${data.humidity}%`;
+          
+          document.getElementById("telemetry-tank").innerText = `${data.tankLevel}%`;
+          document.getElementById("progress-tank").style.width = `${data.tankLevel}%`;
+
+          document.getElementById("npk-n").innerText = `${data.npk.nitrogen} PPM`;
+          document.getElementById("npk-p").innerText = `${data.npk.phosphorus} PPM`;
+          document.getElementById("npk-k").innerText = `${data.npk.potassium} PPM`;
+
+          // Update quick summary overview card
+          document.getElementById("quick-moisture").innerText = `${data.soilMoisture}%`;
+          document.getElementById("quick-temp").innerText = `${data.temperature}Â°C`;
+          document.getElementById("quick-tank").innerText = `${data.tankLevel}%`;
+
+          // Handle automation actions locally if mode enabled
+          const autoOn = document.getElementById("auto-rules-toggle").checked;
+          if (autoOn) {
+            if (data.soilMoisture < 35) {
+              const pumpChecked = document.getElementById("pump-toggle").checked;
+              if (!pumpChecked) {
+                document.getElementById("pump-toggle").checked = true;
+                toggleIotSwitch('pumpStatus');
+                addLogEntry(`[AUTO] Low moisture detected (${data.soilMoisture}%). Activated Drip Pump.`);
+              }
+            }
+            if (data.temperature > 35) {
+              const fanChecked = document.getElementById("fan-toggle").checked;
+              if (!fanChecked) {
+                document.getElementById("fan-toggle").checked = true;
+                toggleIotSwitch('fanStatus');
+                addLogEntry(`[AUTO] High temperature detected (${data.temperature}Â°C). Activated Exhaust Fan.`);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Telemetry fetch failed:", err);
+      }
+    }
+
+    // Responsive tab switching logic for mobile screen viewports
+    let currentSmartTab = "overview";
+
+    function handleResponsiveLayout() {
+      const isDesktop = window.innerWidth >= 768;
+      
+      const sectOverview = document.getElementById("smart-sect-overview");
+      const sectSensors = document.getElementById("smart-sect-sensors");
+      const sectControls = document.getElementById("smart-sect-controls");
+      const sectLogs = document.getElementById("smart-sect-logs");
+      
+      if (isDesktop) {
+        // Show all sections simultaneously on desktop layout
+        sectOverview.classList.remove("hidden");
+        sectSensors.classList.remove("hidden");
+        sectControls.classList.remove("hidden");
+        sectLogs.classList.remove("hidden");
+      } else {
+        // Show only the selected active tab section on mobile viewport
+        sectOverview.classList.add("hidden");
+        sectSensors.classList.add("hidden");
+        sectControls.classList.add("hidden");
+        sectLogs.classList.add("hidden");
+        
+        if (currentSmartTab === "overview") {
+          sectOverview.classList.remove("hidden");
+        } else if (currentSmartTab === "sensors") {
+          sectSensors.classList.remove("hidden");
+        } else if (currentSmartTab === "controls") {
+          sectControls.classList.remove("hidden");
+        } else if (currentSmartTab === "logs") {
+          sectLogs.classList.remove("hidden");
+        }
+      }
+    }
+
+    function switchSmartTab(tabName) {
+      currentSmartTab = tabName;
+      
+      const tabs = ["overview", "sensors", "controls", "logs"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`btn-tab-${t}`);
+        if (t === tabName) {
+          btn.className = "flex flex-col items-center gap-0.5 text-primary font-bold transition";
+        } else {
+          btn.className = "flex flex-col items-center gap-0.5 text-gray-400 hover:text-primary transition";
+        }
+      });
+      
+      handleResponsiveLayout();
+    }
+
+    // Bind responsive resize and default selection triggers
+    window.addEventListener("resize", handleResponsiveLayout);
+
+    // Theme Switcher Helpers
+    const themes = ["emerald", "sunset", "cyberpunk", "classic"];
+    let currentTheme = localStorage.getItem("theme") || "emerald";
+
+    function applyTheme() {
+      themes.forEach(t => document.body.classList.remove(`theme-${t}`));
+      document.body.classList.add(`theme-${currentTheme}`);
+      
+      const themeBtn = document.getElementById("theme-btn");
+      const themeBtnMobile = document.getElementById("theme-btn-mobile");
+      const themeNames = {
+        emerald: "â˜˜ï¸ Emerald",
+        sunset: "ðŸŒ† Sunset",
+        cyberpunk: "ðŸ‘¾ Cyberpunk",
+        classic: "ðŸ“˜ Classic"
+      };
+      if (themeBtn) themeBtn.innerText = themeNames[currentTheme];
+      if (themeBtnMobile) themeBtnMobile.innerText = themeNames[currentTheme];
+    }
+
+    function cycleTheme() {
+      const index = themes.indexOf(currentTheme);
+      currentTheme = themes[(index + 1) % themes.length];
+      localStorage.setItem("theme", currentTheme);
+      applyTheme();
+    }
+
+    // Initial triggers
+    applyTranslations();
+    updateAuthUI();
+    applyTheme();
+    renderLogs();
+    switchSmartTab("overview");
+    
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+    
+    if (isPremiumUser) {
+      loadIotStatus();
+      syncTelemetryData();
+      activeTelemetryTimer = setInterval(syncTelemetryData, 4000);
+    } else {
+      showPremiumGate();
+    }
+  </script>
+  <!-- Global Icon Fix -->
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+      const obs = new MutationObserver(m => {
+        let n = false;
+        for (let x of m) {
+          if (x.addedNodes.length) {
+            for (let node of x.addedNodes) {
+              if (node.nodeType === 1 && ((node.tagName === 'I' && node.hasAttribute('data-lucide')) || node.querySelector('i[data-lucide]'))) {
+                n = true; break;
+              }
+            }
+          }
+          if (n) break;
+        }
+        if (n) lucide.createIcons();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  </script>
+  <script src="/theme-engine.js"></script>
+</body>
+</html>
+

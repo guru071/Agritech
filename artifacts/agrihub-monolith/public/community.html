@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>(function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub â€” Community</title>
+  <meta name="description" content="AgriHub farmer community â€” stories, groups and channels">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/agrihub-ui.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="/agrihub-icons.js" data-agri-icons></script>
+  <style>
+    /* ── Layout ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0d14; color: #e2e8f0; min-height: 100vh; margin: 0; }
+
+    /* ── Tab Bar ── */
+    .comm-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); position: sticky; top: 64px; z-index: 40; }
+    .comm-tab { flex: 1; padding: 0.85rem 0; text-align: center; font-size: 0.78rem; font-weight: 600; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; letter-spacing: 0.03em; }
+    .comm-tab.active { color: #10b981; border-bottom-color: #10b981; }
+    .comm-tab:hover:not(.active) { color: #9ca3af; background: rgba(255,255,255,0.03); }
+
+    /* ── Tab Pages ── */
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+
+    /* ── Stories strip (Instagram-like) ── */
+    .stories-strip { display: flex; gap: 0.75rem; overflow-x: auto; padding: 1rem 1rem 0.5rem; scrollbar-width: none; }
+    .stories-strip::-webkit-scrollbar { display: none; }
+    .story-thumb { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; cursor: pointer; }
+    .story-ring { width: 60px; height: 60px; border-radius: 50%; padding: 0; background: transparent; }
+    .story-ring.seen { background: #374151; }
+    .story-inner { width: 100%; height: 100%; border-radius: 50%; background: #1f2937; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 2px solid #0a0d14; overflow: hidden; }
+    .story-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .story-name { font-size: 0.65rem; color: #9ca3af; max-width: 64px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .story-add-btn { background: rgba(16,185,129,0.15); border: 1.5px dashed #10b981; }
+
+    /* ── Feed Post Card ── */
+    .post-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 0; margin-bottom: 0; transition: border-color 0.2s; }
+    .post-card + .post-card { border-top: 1px solid rgba(255,255,255,0.07); }
+    .post-header { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; }
+    .post-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#06b6d4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: #fff; flex-shrink: 0; border: 1.5px solid rgba(16,185,129,0.4); overflow: hidden; }
+    .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .post-author { font-size: 0.82rem; font-weight: 600; color: #fff; }
+    .post-time { font-size: 0.68rem; color: #6b7280; }
+    .post-media { width: 100%; max-height: 420px; object-fit: cover; display: block; background: #111; }
+    .post-media.video { max-height: 420px; }
+    .post-body { padding: 0.65rem 1rem 0.5rem; }
+    .post-caption { font-size: 0.82rem; line-height: 1.5; color: #d1d5db; }
+    .post-actions { display: flex; align-items: center; gap: 1.25rem; padding: 0.5rem 1rem 0.85rem; }
+    .post-action-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 600; color: #6b7280; transition: color 0.18s, transform 0.15s; padding: 0; }
+    .post-action-btn:hover { color: #10b981; transform: scale(1.1); }
+    .post-action-btn.liked { color: #ef4444; }
+    .post-action-btn.liked svg { fill: #ef4444; }
+    .post-comment-section { border-top: 1px solid rgba(255,255,255,0.05); padding: 0.5rem 1rem 0.75rem; }
+    .post-comment-input { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
+    .post-comment-input input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; padding: 0.4rem 0.85rem; font-size: 0.78rem; color: #e2e8f0; outline: none; }
+    .post-comment-input input:focus { border-color: rgba(16,185,129,0.4); }
+    .post-comment-input button { background: none; border: none; cursor: pointer; color: #10b981; font-size: 0.78rem; font-weight: 700; padding: 0; }
+
+    /* ── Create Post Bar ── */
+    .create-post-bar { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .create-post-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#06b6d4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0; cursor: pointer; }
+    .create-post-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 0.5rem 1rem; font-size: 0.82rem; color: #9ca3af; cursor: pointer; transition: border-color 0.2s; }
+    .create-post-input:hover { border-color: rgba(16,185,129,0.3); }
+    .create-post-icons { display: flex; gap: 0.75rem; }
+    .create-post-icons button { background: none; border: none; color: #6b7280; cursor: pointer; transition: color 0.2s; }
+    .create-post-icons button:hover { color: #10b981; }
+
+    /* ── Post Modal ── */
+    .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box { background: #161b28; border: 1px solid rgba(255,255,255,0.1); border-radius: 1.25rem; width: 100%; max-width: 520px; overflow: hidden; }
+    .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .modal-close { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 1.2rem; transition: color 0.2s; }
+    .modal-close:hover { color: #fff; }
+    .modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .modal-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; padding: 0.85rem; font-size: 0.85rem; color: #e2e8f0; font-family: inherit; resize: none; height: 120px; outline: none; }
+    .modal-textarea:focus { border-color: rgba(16,185,129,0.4); }
+    .modal-footer { padding: 0.85rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+    .modal-file-label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: #6b7280; cursor: pointer; }
+    .modal-file-label:hover { color: #10b981; }
+    .submit-post-btn { background: linear-gradient(135deg,#10b981,#059669); border: none; border-radius: 0.6rem; color: #fff; font-weight: 700; font-size: 0.82rem; padding: 0.5rem 1.25rem; cursor: pointer; transition: opacity 0.2s; }
+    .submit-post-btn:hover { opacity: 0.88; }
+    .submit-post-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Community page (WhatsApp style) ── */
+    .comm-layout { display: flex; height: calc(100vh - 112px); overflow: hidden; }
+    .comm-sidebar { width: 320px; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; background: rgba(0,0,0,0.3); }
+    .comm-sidebar-header { padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+    .comm-sidebar-title { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .comm-new-btn { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); border-radius: 0.6rem; color: #10b981; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .comm-new-btn:hover { background: rgba(16,185,129,0.25); }
+    .comm-search { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .comm-search input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; padding: 0.45rem 0.85rem; font-size: 0.78rem; color: #e2e8f0; outline: none; }
+    .comm-search input:focus { border-color: rgba(16,185,129,0.3); }
+    .comm-list { flex: 1; overflow-y: auto; }
+    .comm-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .comm-item:hover { background: rgba(255,255,255,0.04); }
+    .comm-item.active { background: rgba(16,185,129,0.1); border-left: 3px solid #10b981; }
+    .comm-item-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; font-weight: 700; color: #fff; }
+    .comm-item-icon.group { background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+    .comm-item-icon.channel { background: linear-gradient(135deg,#0891b2,#06b6d4); }
+    .comm-item-icon.default { background: linear-gradient(135deg,#10b981,#059669); }
+    .comm-item-info { flex: 1; min-width: 0; }
+    .comm-item-name { font-size: 0.82rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .comm-item-sub { font-size: 0.7rem; color: #6b7280; margin-top: 0.1rem; }
+    .comm-badge { background: #10b981; color: #fff; border-radius: 999px; font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem; min-width: 18px; text-align: center; }
+
+    /* ── Comm Main Panel ── */
+    .comm-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .comm-main-header { padding: 0.85rem 1.25rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 0.85rem; }
+    .comm-main-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .comm-main-title { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .comm-main-sub { font-size: 0.7rem; color: #6b7280; }
+    .comm-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .comm-msg { max-width: 70%; padding: 0.6rem 0.9rem; border-radius: 1rem; font-size: 0.82rem; }
+    .comm-msg.mine { align-self: flex-end; background: rgba(16,185,129,0.25); border: 1px solid rgba(16,185,129,0.3); border-bottom-right-radius: 0.2rem; }
+    .comm-msg.theirs { align-self: flex-start; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08); border-bottom-left-radius: 0.2rem; }
+    .comm-msg-sender { font-size: 0.68rem; font-weight: 700; color: #10b981; margin-bottom: 0.2rem; }
+    .comm-msg-text { color: #e2e8f0; line-height: 1.4; }
+    .comm-msg-time { font-size: 0.62rem; color: #6b7280; margin-top: 0.2rem; text-align: right; }
+    .comm-input-bar { padding: 0.75rem 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.07); display: flex; gap: 0.75rem; align-items: center; }
+    .comm-input-bar input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 0.55rem 1rem; font-size: 0.82rem; color: #e2e8f0; outline: none; font-family: inherit; }
+    .comm-input-bar input:focus { border-color: rgba(16,185,129,0.4); }
+    .comm-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#059669); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; transition: opacity 0.2s, transform 0.15s; flex-shrink: 0; }
+    .comm-send-btn:hover { opacity: 0.85; transform: scale(1.05); }
+    .comm-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #4b5563; gap: 0.75rem; }
+    .comm-empty svg { width: 48px; height: 48px; opacity: 0.5; }
+
+    /* Create community modal */
+    .type-btns { display: flex; gap: 0.75rem; }
+    .type-btn { flex: 1; padding: 0.75rem; border-radius: 0.75rem; border: 1.5px solid rgba(255,255,255,0.1); background: transparent; cursor: pointer; text-align: center; transition: all 0.2s; }
+    .type-btn.selected { border-color: #10b981; background: rgba(16,185,129,0.12); }
+    .type-btn-icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+    .type-btn-label { font-size: 0.72rem; font-weight: 600; color: #9ca3af; }
+    .type-btn.selected .type-btn-label { color: #10b981; }
+
+    /* ── Messages page (Instagram DM style) ── */
+    .dm-layout { display: flex; height: calc(100vh - 112px); overflow: hidden; }
+    .dm-sidebar { width: 320px; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; background: rgba(0,0,0,0.3); }
+    .dm-sidebar-header { padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+    .dm-sidebar-title { font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .dm-new-btn { background: none; border: none; color: #10b981; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 600; }
+    .dm-list { flex: 1; overflow-y: auto; }
+    .dm-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.25rem; cursor: pointer; transition: background 0.15s; }
+    .dm-item:hover { background: rgba(255,255,255,0.04); }
+    .dm-item.active { background: rgba(16,185,129,0.08); }
+    .dm-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#06b6d4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0; position: relative; overflow: hidden; }
+    .dm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .dm-online-dot { position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #0a0d14; }
+    .dm-info { flex: 1; min-width: 0; }
+    .dm-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
+    .dm-preview { font-size: 0.72rem; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.1rem; }
+    .dm-time { font-size: 0.65rem; color: #4b5563; flex-shrink: 0; }
+    .dm-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .dm-chat-header { padding: 0.85rem 1.25rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 0.85rem; }
+    .dm-chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#06b6d4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: #fff; flex-shrink: 0; overflow: hidden; }
+    .dm-chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .dm-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .dm-bubble { max-width: 68%; padding: 0.6rem 0.9rem; border-radius: 1rem; font-size: 0.83rem; line-height: 1.45; color: #e2e8f0; }
+    .dm-bubble.mine { align-self: flex-end; background: rgba(16,185,129,0.28); border: 1px solid rgba(16,185,129,0.3); border-bottom-right-radius: 0.2rem; }
+    .dm-bubble.theirs { align-self: flex-start; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.08); border-bottom-left-radius: 0.2rem; }
+    .dm-bubble-time { font-size: 0.62rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; text-align: right; }
+    .dm-input-bar { padding: 0.75rem 1rem; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.07); display: flex; gap: 0.75rem; align-items: center; }
+    .dm-input-bar input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 0.55rem 1rem; font-size: 0.82rem; color: #e2e8f0; outline: none; font-family: inherit; }
+    .dm-input-bar input:focus { border-color: rgba(16,185,129,0.4); }
+    .dm-send-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#059669); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; transition: opacity 0.2s; flex-shrink: 0; }
+    .dm-send-btn:hover { opacity: 0.85; }
+    .dm-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #4b5563; gap: 0.75rem; }
+
+    /* Input shared style */
+    .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.65rem; padding: 0.65rem 0.85rem; font-size: 0.83rem; color: #e2e8f0; font-family: inherit; outline: none; }
+    .modal-input:focus { border-color: rgba(16,185,129,0.4); }
+
+    /* Mobile bottom nav */
+    @media(max-width:768px) {
+      .comm-sidebar { display: none; }
+      .dm-sidebar { display: none; }
+      .comm-sidebar.mobile-show { display: flex; position: fixed; inset: 0; z-index: 200; width: 100%; }
+      .dm-sidebar.mobile-show { display: flex; position: fixed; inset: 0; z-index: 200; width: 100%; }
+    }
+
+    /* Scrollbar style */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    /* Loading spinner */
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 4rem 1rem; color: #4b5563; }
+    .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+    <header class="agri-nav glass sticky top-0 z-50">
+    <div class="container mx-auto px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-3">
+      <a href="index.html" class="agri-logo">
+        <div class="agri-logo-mark">🌾</div>
+        <div class="agri-logo-text">
+          <strong>AgriHub</strong>
+          <span>Harvest Exchange</span>
+        </div>
+      </a>
+
+      <div class="agri-search order-3 md:order-none w-full md:w-auto">
+        <input type="text" id="search-input" oninput="typeof loadProducts === 'function' ? loadProducts() : null" placeholder="Search rice, seeds, land, toolsâ€¦">
+        <span class="agri-search-icon" data-icon-size="sm"><i data-lucide="search"></i></span>
+      </div>
+
+      <div class="flex items-center gap-3 md:gap-5">
+        <div class="hidden lg:flex gap-5">
+          <a href="community.html" class="agri-nav-link active" id="nav-feed">Stories</a>
+          <a href="index.html" class="agri-nav-link" id="nav-market">Harvest Mart</a>
+          <a href="land-market.html" class="agri-nav-link" id="nav-land">Land</a>
+          <a href="learning.html" class="agri-nav-link" id="nav-learn">Academy</a>
+          <a href="smart-home.html" class="agri-nav-link" id="nav-smarthome">IoT Farm</a>
+          <a href="profile.html" class="agri-nav-link" id="nav-analytics">Profile</a>
+        </div>
+        <div id="auth-actions"></div>
+        <button onclick="toggleLang()" id="lang-btn" class="hidden md:inline text-xs font-semibold text-gray-400 hover:text-white px-2 py-1 rounded border border-white/10">à®¤à®®à®¿à®´à¯</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tab Bar -->
+  <div class="comm-tabs">
+    <div class="comm-tab active" id="tab-feed" onclick="switchTab('feed')">📡 Feed</div>
+    <div class="comm-tab" id="tab-community" onclick="switchTab('community')">👥 Community</div>
+    <div class="comm-tab" id="tab-messages" onclick="switchTab('messages')">💬 Messages</div>
+  </div>
+
+  <!-- â•â•â• FEED TAB â•â•â• -->
+  <div class="tab-page active" id="page-feed">
+    <!-- Stories Strip -->
+    <div class="stories-strip" id="stories-strip">
+      <div class="story-thumb" onclick="openPostModal()">
+        <div class="story-ring">
+          <div class="story-inner story-add-btn" id="my-story-avatar">➕</div>
+        </div>
+        <span class="story-name">Your Story</span>
+      </div>
+    </div>
+
+    <!-- Create Post Bar -->
+    <div class="create-post-bar">
+      <div class="create-post-avatar" id="create-avatar" onclick="openPostModal()">?</div>
+      <div class="create-post-input" onclick="openPostModal()">What's happening on your farm?</div>
+      <div class="create-post-icons">
+        <button onclick="openPostModal()" title="Add photo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </button>
+        <button onclick="openPostModal()" title="Add video">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Feed Posts -->
+    <div id="feed-container">
+      <div class="empty-state">
+        <svg class="spin" style="width:32px;height:32px;display:block;margin:0 auto 0.75rem;" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Loading posts...
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â•â• COMMUNITY TAB â•â•â• -->
+  <div class="tab-page" id="page-community">
+    <div class="comm-layout">
+      <!-- Sidebar -->
+      <aside class="comm-sidebar" id="comm-sidebar">
+        <div class="comm-sidebar-header">
+          <span class="comm-sidebar-title">Communities</span>
+          <button class="comm-new-btn" onclick="openCreateComm()">+ New</button>
+        </div>
+        <div class="comm-search">
+          <input type="text" placeholder="Search communities..." oninput="filterComm(this.value)" id="comm-search-input">
+        </div>
+        <div class="comm-list" id="comm-list">
+          <div style="padding:2rem;text-align:center;color:#4b5563;font-size:0.8rem;">Loading...</div>
+        </div>
+      </aside>
+      <!-- Main -->
+      <main class="comm-main" id="comm-main">
+        <div class="comm-empty" id="comm-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <p style="font-size:0.85rem;">Select a community to start chatting</p>
+        </div>
+        <div id="comm-chat-area" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+          <div class="comm-main-header" id="comm-chat-header" style="cursor:pointer;" onclick="openGroupInfoModal()">
+            <div class="comm-main-icon" id="comm-chat-icon">👥</div>
+            <div>
+              <div class="comm-main-title" id="comm-chat-title">Community</div>
+              <div class="comm-main-sub" id="comm-chat-sub">Group</div>
+            </div>
+          </div>
+          <div class="comm-messages" id="comm-messages-area">
+            <div class="comm-empty">
+              <p style="font-size:0.8rem;">No messages yet. Say hi! ðŸ‘‹</p>
+            </div>
+          </div>
+          <form class="comm-input-bar" id="comm-msg-form" onsubmit="sendCommMsg(event)">
+            <input type="text" id="comm-msg-input" placeholder="Message..." required>
+            <button type="submit" class="comm-send-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- â•â•â• MESSAGES TAB â•â•â• -->
+  <div class="tab-page" id="page-messages">
+    <div class="dm-layout">
+      <!-- DM Sidebar -->
+      <aside class="dm-sidebar">
+        <div class="dm-sidebar-header">
+          <span class="dm-sidebar-title" id="dm-sidebar-username">Messages</span>
+          <button class="dm-new-btn" onclick="openNewDmModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            New
+          </button>
+        </div>
+        <div class="dm-list" id="dm-list">
+          <div style="padding:2rem;text-align:center;color:#4b5563;font-size:0.8rem;">Loading conversations...</div>
+        </div>
+      </aside>
+      <!-- DM Main -->
+      <main class="dm-main">
+        <div class="dm-empty" id="dm-empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <p style="font-size:0.85rem;">Select a conversation</p>
+        </div>
+        <div id="dm-chat-area" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+          <div class="dm-chat-header" id="dm-chat-header">
+            <div class="dm-chat-avatar" id="dm-chat-icon">?</div>
+            <div>
+              <div style="font-size:0.9rem;font-weight:700;color:#fff;" id="dm-chat-name">User</div>
+              <div style="font-size:0.7rem;color:#10b981;" id="dm-chat-sub">Direct Message</div>
+            </div>
+          </div>
+          <div class="dm-messages" id="dm-messages-area"></div>
+          <form class="dm-input-bar" id="dm-msg-form" onsubmit="sendDmMsg(event)">
+            <input type="text" id="dm-msg-input" placeholder="Message..." required>
+            <button type="submit" class="dm-send-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- â•â•â• POST MODAL â•â•â• -->
+  <div class="modal-overlay" id="post-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Create Post</span>
+        <button class="modal-close" onclick="closePostModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea class="modal-textarea" id="post-text" placeholder="What's happening on your farm today?"></textarea>
+        
+        <!-- Live Video Camera Container -->
+        <div id="camera-container" style="display:none; position:relative; border-radius:0.65rem; overflow:hidden; background:#000; margin-bottom:0.5rem;">
+          <video id="camera-feed" style="width:100%; height:240px; object-fit:cover;" autoplay muted></video>
+          <div style="position:absolute; bottom:10px; left:0; right:0; display:flex; justify-content:center; gap:10px; z-index:10;">
+            <button id="record-btn" onclick="toggleRecording()" style="background:#ef4444; color:#fff; border:none; padding:0.5rem 1rem; border-radius:999px; font-weight:bold; font-size:0.75rem; cursor:pointer;">Start Recording</button>
+            <button onclick="stopCamera()" style="background:#4b5563; color:#fff; border:none; padding:0.5rem 1rem; border-radius:999px; font-weight:bold; font-size:0.75rem; cursor:pointer;">Cancel</button>
+          </div>
+          <div id="record-timer" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:bold; color:#ef4444; display:none; z-index:10;">00:00</div>
+        </div>
+
+        <div id="post-preview" style="display:none; position:relative;">
+          <img id="post-preview-img" style="max-width:100%; border-radius:0.65rem; display:none;" src="" alt="preview">
+          <video id="post-preview-video" style="max-width:100%; border-radius:0.65rem; display:none;" controls></video>
+          <button onclick="clearPreview()" style="position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:bold; z-index:10;">✕</button>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <label class="modal-file-label" style="background:rgba(255,255,255,0.05); padding:0.4rem 0.75rem; border-radius:0.5rem; border:1px solid rgba(255,255,255,0.1); cursor:pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline; margin-right:4px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span id="file-label-text">Photo / Video</span>
+            <input type="file" id="post-media-input" accept="image/*,video/*" style="display:none;" onchange="previewFile(this)">
+          </label>
+          <button id="live-record-btn" onclick="startCamera()" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); border-radius:0.5rem; color:#10b981; font-weight:700; font-size:0.8rem; padding:0.4rem 0.75rem; cursor:pointer;">
+            ðŸ“¹ Live Record
+          </button>
+        </div>
+        <button class="submit-post-btn" id="post-submit-btn" onclick="submitPost()">Share Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â•â• CREATE COMMUNITY MODAL â•â•â• -->
+  <div class="modal-overlay" id="create-comm-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Create Community</span>
+        <button class="modal-close" onclick="closeCreateComm()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="type-btns">
+          <button class="type-btn selected" id="type-group" onclick="selectType('group')">
+            <span class="type-btn-icon">👥</span>
+            <span class="type-btn-label">Group</span>
+          </button>
+          <button class="type-btn" id="type-channel" onclick="selectType('channel')">
+            <span class="type-btn-icon">ðŸ“¢</span>
+            <span class="type-btn-label">Channel</span>
+          </button>
+        </div>
+        <input class="modal-input" type="text" id="comm-name-input" placeholder="Community name...">
+        <textarea class="modal-textarea" id="comm-desc-input" style="height:80px;" placeholder="Description (optional)..."></textarea>
+      </div>
+      <div class="modal-footer" style="justify-content:flex-end;">
+        <button class="submit-post-btn" onclick="createCommunity()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â•â• NEW DM MODAL â•â•â• -->
+  <div class="modal-overlay" id="new-dm-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">New Message</span>
+        <button class="modal-close" onclick="closeNewDmModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="dm-user-search-input" class="modal-input" placeholder="Search users by name or email..." oninput="searchDmUsers(this.value)">
+        <div id="user-search-results" style="margin-top:0.75rem; display:flex; flex-direction:column; gap:0.5rem; max-height:250px; overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- â•â•â• GROUP INFO MODAL â•â•â• -->
+  <div class="modal-overlay" id="group-info-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title" id="ginfo-title">Group Details</span>
+        <button class="modal-close" onclick="closeGroupInfoModal()">✕</button>
+      </div>
+      <div class="modal-body" style="gap:1rem; max-height:80vh; overflow-y:auto;">
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <div id="ginfo-avatar" style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:1.6rem; border:2px solid rgba(255,255,255,0.1); flex-shrink:0;">👥</div>
+          <div style="flex:1; min-width:0;">
+            <input class="modal-input" type="text" id="ginfo-name-input" placeholder="Group name..." style="font-weight:bold; font-size:1rem;" disabled>
+            <span id="ginfo-role-badge" style="display:inline-block; font-size:0.65rem; font-weight:bold; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 8px; border-radius:4px; margin-top:0.25rem;">Member</span>
+          </div>
+        </div>
+        
+        <div>
+          <label style="font-size:0.75rem; color:#6b7280; font-weight:bold; display:block; margin-bottom:0.25rem;">Description</label>
+          <textarea class="modal-textarea" id="ginfo-desc-input" style="height:60px;" placeholder="Group description..." disabled></textarea>
+        </div>
+        
+        <div>
+          <label style="font-size:0.75rem; color:#6b7280; font-weight:bold; display:block; margin-bottom:0.25rem;">Group Icon (Emoji)</label>
+          <input class="modal-input" type="text" id="ginfo-icon-input" placeholder="e.g. 🌾, 👥, 🚜..." maxlength="4" disabled>
+        </div>
+
+        <!-- Admin controls: access restrictions -->
+        <div id="ginfo-admin-restrictions" style="display:none; border-top:1px solid rgba(255,255,255,0.07); padding-top:0.75rem; display:flex; flex-direction:column; gap:0.5rem;">
+          <label style="font-size:0.75rem; color:#10b981; font-weight:bold;">Admin Restrictions (WhatsApp-Style)</label>
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.8rem;">
+            <span>Only admins can send messages</span>
+            <input type="checkbox" id="ginfo-restrict-send">
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.8rem;">
+            <span>Only admins can edit group info</span>
+            <input type="checkbox" id="ginfo-restrict-edit">
+          </div>
+          <button class="submit-post-btn" id="ginfo-save-btn" onclick="saveGroupSettings()" style="margin-top:0.25rem; font-size:0.75rem; padding:0.4rem 1rem;">Save Group Info</button>
+        </div>
+        
+        <div style="border-top:1px solid rgba(255,255,255,0.07); padding-top:0.75rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">
+            <label style="font-size:0.75rem; color:#6b7280; font-weight:bold; display:block;">Members (<span id="ginfo-member-count">0</span>)</label>
+            <button id="ginfo-add-member-btn" onclick="openAddMemberModal()" style="display:none; background:none; border:none; color:#10b981; font-size:0.7rem; font-weight:bold; cursor:pointer;">+ Invite</button>
+          </div>
+          <div id="ginfo-members-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:120px; overflow-y:auto; font-size:0.8rem; background:rgba(255,255,255,0.02); padding:0.5rem; border-radius:0.5rem; border:1px solid rgba(255,255,255,0.05);">
+            <!-- list participants -->
+          </div>
+        </div>
+
+        <div id="ginfo-actions" style="display:flex; justify-content:space-between; gap:10px; border-top:1px solid rgba(255,255,255,0.07); padding-top:0.75rem;">
+          <button onclick="leaveGroup()" style="background:#ef4444; border:none; border-radius:0.5rem; color:#fff; font-weight:bold; font-size:0.78rem; padding:0.5rem 1rem; cursor:pointer; flex:1;">Leave Group</button>
+          <button onclick="reportGroup()" style="background:#f59e0b; border:none; border-radius:0.5rem; color:#fff; font-weight:bold; font-size:0.78rem; padding:0.5rem 1rem; cursor:pointer; flex:1;">Report Group</button>
+          <button id="ginfo-disable-btn" onclick="disableGroup()" style="background:#dc2626; border:none; border-radius:0.5rem; color:#fff; font-weight:bold; font-size:0.78rem; padding:0.5rem 1rem; cursor:pointer; flex:1; display:none;">Disable Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  GLOBALS
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  var token = localStorage.getItem('token');
+  var user = null;
+  try { user = JSON.parse(localStorage.getItem('user')); } catch(e) {}
+
+  var activeCommId = null;
+  var activeDmId   = null;
+  var commPollInterval = null;
+  var dmPollInterval   = null;
+  var selectedCommType = 'group';
+  var allComms = [];
+
+  // Camera / recording
+  var cameraStream     = null;
+  var mediaRecorder    = null;
+  var recordedChunks   = [];
+  var recordedBase64   = null;
+  var recordTimerIv    = null;
+  var recordSecs       = 0;
+  var isRecording      = false;
+
+  // Feed cache (for optimistic likes/comments)
+  var loadedStories = [];
+
+  // Open three-dot menu id
+  var openMenuId = null;
+
+  // Group info state
+  var currentGroupData = null;
+
+  // Flicker-free polling fingerprints
+  var lastCommJson = '';
+  var lastDmJson   = '';
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  HELPERS
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function esc(str) {
+    return String(str || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function timeAgo(d) {
+    var s = Math.floor((Date.now() - d) / 1000);
+    if (s < 60)     return 'just now';
+    if (s < 3600)   return Math.floor(s/60)   + 'm ago';
+    if (s < 86400)  return Math.floor(s/3600)  + 'h ago';
+    if (s < 604800) return Math.floor(s/86400) + 'd ago';
+    return new Date(d).toLocaleDateString();
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  TABS
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function switchTab(name) {
+    document.querySelectorAll('.comm-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.tab-page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('tab-'  + name).classList.add('active');
+    document.getElementById('page-' + name).classList.add('active');
+    if (name === 'community') loadCommList();
+    if (name === 'messages')  loadDmList();
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  AUTH UI
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function updateAuthUI() {
+    var container = document.getElementById('auth-actions');
+    if (token && user) {
+      var ini = (user.name || '?').charAt(0).toUpperCase();
+      var el  = document.getElementById('create-avatar');
+      if (el) el.textContent = ini;
+      var el2 = document.getElementById('my-story-avatar');
+      if (el2) el2.textContent = ini;
+      var el3 = document.getElementById('dm-sidebar-username');
+      if (el3) el3.textContent = user.name || 'Messages';
+      container.innerHTML =
+        '<a href="profile.html" style="display:flex;align-items:center;gap:0.5rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.75rem;border-radius:999px;border:1px solid rgba(255,255,255,0.1);text-decoration:none;">' +
+        '<div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:#fff;">' + ini + '</div>' +
+        '<span style="font-size:0.78rem;font-weight:600;color:#fff;">' + esc(user.name) + '</span></a>';
+    } else {
+      container.innerHTML =
+        '<a href="profile.html" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:0.5rem;padding:0.4rem 1rem;font-size:0.78rem;font-weight:700;text-decoration:none;">Login</a>';
+    }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  LANG TOGGLE
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  var currentLang = localStorage.getItem('lang') || 'EN';
+  function toggleLang() {
+    currentLang = currentLang === 'EN' ? 'à®¤à®®à®¿à®´à¯' : 'EN';
+    localStorage.setItem('lang', currentLang);
+    var btn = document.getElementById('lang-btn');
+    if (btn) btn.textContent = currentLang === 'EN' ? 'à®¤à®®à®¿à®´à¯' : 'English';
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  LIVE CAMERA RECORDING (base64, no disk storage)
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  async function startCamera() {
+    if (!token) { window.location.href = 'profile.html'; return; }
+    openPostModal();
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      document.getElementById('camera-feed').srcObject = cameraStream;
+      document.getElementById('camera-container').style.display = 'block';
+      document.getElementById('post-preview').style.display = 'none';
+      document.getElementById('live-record-btn').style.display = 'none';
+      recordedBase64 = null;
+    } catch(err) {
+      alert('Camera access denied: ' + err.message);
+    }
+  }
+
+  function stopCamera() {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(function(t){ t.stop(); });
+      cameraStream = null;
+    }
+    if (isRecording && mediaRecorder) mediaRecorder.stop();
+    clearInterval(recordTimerIv);
+    document.getElementById('camera-container').style.display = 'none';
+    document.getElementById('live-record-btn').style.display = '';
+    document.getElementById('record-btn').textContent = 'Start Recording';
+    document.getElementById('record-timer').style.display = 'none';
+    isRecording = false;
+  }
+
+  function toggleRecording() {
+    if (!isRecording) startRecording(); else stopRecording();
+  }
+
+  function startRecording() {
+    if (!cameraStream) return;
+    recordedChunks = []; recordedBase64 = null; recordSecs = 0;
+    var mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9' : 'video/webm';
+    try { mediaRecorder = new MediaRecorder(cameraStream, { mimeType: mime }); }
+    catch(e) { mediaRecorder = new MediaRecorder(cameraStream); }
+    mediaRecorder.ondataavailable = function(e){ if (e.data && e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = function() {
+      var blob = new Blob(recordedChunks, { type: 'video/webm' });
+      var rd = new FileReader();
+      rd.onload = function(ev) {
+        recordedBase64 = ev.target.result;
+        var pv = document.getElementById('post-preview-video');
+        pv.src = recordedBase64; pv.style.display = 'block';
+        document.getElementById('post-preview-img').style.display = 'none';
+        document.getElementById('post-preview').style.display = 'block';
+      };
+      rd.readAsDataURL(blob);
+      stopCamera();
+    };
+    mediaRecorder.start(1000);
+    isRecording = true;
+    document.getElementById('record-btn').textContent = 'Stop Recording';
+    document.getElementById('record-timer').style.display = 'block';
+    recordTimerIv = setInterval(function() {
+      recordSecs++;
+      var m = Math.floor(recordSecs/60), s = recordSecs % 60;
+      document.getElementById('record-timer').textContent =
+        (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      if (recordSecs >= 60) stopRecording();
+    }, 1000);
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && isRecording) {
+      clearInterval(recordTimerIv);
+      isRecording = false;
+      mediaRecorder.stop();
+      document.getElementById('record-btn').textContent = 'Start Recording';
+      document.getElementById('record-timer').style.display = 'none';
+    }
+  }
+
+  function clearPreview() {
+    recordedBase64 = null;
+    document.getElementById('post-preview').style.display = 'none';
+    document.getElementById('post-preview-img').src = '';
+    document.getElementById('post-preview-img').style.display = 'none';
+    document.getElementById('post-preview-video').src = '';
+    document.getElementById('post-preview-video').style.display = 'none';
+    document.getElementById('post-media-input').value = '';
+    document.getElementById('file-label-text').textContent = 'Photo / Video';
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  POST MODAL
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function openPostModal() {
+    if (!token) { window.location.href = 'profile.html'; return; }
+    document.getElementById('post-modal').classList.add('open');
+  }
+  function closePostModal() {
+    document.getElementById('post-modal').classList.remove('open');
+    document.getElementById('post-text').value = '';
+    clearPreview();
+    stopCamera();
+  }
+
+  function previewFile(input) {
+    var file = input.files[0];
+    if (!file) return;
+    recordedBase64 = null;
+    document.getElementById('file-label-text').textContent = file.name;
+    var rd = new FileReader();
+    rd.onload = function(e) {
+      if (file.type.startsWith('image/')) {
+        document.getElementById('post-preview-img').src = e.target.result;
+        document.getElementById('post-preview-img').style.display = 'block';
+        document.getElementById('post-preview-video').style.display = 'none';
+      } else if (file.type.startsWith('video/')) {
+        document.getElementById('post-preview-video').src = e.target.result;
+        document.getElementById('post-preview-video').style.display = 'block';
+        document.getElementById('post-preview-img').style.display = 'none';
+      }
+      document.getElementById('post-preview').style.display = 'block';
+    };
+    rd.readAsDataURL(file);
+  }
+
+  async function submitPost() {
+    var text = document.getElementById('post-text').value.trim();
+    var fileInput = document.getElementById('post-media-input');
+    if (!text && !fileInput.files[0] && !recordedBase64) {
+      alert('Please write something or add a photo/video.'); return;
+    }
+    var btn = document.getElementById('post-submit-btn');
+    btn.disabled = true; btn.textContent = 'Posting...';
+    try {
+      var res;
+      if (recordedBase64) {
+        res = await fetch('/api/stories', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: text || '.', mediaBase64: recordedBase64 })
+        });
+      } else {
+        var fd = new FormData();
+        fd.append('content', text || '.');
+        if (fileInput.files[0]) fd.append('media', fileInput.files[0]);
+        res = await fetch('/api/stories', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token },
+          body: fd
+        });
+      }
+      var data = await res.json();
+      if (data.error) {
+        if (data.upgrade) { if (confirm(data.error + ' Go to upgrades?')) window.location.href = 'payment.html'; }
+        else alert(data.error);
+      } else { closePostModal(); loadFeed(); }
+    } catch(err) { alert('Failed to post: ' + err.message); }
+    finally { btn.disabled = false; btn.textContent = 'Share Post'; }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  THREE-DOT OPTIONS MENU
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function toggleOptionsMenu(ev, storyId) {
+    ev.stopPropagation();
+    var existing = document.querySelector('.post-options-menu');
+    if (existing) { existing.remove(); if (openMenuId === storyId) { openMenuId = null; return; } }
+    openMenuId = storyId;
+    var story = loadedStories.find(function(s){ return s._id === storyId; });
+    var uid = user && (user.id || user._id);
+    var isAuthor = story && uid && ((story.userId || story.authorId) === uid);
+    var isAdmin  = user && user.isAdmin;
+
+    var menu = document.createElement('div');
+    menu.className = 'post-options-menu';
+    menu.style.cssText = 'position:fixed;background:#1e2436;border:1px solid rgba(255,255,255,0.12);border-radius:0.6rem;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:9999;min-width:160px;overflow:hidden;';
+    var items = [];
+    if (isAuthor || isAdmin) items.push({ label: 'ðŸ—‘ï¸ Delete Post', fn: function(){ deletePost(storyId); } });
+    items.push({ label: '🚩 Report Post',  fn: function(){ reportPost(storyId); } });
+    items.push({ label: '🔗 Copy Link',    fn: function(){ sharePost(storyId); } });
+    items.forEach(function(item) {
+      var el = document.createElement('button');
+      el.style.cssText = 'display:block;width:100%;text-align:left;padding:0.6rem 1rem;font-size:0.8rem;color:#e2e8f0;background:none;border:none;cursor:pointer;';
+      el.textContent = item.label;
+      el.onmouseover = function(){ el.style.background = 'rgba(255,255,255,0.07)'; };
+      el.onmouseout  = function(){ el.style.background = 'none'; };
+      el.onclick = function(e){ e.stopPropagation(); item.fn(); menu.remove(); openMenuId = null; };
+      menu.appendChild(el);
+    });
+    var rect = ev.currentTarget.getBoundingClientRect();
+    menu.style.top   = (rect.bottom + 4) + 'px';
+    menu.style.right = (window.innerWidth - rect.right) + 'px';
+    document.body.appendChild(menu);
+  }
+  document.addEventListener('click', function(){
+    var m = document.querySelector('.post-options-menu');
+    if (m) { m.remove(); openMenuId = null; }
+  });
+
+  async function deletePost(id) {
+    if (!confirm('Delete this post?')) return;
+    try {
+      var r = await fetch('/api/stories/'+id, { method:'DELETE', headers:{'Authorization':'Bearer '+token} });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      loadFeed();
+    } catch(e) { alert('Failed to delete.'); }
+  }
+  function reportPost(id) { alert('Post reported. Thank you!'); }
+  function sharePost(id) {
+    var url = window.location.origin + '/community.html?post=' + id;
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(function(){ alert('Link copied!'); });
+    else prompt('Copy link:', url);
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  FEED
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  async function loadFeed() {
+    var container = document.getElementById('feed-container');
+    container.innerHTML = '<div class="empty-state"><svg class="spin" style="width:28px;height:28px;display:block;margin:0 auto 0.5rem;" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Loading...</div>';
+    try {
+      var res = await fetch('/api/stories');
+      var stories = await res.json();
+      if (!Array.isArray(stories)) stories = [];
+      loadedStories = stories;
+      if (!stories.length) {
+        container.innerHTML = '<div class="empty-state"><span class="empty-icon">🌾</span><h3 style="color:#fff;font-weight:700;margin:0 0 0.35rem;">No posts yet</h3><p style="font-size:0.8rem;margin:0;">Be the first to share a farm update!</p></div>';
+        return;
+      }
+      container.innerHTML = stories.map(buildPostCard).join('');
+    } catch(err) {
+      container.innerHTML = '<div class="empty-state" style="color:#f87171;">Failed to load posts.</div>';
+    }
+  }
+
+  function buildPostCard(s) {
+    var authorId   = s.userId || s.authorId || '';
+    var authorName = s.userName || s.authorName || 'Farmer';
+    var content    = s.caption || s.content || '';
+    var mediaUrl   = s.mediaUrl || '';
+    var storyId    = s._id || '';
+    var ini        = authorName.charAt(0).toUpperCase();
+    var ts         = s.createdAt ? timeAgo(new Date(s.createdAt)) : '';
+    var likes      = s.likes || [];
+    var comments   = s.comments || [];
+    var uid        = user && (user.id || user._id);
+    var userLiked  = uid && likes.some(function(l){ return l === uid; });
+
+    var media = '';
+    if (mediaUrl) {
+      if (mediaUrl.startsWith('data:video') || /\.(mp4|webm|mov)$/i.test(mediaUrl))
+        media = '<video src="'+mediaUrl+'" controls class="post-media video"></video>';
+      else if (mediaUrl !== '/uploads/default-story.jpg' &&
+               (mediaUrl.startsWith('data:image') || /\.(jpg|jpeg|png|gif|webp)$/i.test(mediaUrl)))
+        media = '<img src="'+mediaUrl+'" class="post-media" loading="lazy" alt="post">';
+    }
+
+    var heartFill   = userLiked ? '#ef4444' : 'none';
+    var heartStroke = userLiked ? '#ef4444' : 'currentColor';
+
+    return '<article class="post-card" id="post-'+storyId+'">' +
+      '<div class="post-header">' +
+        '<a href="public-profile.html?id='+authorId+'" style="display:flex;align-items:center;gap:0.65rem;text-decoration:none;">' +
+          '<div class="post-avatar">'+ini+'</div>' +
+          '<div><div class="post-author">'+esc(authorName)+'</div><div class="post-time">'+ts+'</div></div>' +
+        '</a>' +
+        '<button style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:1.2rem;padding:0.25rem 0.5rem;border-radius:0.35rem;" '+
+          'onclick="toggleOptionsMenu(event,\''+storyId+'\')">â‹¯</button>' +
+      '</div>' +
+      media +
+      (content ? '<div class="post-body"><p class="post-caption">'+esc(content)+'</p></div>' : '') +
+      '<div class="post-actions">' +
+        '<button class="post-action-btn'+(userLiked?' liked':'')+'" id="like-btn-'+storyId+'" onclick="likePost(\''+storyId+'\',this)">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="'+heartFill+'" stroke="'+heartStroke+'" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+          '<span id="like-count-'+storyId+'">'+likes.length+'</span>' +
+        '</button>' +
+        '<button class="post-action-btn" onclick="toggleComments(\''+storyId+'\')">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+          '<span id="cmt-count-'+storyId+'">'+comments.length+'</span>' +
+        '</button>' +
+        '<button class="post-action-btn" onclick="sharePost(\''+storyId+'\')">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+          '<span>Share</span>' +
+        '</button>' +
+      '</div>' +
+      '<div class="post-comment-section" id="cmt-'+storyId+'" style="display:none;">' +
+        '<div id="cmt-list-'+storyId+'" style="margin-bottom:0.5rem;display:flex;flex-direction:column;gap:0.35rem;max-height:200px;overflow-y:auto;"></div>' +
+        '<div class="post-comment-input">' +
+          '<input type="text" id="cmt-input-'+storyId+'" placeholder="Add a comment..." ' +
+            'onkeydown="if(event.key===\'Enter\')submitComment(event,\''+storyId+'\')">' +
+          '<button onclick="submitComment(event,\''+storyId+'\')">Post</button>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  LIKES
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  async function likePost(id, btn) {
+    if (!token) { window.location.href = 'profile.html'; return; }
+    var s   = loadedStories.find(function(x){ return x._id === id; });
+    if (!s) return;
+    var uid = user.id || user._id;
+    var idx = (s.likes || []).indexOf(uid);
+    if (idx !== -1) {
+      s.likes.splice(idx, 1);
+      btn.classList.remove('liked');
+      btn.querySelector('svg').setAttribute('fill','none');
+      btn.querySelector('svg').setAttribute('stroke','currentColor');
+    } else {
+      if (!s.likes) s.likes = [];
+      s.likes.push(uid);
+      btn.classList.add('liked');
+      btn.querySelector('svg').setAttribute('fill','#ef4444');
+      btn.querySelector('svg').setAttribute('stroke','#ef4444');
+    }
+    var el = document.getElementById('like-count-'+id);
+    if (el) el.textContent = s.likes.length;
+    fetch('/api/stories/'+id+'/like',{method:'POST',headers:{'Authorization':'Bearer '+token}}).catch(function(){});
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  COMMENTS
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function toggleComments(id) {
+    var sec = document.getElementById('cmt-'+id);
+    if (!sec) return;
+    var open = sec.style.display !== 'none';
+    sec.style.display = open ? 'none' : 'block';
+    if (!open) {
+      renderComments(id);
+      var inp = document.getElementById('cmt-input-'+id);
+      if (inp) setTimeout(function(){ inp.focus(); }, 80);
+    }
+  }
+
+  function renderComments(id) {
+    var s    = loadedStories.find(function(x){ return x._id === id; });
+    var list = document.getElementById('cmt-list-'+id);
+    if (!list) return;
+    var cmts = (s && s.comments) ? s.comments : [];
+    if (!cmts.length) {
+      list.innerHTML = '<div style="font-size:0.75rem;color:#6b7280;padding:0.25rem 0;">No comments yet. Be the first!</div>';
+      return;
+    }
+    list.innerHTML = cmts.map(function(c) {
+      var nm = c.userName || c.authorName || 'Farmer';
+      return '<div style="display:flex;gap:0.5rem;align-items:flex-start;">' +
+        '<div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:#fff;flex-shrink:0;">' +
+        nm.charAt(0).toUpperCase() + '</div>' +
+        '<div style="flex:1;background:rgba(255,255,255,0.04);border-radius:0.5rem;padding:0.35rem 0.6rem;">' +
+        '<div style="font-size:0.72rem;font-weight:700;color:#10b981;margin-bottom:0.1rem;">'+esc(nm)+'</div>' +
+        '<div style="font-size:0.78rem;color:#d1d5db;">'+esc(c.text||'')+'</div>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  async function submitComment(ev, id) {
+    if (ev && ev.preventDefault) ev.preventDefault();
+    if (!token) { window.location.href = 'profile.html'; return; }
+    var inp  = document.getElementById('cmt-input-'+id);
+    var text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    // Optimistic
+    var s = loadedStories.find(function(x){ return x._id === id; });
+    if (s) {
+      if (!s.comments) s.comments = [];
+      s.comments.push({ text: text, userName: user.name || 'You', userId: user.id || user._id });
+      renderComments(id);
+      var ce = document.getElementById('cmt-count-'+id);
+      if (ce) ce.textContent = s.comments.length;
+    }
+    fetch('/api/stories/'+id+'/comments',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({text:text})
+    }).catch(function(){});
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  COMMUNITY (WhatsApp Groups)
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  function openCreateComm() {
+    if (!token) { window.location.href = 'profile.html'; return; }
+    document.getElementById('create-comm-modal').classList.add('open');
+  }
+  function closeCreateComm() {
+    document.getElementById('create-comm-modal').classList.remove('open');
+    document.getElementById('comm-name-input').value = '';
+    document.getElementById('comm-desc-input').value = '';
+  }
+  function selectType(t) {
+    selectedCommType = t;
+    document.getElementById('type-group').classList.toggle('selected', t === 'group');
+    document.getElementById('type-channel').classList.toggle('selected', t === 'channel');
+  }
+
+  async function createCommunity() {
+    var name = document.getElementById('comm-name-input').value.trim();
+    if (!name) { alert('Please enter a community name.'); return; }
+    try {
+      var r = await fetch('/api/chats', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ isGroup: true, name: name, participantIds: [] })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      closeCreateComm(); loadCommList();
+    } catch(e) { alert('Failed to create community.'); }
+  }
+
+  async function loadCommList() {
+    if (!token) {
+      document.getElementById('comm-list').innerHTML =
+        '<div style="padding:1.5rem;text-align:center;"><a href="profile.html" style="color:#10b981;font-size:0.82rem;font-weight:600;">Login to join communities</a></div>';
+      return;
+    }
+    try {
+      var r = await fetch('/api/chats', { headers:{'Authorization':'Bearer '+token} });
+      var chats = await r.json();
+      if (!Array.isArray(chats)) chats = [];
+      allComms = chats.filter(function(c){ return c.isGroup; });
+      renderCommList(allComms);
+    } catch(e) {
+      document.getElementById('comm-list').innerHTML = '<div style="padding:1rem;color:#f87171;font-size:0.8rem;">Failed to load communities.</div>';
+    }
+  }
+
+  function renderCommList(list) {
+    var box = document.getElementById('comm-list');
+    if (!list || !list.length) {
+      box.innerHTML = '<div class="empty-state"><span class="empty-icon">👥</span><p style="font-size:0.78rem;">No communities yet. Create one!</p></div>';
+      return;
+    }
+    box.innerHTML = list.map(function(c) {
+      var emoji = c.icon || (c.name === 'AgriHub General' ? '🌾' : '👥');
+      var sub   = (c.participants ? c.participants.length : 0) + ' members';
+      return '<div class="comm-item'+(activeCommId===c._id?' active':'')+'" onclick="openComm(\''+c._id+'\',\''+c.name.replace(/'/g,"\\'")+'\')">'+
+        '<div class="comm-item-icon">'+emoji+'</div>'+
+        '<div class="comm-item-info">'+
+          '<div class="comm-item-name">'+esc(c.name)+'</div>'+
+          '<div class="comm-item-sub">'+sub+'</div>'+
+        '</div></div>';
+    }).join('');
+  }
+
+  function filterComm(q) {
+    renderCommList(allComms.filter(function(c){ return c.name.toLowerCase().includes(q.toLowerCase()); }));
+  }
+
+  async function openComm(id, name) {
+    activeCommId  = id;
+    lastCommJson  = '';
+    var chat      = allComms.find(function(c){ return c._id === id; });
+    document.getElementById('comm-empty-state').style.display = 'none';
+    document.getElementById('comm-chat-area').style.display   = 'flex';
+    document.getElementById('comm-chat-title').textContent = name;
+    document.getElementById('comm-chat-sub').textContent   = name === 'AgriHub General' ? 'Default Community â€¢ All Farmers' : ((chat && chat.participants ? chat.participants.length : 0) + ' members');
+    document.getElementById('comm-chat-icon').textContent  = (chat && chat.icon) || (name === 'AgriHub General' ? '🌾' : '👥');
+    renderCommList(allComms);
+    // Disable input if only admins can send and user is not admin
+    var uid    = user ? (user.id || user._id) : null;
+    var isAdm  = chat && uid && chat.adminIds && chat.adminIds.some(function(a){ return (a._id||a) === uid; });
+    var msgInp = document.getElementById('comm-msg-input');
+    var sndBtn = document.querySelector('#comm-msg-form button[type="submit"]');
+    if (chat && chat.onlyAdminsSend && !isAdm) {
+      msgInp.disabled = true; msgInp.placeholder = 'Only admins can send messages';
+      if (sndBtn) sndBtn.disabled = true;
+    } else {
+      msgInp.disabled = false; msgInp.placeholder = 'Message...';
+      if (sndBtn) sndBtn.disabled = false;
+    }
+    await loadCommMessages();
+    if (commPollInterval) clearInterval(commPollInterval);
+    commPollInterval = setInterval(loadCommMessages, 1500);
+  }
+
+  async function loadCommMessages() {
+    if (!activeCommId) return;
+    try {
+      var r    = await fetch('/api/chats/'+activeCommId+'/messages', { headers:{'Authorization':'Bearer '+token} });
+      var msgs = await r.json();
+      if (!Array.isArray(msgs)) msgs = [];
+      var j = JSON.stringify(msgs);
+      if (j === lastCommJson) return;
+      lastCommJson = j;
+      var area     = document.getElementById('comm-messages-area');
+      var atBot    = area.scrollHeight - area.scrollTop <= area.clientHeight + 60;
+      if (!msgs.length) { area.innerHTML = '<div class="comm-empty"><p style="font-size:0.8rem;">No messages yet. Say hi! ðŸ‘‹</p></div>'; return; }
+      area.innerHTML = msgs.map(function(m) {
+        var mine = user && (m.senderId === user.id || m.senderId === (user._id||''));
+        var ts   = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+        return '<div class="comm-msg '+(mine?'mine':'theirs')+'">'+
+          (!mine ? '<div class="comm-msg-sender">'+esc(m.senderName||'Farmer')+'</div>' : '')+
+          '<div class="comm-msg-text">'+esc(m.text)+'</div>'+
+          '<div class="comm-msg-time">'+ts+'</div></div>';
+      }).join('');
+      if (atBot) area.scrollTop = area.scrollHeight;
+    } catch(e) {}
+  }
+
+  async function sendCommMsg(ev) {
+    ev.preventDefault();
+    if (!token) { window.location.href = 'profile.html'; return; }
+    var inp  = document.getElementById('comm-msg-input');
+    var text = inp.value.trim();
+    if (!text || !activeCommId) return;
+    inp.value    = '';
+    lastCommJson = '';
+    try {
+      var r = await fetch('/api/chats/'+activeCommId+'/messages', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ text: text })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); inp.value = text; return; }
+      loadCommMessages();
+    } catch(e) { console.error(e); }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  GROUP INFO MODAL (WhatsApp-style)
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  async function openGroupInfoModal() {
+    if (!activeCommId) return;
+    document.getElementById('group-info-modal').classList.add('open');
+    try {
+      var r    = await fetch('/api/chats/'+activeCommId, { headers:{'Authorization':'Bearer '+token} });
+      var chat = await r.json();
+      if (chat.error) { alert(chat.error); return; }
+      currentGroupData = chat;
+      var uid       = user ? (user.id || user._id) : null;
+      var admins    = chat.adminIds || [];
+      var createdBy = chat.createdBy;
+      var isOwner   = uid && (createdBy === uid || (createdBy && (createdBy._id || createdBy) === uid));
+      var isAdm     = uid && admins.some(function(a){ return (a._id||a) === uid; });
+      var isSuper   = isOwner || isAdm;
+
+      document.getElementById('ginfo-title').textContent      = chat.isDisabled ? 'âš ï¸ Group Disabled' : 'Group Details';
+      document.getElementById('ginfo-name-input').value       = chat.name || '';
+      document.getElementById('ginfo-desc-input').value       = chat.description || '';
+      document.getElementById('ginfo-icon-input').value       = chat.icon || '';
+      document.getElementById('ginfo-avatar').textContent     = chat.icon || '👥';
+
+      var badge = document.getElementById('ginfo-role-badge');
+      if (isOwner) { badge.textContent = '👑 Creator'; badge.style.color = '#f59e0b'; badge.style.background = 'rgba(245,158,11,0.15)'; }
+      else if (isAdm) { badge.textContent = '⚡ Admin'; badge.style.color = '#818cf8'; badge.style.background = 'rgba(99,102,241,0.15)'; }
+      else { badge.textContent = '👤 Member'; badge.style.color = '#10b981'; badge.style.background = 'rgba(16,185,129,0.12)'; }
+
+      var rSec = document.getElementById('ginfo-admin-restrictions');
+      var dbtn = document.getElementById('ginfo-disable-btn');
+      if (isSuper) {
+        rSec.style.display = 'flex';
+        document.getElementById('ginfo-restrict-send').checked = !!chat.onlyAdminsSend;
+        document.getElementById('ginfo-restrict-edit').checked = !!chat.onlyAdminsEdit;
+        document.getElementById('ginfo-name-input').disabled   = false;
+        document.getElementById('ginfo-desc-input').disabled   = false;
+        document.getElementById('ginfo-icon-input').disabled   = false;
+        dbtn.style.display   = 'inline-flex';
+        dbtn.textContent     = chat.isDisabled ? 'Re-enable Group' : 'Disable Group';
+      } else {
+        rSec.style.display = 'none';
+        document.getElementById('ginfo-name-input').disabled = true;
+        document.getElementById('ginfo-desc-input').disabled = true;
+        document.getElementById('ginfo-icon-input').disabled = true;
+        dbtn.style.display = 'none';
+      }
+
+      // Add Member Button
+      var addBtn = document.getElementById('ginfo-add-member-btn');
+      if (addBtn) addBtn.style.display = (isSuper && chat.name !== 'AgriHub General') ? 'inline-block' : 'none';
+
+      // Members list
+      var members = chat.participants || [];
+      document.getElementById('ginfo-member-count').textContent = members.length;
+      var isGeneral = chat.name === 'AgriHub General';
+      var leaveBtn  = document.querySelector('#ginfo-actions button:first-child');
+      if (leaveBtn) leaveBtn.style.display = isGeneral ? 'none' : '';
+
+      document.getElementById('ginfo-members-list').innerHTML = members.map(function(p) {
+        var pid   = p._id || p;
+        var pName = p.name || 'User';
+        var pAdm  = admins.some(function(a){ return (a._id||a) === pid; });
+        var pOwn  = pid === (createdBy && (createdBy._id || createdBy));
+        var emj   = pOwn ? '👑' : (pAdm ? 's' : '');
+        return '<div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">'+
+          '<div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#fff;">'+pName.charAt(0).toUpperCase()+'</div>'+
+          '<span style="flex:1;font-size:0.8rem;color:#d1d5db;">'+esc(pName)+'</span>'+
+          (emj ? '<span style="font-size:0.75rem;">'+emj+'</span>' : '')+
+          (isSuper && pid !== uid ? '<button onclick="promptMember(\''+pid+'\',\''+esc(pName)+'\')" style="background:rgba(255,255,255,0.06);border:none;border-radius:0.3rem;color:#9ca3af;font-size:0.65rem;padding:2px 6px;cursor:pointer;">Manage</button>' : '')+
+          '</div>';
+      }).join('') || '<div style="color:#6b7280;font-size:0.78rem;">No members</div>';
+    } catch(e) { alert('Failed to load group info.'); }
+  }
+
+  function closeGroupInfoModal() {
+    document.getElementById('group-info-modal').classList.remove('open');
+    currentGroupData = null;
+  }
+
+  async function saveGroupSettings() {
+    if (!activeCommId) return;
+    var name = document.getElementById('ginfo-name-input').value.trim();
+    if (!name) { alert('Group name cannot be empty.'); return; }
+    var btn = document.getElementById('ginfo-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    try {
+      var r = await fetch('/api/chats/'+activeCommId, {
+        method:'PUT',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({
+          name: name,
+          description: document.getElementById('ginfo-desc-input').value.trim(),
+          icon:         document.getElementById('ginfo-icon-input').value.trim(),
+          onlyAdminsSend: document.getElementById('ginfo-restrict-send').checked,
+          onlyAdminsEdit: document.getElementById('ginfo-restrict-edit').checked
+        })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      document.getElementById('comm-chat-title').textContent = name;
+      var icon = document.getElementById('ginfo-icon-input').value.trim();
+      document.getElementById('comm-chat-icon').textContent  = icon || '👥';
+      document.getElementById('ginfo-avatar').textContent    = icon || '👥';
+      loadCommList();
+      alert('Group settings saved!');
+    } catch(e) { alert('Failed to save.'); }
+    finally { btn.disabled = false; btn.textContent = 'Save Group Info'; }
+  }
+
+  async function leaveGroup() {
+    if (!activeCommId) return;
+    if (!confirm('Leave this group?')) return;
+    try {
+      var r = await fetch('/api/chats/'+activeCommId+'/leave', { method:'POST', headers:{'Authorization':'Bearer '+token} });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      closeGroupInfoModal();
+      activeCommId = null; lastCommJson = '';
+      if (commPollInterval) clearInterval(commPollInterval);
+      document.getElementById('comm-chat-area').style.display  = 'none';
+      document.getElementById('comm-empty-state').style.display = '';
+      loadCommList();
+    } catch(e) { alert('Failed to leave.'); }
+  }
+
+  function reportGroup() { alert('Group reported. Our team will review it. Thank you!'); }
+
+  async function disableGroup() {
+    if (!activeCommId || !currentGroupData) return;
+    var willDisable = !currentGroupData.isDisabled;
+    if (!confirm(willDisable ? 'Disable this group?' : 'Re-enable this group?')) return;
+    try {
+      var r = await fetch('/api/chats/'+activeCommId, {
+        method:'PUT',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ isDisabled: willDisable })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      closeGroupInfoModal();
+      setTimeout(openGroupInfoModal, 100);
+    } catch(e) { alert('Failed to update group.'); }
+  }
+
+  function promptMember(userId, userName) {
+    var choice = prompt('Manage "'+userName+'":\n1. Make Admin\n2. Remove from Group\n\nType 1 or 2:');
+    if (choice === '1') makeAdmin(userId, userName);
+    else if (choice === '2') removeFromGroup(userId, userName);
+  }
+
+  async function makeAdmin(userId, userName) {
+    if (!confirm('Make '+userName+' an admin?')) return;
+    try {
+      var r = await fetch('/api/chats/'+activeCommId+'/admins', {
+        method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: userId })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      openGroupInfoModal();
+    } catch(e) { alert('Failed.'); }
+  }
+
+  async function removeFromGroup(userId, userName) {
+    if (!confirm('Remove '+userName+' from the group?')) return;
+    try {
+      var r = await fetch('/api/chats/'+activeCommId+'/remove', {
+        method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ userId: userId })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      openGroupInfoModal();
+    } catch(e) { alert('Failed.'); }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  DIRECT MESSAGES
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  async function loadDmList() {
+    if (!token) {
+      document.getElementById('dm-list').innerHTML =
+        '<div style="padding:1.5rem;text-align:center;"><a href="profile.html" style="color:#10b981;font-size:0.82rem;font-weight:600;">Login to view messages</a></div>';
+      return;
+    }
+    try {
+      var r     = await fetch('/api/chats', { headers:{'Authorization':'Bearer '+token} });
+      var chats = await r.json();
+      if (!Array.isArray(chats)) chats = [];
+      var dms = chats.filter(function(c){ return !c.isGroup; });
+      if (!dms.length) {
+        document.getElementById('dm-list').innerHTML =
+          '<div class="empty-state"><span class="empty-icon">ðŸ’¬</span><p style="font-size:0.78rem;">No messages yet.<br>Tap âœï¸ to start a conversation!</p></div>';
+        return;
+      }
+      document.getElementById('dm-list').innerHTML = dms.map(function(c) {
+        var other = null;
+        if (c.participants && user) {
+          var uid = user.id || user._id;
+          c.participants.forEach(function(p) {
+            var pid = p._id || p;
+            if (pid !== uid) other = p;
+          });
+        }
+        var name = other ? (other.name || 'User') : (c.name || 'Unknown');
+        var ini  = name.charAt(0).toUpperCase();
+        return '<div class="dm-item'+(activeDmId===c._id?' active':'')+'" onclick="openDm(\''+c._id+'\',\''+name.replace(/'/g,"\\'")+'\')">'+
+          '<div class="dm-avatar">'+ini+'<div class="dm-online-dot"></div></div>'+
+          '<div class="dm-info"><div class="dm-name">'+esc(name)+'</div><div class="dm-preview">Tap to open conversation</div></div>'+
+          '<div class="dm-time">'+(c.lastMessageAt ? timeAgo(new Date(c.lastMessageAt)) : '')+'</div>'+
+          '</div>';
+      }).join('');
+    } catch(e) {
+      document.getElementById('dm-list').innerHTML = '<div style="padding:1rem;color:#f87171;font-size:0.8rem;">Failed to load messages.</div>';
+    }
+  }
+
+  async function openDm(id, name) {
+    activeDmId = id; lastDmJson = '';
+    document.getElementById('dm-empty-state').style.display  = 'none';
+    document.getElementById('dm-chat-area').style.display    = 'flex';
+    document.getElementById('dm-chat-name').textContent      = name;
+    document.getElementById('dm-chat-icon').textContent      = name.charAt(0).toUpperCase();
+    document.getElementById('dm-chat-sub').textContent       = 'Direct Message';
+    await loadDmMessages();
+    if (dmPollInterval) clearInterval(dmPollInterval);
+    dmPollInterval = setInterval(loadDmMessages, 1500);
+    loadDmList();
+  }
+
+  async function loadDmMessages() {
+    if (!activeDmId) return;
+    try {
+      var r    = await fetch('/api/chats/'+activeDmId+'/messages', { headers:{'Authorization':'Bearer '+token} });
+      var msgs = await r.json();
+      if (!Array.isArray(msgs)) msgs = [];
+      var j = JSON.stringify(msgs);
+      if (j === lastDmJson) return;
+      lastDmJson = j;
+      var area  = document.getElementById('dm-messages-area');
+      var atBot = area.scrollHeight - area.scrollTop <= area.clientHeight + 60;
+      if (!msgs.length) { area.innerHTML = '<div class="dm-empty"><p style="font-size:0.8rem;">No messages yet. Say hello! ðŸ‘‹</p></div>'; return; }
+      area.innerHTML = msgs.map(function(m) {
+        var mine = user && (m.senderId === user.id || m.senderId === (user._id||''));
+        var ts   = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+        return '<div class="dm-bubble '+(mine?'mine':'theirs')+'">'+esc(m.text)+'<div class="dm-bubble-time">'+ts+'</div></div>';
+      }).join('');
+      if (atBot) area.scrollTop = area.scrollHeight;
+    } catch(e) {}
+  }
+
+  async function sendDmMsg(ev) {
+    ev.preventDefault();
+    if (!token) { window.location.href = 'profile.html'; return; }
+    var inp  = document.getElementById('dm-msg-input');
+    var text = inp.value.trim();
+    if (!text || !activeDmId) return;
+    inp.value  = '';
+    lastDmJson = '';
+    try {
+      await fetch('/api/chats/'+activeDmId+'/messages', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ text: text })
+      });
+      loadDmMessages();
+    } catch(e) { console.error(e); }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  NEW DM â€” USER SEARCH
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  var userSearchMode = 'dm';
+  function openAddMemberModal() {
+    userSearchMode = 'add_member';
+    document.getElementById('new-dm-modal').classList.add('open');
+    document.getElementById('dm-user-search-input').value = '';
+    document.getElementById('user-search-results').innerHTML =
+      '<div style="color:#6b7280;font-size:0.78rem;text-align:center;padding:1rem;">Type a name to search for farmers</div>';
+    setTimeout(function(){ document.getElementById('dm-user-search-input').focus(); }, 100);
+  }
+
+  function openNewDmModal() {
+    userSearchMode = 'dm';
+    if (!token) { window.location.href = 'profile.html'; return; }
+    document.getElementById('new-dm-modal').classList.add('open');
+    document.getElementById('dm-user-search-input').value = '';
+    document.getElementById('user-search-results').innerHTML =
+      '<div style="color:#6b7280;font-size:0.78rem;text-align:center;padding:1rem;">Type a name to search for farmers</div>';
+    setTimeout(function(){ document.getElementById('dm-user-search-input').focus(); }, 100);
+  }
+  function closeNewDmModal() { document.getElementById('new-dm-modal').classList.remove('open'); }
+
+  var dmSearchTimer = null;
+  function searchDmUsers(q) {
+    clearTimeout(dmSearchTimer);
+    var div = document.getElementById('user-search-results');
+    if (!q) {
+      div.innerHTML = '<div style="color:#6b7280;font-size:0.78rem;text-align:center;padding:1rem;">Type a name to search for farmers</div>';
+      return;
+    }
+    div.innerHTML = '<div style="color:#6b7280;font-size:0.78rem;text-align:center;padding:1rem;">Searching...</div>';
+    dmSearchTimer = setTimeout(async function() {
+      try {
+        var r     = await fetch('/api/users?search='+encodeURIComponent(q), { headers:{'Authorization':'Bearer '+token} });
+        var users = await r.json();
+        if (!Array.isArray(users) || !users.length) {
+          div.innerHTML = '<div style="color:#6b7280;font-size:0.78rem;text-align:center;padding:1rem;">No users found</div>';
+          return;
+        }
+        div.innerHTML = users.map(function(u) {
+          var uid   = u._id || u.id;
+          var uName = u.name || 'User';
+          var ini   = uName.charAt(0).toUpperCase();
+          return '<div style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.75rem;border-radius:0.6rem;background:rgba(255,255,255,0.04);cursor:pointer;" '+
+            'onmouseover="this.style.background=\'rgba(16,185,129,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'" '+
+            'onclick="handleUserSearchResult(\''+uid+'\',\''+uName.replace(/'/g,"\\'")+'\')">'+
+            '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#fff;">'+ini+'</div>'+
+            '<div style="flex:1;"><div style="font-size:0.85rem;font-weight:600;color:#fff;">'+esc(uName)+'</div>'+
+            (u.email ? '<div style="font-size:0.72rem;color:#6b7280;">'+esc(u.email)+'</div>' : '')+
+            '</div>'+
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'+
+            '</div>';
+        }).join('');
+      } catch(e) {
+        div.innerHTML = '<div style="color:#f87171;font-size:0.78rem;text-align:center;padding:1rem;">Failed to search</div>';
+      }
+    }, 350);
+  }
+
+  async function handleUserSearchResult(userId, userName) {
+    if (userSearchMode === 'add_member') {
+      closeNewDmModal();
+      if (!activeCommId) return;
+      try {
+        var r = await fetch('/api/chats/'+activeCommId+'/add', {
+          method: 'POST', headers: {'Authorization': 'Bearer '+token, 'Content-Type': 'application/json'},
+          body: JSON.stringify({ userId: userId })
+        });
+        var d = await r.json();
+        if (d.error) { alert(d.error); return; }
+        openGroupInfoModal();
+      } catch(e) { alert('Failed to add member.'); }
+    } else {
+      startDirectMessage(userId, userName);
+    }
+  }
+
+  async function startDirectMessage(userId, userName) {
+    closeNewDmModal();
+    try {
+      var r = await fetch('/api/chats', {
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+        body: JSON.stringify({ isGroup: false, participantIds: [userId] })
+      });
+      var d = await r.json();
+      if (d.error) { alert(d.error); return; }
+      switchTab('messages');
+      setTimeout(function(){ openDm(d._id, userName); }, 150);
+    } catch(e) { alert('Failed to start conversation.'); }
+  }
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  MODAL CLOSE ON OVERLAY CLICK
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  document.querySelectorAll('.modal-overlay').forEach(function(ov) {
+    ov.addEventListener('click', function(e) {
+      if (e.target === ov) ov.classList.remove('open');
+    });
+  });
+
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  //  INIT
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  updateAuthUI();
+  loadFeed();
+
+  // Responsive desktop nav
+  var _style = document.createElement('style');
+  _style.textContent = '@media(min-width:1024px){#desktop-nav{display:flex!important;gap:1.5rem;}}';
+  document.head.appendChild(_style);
+  </script>
+</body>
+</html>

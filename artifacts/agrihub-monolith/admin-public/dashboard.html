@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/theme.css">
+  <script>(function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin Control Center - AgriHub Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Outfit', sans-serif; background-color: #080B11; color: #E2E8F0; }
+    .glass { background: rgba(17,24,39,0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: flex; flex-direction: column; gap: 1.5rem; }
+    .filter-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem 0.9rem; font-size: 0.75rem; color: white; outline: none; transition: border-color 0.2s; }
+    .filter-input:focus { border-color: #f97316; }
+    .filter-select { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem 0.9rem; font-size: 0.75rem; color: white; outline: none; }
+    .btn-action { padding: 0.25rem 0.75rem; font-size: 0.65rem; font-weight: 700; border-radius: 0.375rem; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; }
+    .btn-green { background: rgba(16,185,129,0.15); color: #6ee7b7; border-color: rgba(16,185,129,0.3); }
+    .btn-green:hover { background: rgba(16,185,129,0.3); }
+    .btn-blue { background: rgba(59,130,246,0.15); color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+    .btn-blue:hover { background: rgba(59,130,246,0.3); }
+    .btn-red { background: rgba(239,68,68,0.15); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+    .btn-red:hover { background: rgba(239,68,68,0.3); }
+    .btn-amber { background: rgba(245,158,11,0.15); color: #fcd34d; border-color: rgba(245,158,11,0.3); }
+    .btn-amber:hover { background: rgba(245,158,11,0.3); }
+    #toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; min-width: 280px; max-width: 400px; padding: 1rem 1.25rem; border-radius: 0.875rem; font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(16px); transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #6ee7b7; }
+    #toast.error { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; }
+    #toast.info { background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4); color: #93c5fd; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 50; display: none; align-items: center; justify-content: center; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 540px; }
+    .tbl-header { color: #6b7280; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .tbl-header th { padding-bottom: 0.75rem; }
+    .tbl-row td { padding: 0.875rem 0.5rem; font-size: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .tbl-row:hover td { background: rgba(255,255,255,0.025); }
+    .sidebar-btn { width: 100%; padding: 0.75rem 1rem; border-radius: 0.5rem; text-align: left; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; cursor: pointer; border: none; }
+    .sidebar-btn.active { background: linear-gradient(135deg, #f97316, #f59e0b); color: white; }
+    .sidebar-btn:not(.active) { background: transparent; color: #9ca3af; }
+    .sidebar-btn:not(.active):hover { background: rgba(255,255,255,0.05); color: white; }
+    .yt-preview { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 0.75rem; background: #1f2937; }
+    .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 9999px; font-size: 0.6rem; font-weight: 700; }
+    .badge-green { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+    .badge-yellow { background: rgba(245,158,11,0.2); color: #fcd34d; }
+    .badge-red { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    .badge-purple { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+    .badge-gray { background: rgba(107,114,128,0.2); color: #9ca3af; }
+    .stat-card { background: rgba(17,24,39,0.75); border: 1px solid rgba(255,255,255,0.06); border-radius: 1rem; padding: 1.5rem; }
+    .refresh-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Toast -->
+<div id="toast">
+  <div class="flex items-center gap-2">
+    <span id="toast-icon">✓</span>
+    <span id="toast-msg"></span>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="edit-modal" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-lg font-bold text-white" id="edit-modal-title">Edit Item</h3>
+      <button onclick="closeEditModal()" class="text-gray-400 hover:text-white text-xl leading-none">✕</button>
+    </div>
+    <div id="edit-modal-body" class="flex flex-col gap-4"></div>
+    <div class="flex gap-3 mt-6">
+      <button id="edit-modal-save" class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 rounded text-white text-sm font-bold">Save Changes</button>
+      <button onclick="closeEditModal()" class="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded text-gray-300 text-sm font-semibold">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirm-modal" class="modal-backdrop">
+  <div class="modal-box max-w-sm text-center">
+    <div class="text-4xl mb-4">🗑️</div>
+    <h3 class="text-lg font-bold text-white mb-2">Confirm Delete</h3>
+    <p class="text-sm text-gray-400 mb-6" id="confirm-modal-msg">Are you sure you want to delete this item? This action cannot be undone.</p>
+    <div class="flex gap-3">
+      <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 rounded font-bold text-sm">Yes, Delete</button>
+      <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 rounded font-semibold text-sm">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Authorization Gate Overlay -->
+<div id="admin-auth-gate" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#080B11]/95 backdrop-blur-xl animate-fade-in">
+  <div class="glass glass-card p-8 rounded-3xl max-w-md w-full text-center relative">
+    
+    <!-- Logo & Title -->
+    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-3xl font-black text-white shadow-xl shadow-orange-500/20 mx-auto mb-6">
+      ⚙
+    </div>
+    <h2 class="text-2xl font-black text-white leading-tight">Super Control Center</h2>
+    <p class="text-xs text-gray-400 mt-2 mb-8">Access restricted to authorized AgriHub Pro administrators.</p>
+
+    <!-- Verification Loading State -->
+    <div id="auth-loading-state" class="hidden flex flex-col items-center gap-4 py-6">
+      <div class="w-10 h-10 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin"></div>
+      <p class="text-xs text-gray-400 font-semibold">Verifying credentials, please wait...</p>
+    </div>
+
+    <!-- Login Input Form -->
+    <form id="auth-gate-form" onsubmit="verifyAdminToken(event)" class="flex flex-col gap-4">
+      <div class="relative">
+        <input type="password" id="auth-gate-token-input" placeholder="Enter X-Admin-Token Key" required 
+          class="filter-input w-full py-3.5 px-5 rounded-xl text-sm bg-white/5 border border-white/10 text-center tracking-widest focus:border-orange-500 transition duration-300">
+      </div>
+      <button type="submit" 
+        class="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded-xl text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition duration-300 transform active:scale-95">
+        Enter Control Center
+      </button>
+      <div id="auth-error-msg" class="text-rose-400 text-[11px] font-semibold hidden mt-1">
+        ⚠ Invalid authorization token. Please try again.
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<!-- Header -->
+<header id="admin-dashboard-header" class="glass glass-card sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-2xl" style="display: none;">
+  <link rel="stylesheet" href="/theme.css">
+  <script>(function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();</script>
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-lg font-extrabold text-white shadow-lg">⚙</div>
+    <div>
+      <span class="text-lg font-extrabold text-white">AgriHub Admin</span>
+      <span class="hidden md:inline text-xs text-gray-500 ml-2">Super Control Center</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2 text-xs text-gray-500">
+      <div class="refresh-dot"></div>
+      <span id="last-refresh-label">Live</span>
+    </div>
+    <button onclick="logoutAdmin()" class="px-4 py-2 text-xs font-bold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 rounded shadow transition">Lock Console</button>
+  </div>
+</header>
+
+<!-- Layout -->
+<div id="admin-dashboard-layout" class="flex flex-1 flex-col md:flex-row min-h-0" style="display: none;">
+
+  <!-- Sidebar -->
+  <aside class="w-full md:w-60 glass p-5 flex flex-col gap-1.5 border-r border-white/5 shrink-0">
+    <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mb-2 px-1">Operations</p>
+    <button class="sidebar-btn active" id="tab-btn-fulfillment" onclick="switchTab('fulfillment')">📦 Fulfillment Queue</button>
+    <button class="sidebar-btn" id="tab-btn-paidqueue" onclick="switchTab('paidqueue')">🏪 Publish to Retail</button>
+    <button class="sidebar-btn" id="tab-btn-realestate" onclick="switchTab('realestate')">🌾 Real Estate Queue</button>
+    <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-4 mb-2 px-1">Content</p>
+    <button class="sidebar-btn" id="tab-btn-tutorials" onclick="switchTab('tutorials')">🎬 Video Tutorials</button>
+    <button class="sidebar-btn" id="tab-btn-products" onclick="switchTab('products')">🛒 Official Products</button>
+    <button class="sidebar-btn" id="tab-btn-postsystem" onclick="switchTab('postsystem')">➕ Post New Product</button>
+    <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-4 mb-2 px-1">Platform</p>
+    <button class="sidebar-btn" id="tab-btn-users" onclick="switchTab('users')">👥 Manage Users</button>
+    <button class="sidebar-btn" id="tab-btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
+    <a href="/admin/support.html" class="sidebar-btn block" target="_blank" style="text-decoration:none">💬 Support Tickets ↗</a>
+  </aside>
+
+  <!-- Main Pane -->
+  <main class="flex-grow p-6 overflow-auto">
+
+    <!-- ═══ FULFILLMENT QUEUE ═══ -->
+    <section id="pane-fulfillment" class="tab-pane active">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">📦 Fulfillment Intake Queue</h2>
+        <p class="text-xs text-gray-500 mt-1">Verify farmer deliveries, confirm weight, and pay the farmer before publishing to retail.</p>
+      </div>
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3 items-center">
+        <input id="fulfillment-search" type="text" placeholder="🔍 Search farmer, crop…" class="filter-input flex-1 min-w-48" oninput="filterFulfillmentTable()">
+        <select id="fulfillment-pkg-filter" class="filter-select" onchange="filterFulfillmentTable()">
+          <option value="">All Packaging</option>
+          <option>Sack / Bag</option><option>Crate</option><option>Box</option><option>Barrel</option>
+        </select>
+        <button onclick="loadFulfillmentQueue()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+      <div class="glass glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="tbl-header">
+              <th>Farmer &amp; Bank</th><th>Crop Title</th><th>Weight (Kg)</th><th>Pkg Type</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="fulfillment-table-body" class="divide-y divide-white/5"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PAID QUEUE / PUBLISH RETAIL ═══ -->
+    <section id="pane-paidqueue" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">🏪 Publish to Retail</h2>
+        <p class="text-xs text-gray-500 mt-1">Items confirmed &amp; paid. Set retail price and publish to the public marketplace.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <input id="paid-search" type="text" placeholder="🔍 Search crop, farmer…" class="filter-input flex-1 min-w-48" oninput="filterPaidTable()">
+        <button onclick="loadPaidQueue()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+      <div class="glass glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="tbl-header">
+              <th>Farmer</th><th>Crop</th><th>Verified Wt</th><th>Units</th><th>Publish Action</th>
+            </tr></thead>
+            <tbody id="paid-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ REAL ESTATE QUEUE ═══ -->
+    <section id="pane-realestate" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">🌾 Real Estate Approval Queue</h2>
+        <p class="text-xs text-gray-500 mt-1">Review land registrations. Approved listings immediately appear in the verified land market.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <input id="land-search" type="text" placeholder="🔍 Search title, seller…" class="filter-input flex-1 min-w-48" oninput="filterLandTable()">
+        <select id="land-sort" class="filter-select" onchange="filterLandTable()">
+          <option value="">Sort: Default</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="acres-desc">Acreage ↓</option>
+        </select>
+        <button onclick="loadRealestateQueue()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+      <div class="glass glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="tbl-header">
+              <th>Seller</th><th>Title &amp; Location</th><th>Acreage</th><th>₹/SqFt</th><th>Total Value</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="realestate-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VIDEO TUTORIALS ═══ -->
+    <section id="pane-tutorials" class="tab-pane">
+      <div class="flex justify-between items-start flex-wrap gap-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-white">🎬 Video Tutorial Management</h2>
+          <p class="text-xs text-gray-500 mt-1">Add, edit, and delete farming tutorial videos shown in the Academy section.</p>
+        </div>
+        <button onclick="openAddTutorialModal()" class="px-4 py-2 text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 rounded text-white shadow">+ Add Tutorial</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <input id="tut-search" type="text" placeholder="🔍 Search title, category…" class="filter-input flex-1 min-w-48" oninput="filterTutorials()">
+        <select id="tut-category-filter" class="filter-select" onchange="filterTutorials()">
+          <option value="">All Categories</option>
+          <option>Irrigation</option><option>Soil Health</option><option>Pest Control</option>
+          <option>Crop Yield</option><option>Organic Farming</option><option>Market Prices</option>
+        </select>
+        <select id="tut-lang-filter" class="filter-select" onchange="filterTutorials()">
+          <option value="">All Languages</option>
+          <option value="EN">English</option>
+          <option value="தமிழ்">தமிழ்</option>
+        </select>
+        <button onclick="loadTutorials()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+
+      <!-- Tutorial Grid -->
+      <div id="tutorials-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+    </section>
+
+    <!-- ═══ ADD TUTORIAL (modal-driven, kept for submit) ═══ -->
+    <!-- Modal Add Tutorial -->
+    <div id="add-tutorial-modal" class="modal-backdrop">
+      <div class="modal-box max-w-lg">
+        <div class="flex justify-between items-center mb-5">
+          <h3 class="text-lg font-bold text-white" id="add-tut-modal-title">Add YouTube Tutorial</h3>
+          <button onclick="closeAddTutorialModal()" class="text-gray-400 hover:text-white text-xl">✕</button>
+        </div>
+        <form id="tutorial-form" class="flex flex-col gap-4" onsubmit="submitTutorial(event)">
+          <input type="hidden" id="tut-edit-id" value="">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Title</label>
+            <input type="text" id="tut-title" name="title" required placeholder="e.g. Drip Irrigation Guide" class="filter-input w-full">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">YouTube Embed URL</label>
+            <input type="url" id="tut-url" name="videoUrl" required placeholder="https://www.youtube.com/embed/VIDEOID" class="filter-input w-full" oninput="updateYTPreview()">
+          </div>
+          <!-- Live YouTube Preview -->
+          <div id="yt-preview-wrap" class="hidden">
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Preview</label>
+            <iframe id="yt-preview-frame" class="yt-preview" allowfullscreen></iframe>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Category</label>
+              <select id="tut-category" name="category" class="filter-select w-full">
+                <option>Irrigation</option><option>Soil Health</option><option>Pest Control</option>
+                <option>Crop Yield</option><option>Organic Farming</option><option>Market Prices</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Language</label>
+              <select id="tut-language" name="language" class="filter-select w-full">
+                <option value="EN">English</option>
+                <option value="தமிழ்">தமிழ்</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Description</label>
+            <textarea id="tut-desc" name="description" required rows="3" placeholder="Brief description of the tutorial" class="filter-input w-full resize-none"></textarea>
+          </div>
+          <div class="flex gap-3 mt-1">
+            <button type="submit" class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 rounded text-white font-bold text-sm">Save Tutorial</button>
+            <button type="button" onclick="closeAddTutorialModal()" class="px-6 py-2.5 bg-white/5 hover:bg-white/10 rounded text-gray-300 text-sm">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ═══ OFFICIAL PRODUCTS MANAGEMENT ═══ -->
+    <section id="pane-products" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">🛒 Official Products Management</h2>
+        <p class="text-xs text-gray-500 mt-1">View, edit price, and remove official AgriHub store inventory listings.</p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <input id="prod-search" type="text" placeholder="🔍 Search product title…" class="filter-input flex-1 min-w-48" oninput="filterOfficialProducts()">
+        <select id="prod-pkg-filter" class="filter-select" onchange="filterOfficialProducts()">
+          <option value="">All Packaging</option>
+          <option>Sack / Bag</option><option>Crate</option><option>Box</option><option>Barrel</option>
+        </select>
+        <select id="prod-sort" class="filter-select" onchange="filterOfficialProducts()">
+          <option value="">Sort: Default</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+        </select>
+        <button onclick="loadOfficialProducts()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+      <div class="glass glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="tbl-header">
+              <th>Image</th><th>Product Title</th><th>Price / Unit</th><th>Stock (Kg)</th><th>Units</th><th>Pkg</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="products-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ POST NEW OFFICIAL PRODUCT ═══ -->
+    <section id="pane-postsystem" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">➕ Post Official Inventory</h2>
+        <p class="text-xs text-gray-500 mt-1">List inventory sourced directly by AgriHub. These show an official badge in the consumer marketplace.</p>
+      </div>
+      <div class="glass glass-card p-6 rounded-2xl max-w-xl">
+        <form id="system-post-form" class="flex flex-col gap-4" onsubmit="submitOfficialProduct(event)">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Product Title</label>
+            <input type="text" name="cropTitle" required placeholder="e.g. Premium Fertilizers, Thanjavur Store" class="filter-input w-full">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Total Stock (Kg)</label>
+              <input type="number" name="totalWeightKg" required min="1" placeholder="5000" class="filter-input w-full">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Weight Per Unit (Kg)</label>
+              <input type="number" name="weightPerUnitKg" required min="1" placeholder="50" class="filter-input w-full">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Retail Price per Unit (₹)</label>
+              <input type="number" name="pricePerUnit" required min="1" placeholder="1200" class="filter-input w-full">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-400 mb-1">Packaging Type</label>
+              <select name="packagingUnitType" class="filter-select w-full">
+                <option>Sack / Bag</option><option>Crate</option><option>Box</option><option>Barrel</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Product Photo</label>
+            <input type="file" name="image" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-orange-500/20 file:text-orange-300 hover:file:bg-orange-500/30 w-full">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 rounded text-white font-bold shadow-lg transition">Publish Official Listing</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══ MANAGE USERS ═══ -->
+    <section id="pane-users" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">👥 Registered Users</h2>
+        <p class="text-xs text-gray-500 mt-1">View all users. Filter, upgrade to Premium, or downgrade any account instantly.</p>
+      </div>
+      <!-- Stats row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Total Users</p><p class="text-3xl font-extrabold text-white mt-2" id="usr-stat-total">—</p></div>
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Active Premium</p><p class="text-3xl font-extrabold text-emerald-400 mt-2" id="usr-stat-premium">—</p></div>
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Pending Payment</p><p class="text-3xl font-extrabold text-yellow-400 mt-2" id="usr-stat-pending">—</p></div>
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Free Users</p><p class="text-3xl font-extrabold text-gray-400 mt-2" id="usr-stat-free">—</p></div>
+      </div>
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <input id="user-search" type="text" placeholder="🔍 Search name, email, phone…" class="filter-input flex-1 min-w-48" oninput="filterUsersTable()">
+        <select id="user-status-filter" class="filter-select" onchange="filterUsersTable()">
+          <option value="">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="Pending_Payment">Pending Payment</option>
+          <option value="Expired">Expired</option>
+        </select>
+        <select id="user-tier-filter" class="filter-select" onchange="filterUsersTable()">
+          <option value="">All Tiers</option>
+          <option value="Premium">Premium</option>
+          <option value="Free">Free</option>
+        </select>
+        <button onclick="loadUsers()" class="btn-action btn-blue">↺ Refresh</button>
+      </div>
+      <div class="glass glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead><tr class="tbl-header">
+              <th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Tier</th><th>Joined</th><th>Action</th>
+            </tr></thead>
+            <tbody id="users-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PLATFORM ANALYTICS ═══ -->
+    <section id="pane-analytics" class="tab-pane">
+      <div>
+        <h2 class="text-xl font-extrabold text-white">📊 Platform Analytics</h2>
+        <p class="text-xs text-gray-500 mt-1">Real-time platform health, revenue, and logistics metrics.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Total Platform Users</p><h3 class="text-4xl font-extrabold text-white mt-3" id="stat-platform-users">0</h3></div>
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Active Subscribers (₹700/yr)</p><h3 class="text-4xl font-extrabold text-emerald-400 mt-3" id="stat-premium-users">0</h3></div>
+        <div class="stat-card"><p class="text-xs text-gray-500 uppercase tracking-wider">Total Subscription Revenue</p><h3 class="text-4xl font-extrabold text-orange-400 mt-3" id="stat-platform-revenue">₹0</h3></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass glass-card p-6 rounded-2xl">
+          <h4 class="text-sm font-bold text-white mb-5">Platform Membership Breakdown</h4>
+          <canvas id="user-tier-chart" class="max-h-56"></canvas>
+        </div>
+        <div class="glass glass-card p-6 rounded-2xl">
+          <h4 class="text-sm font-bold text-white mb-5">Logistics Volume Metrics</h4>
+          <canvas id="volume-metric-chart" class="max-h-56"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // ─── State ───────────────────────────────────────────
+  let adminToken = "";
+  let activeTab = "fulfillment";
+  let tierChartInstance = null, volumeChartInstance = null;
+  let allFulfillmentData = [], allPaidData = [], allLandData = [], allUsersData = [], allTutorialsData = [], allOfficialProds = [];
+  let autoRefreshTimer = null;
+
+  // ─── Toast ───────────────────────────────────────────
+  function toast(msg, type = "success") {
+    const el = document.getElementById("toast");
+    const icons = { success: "✓", error: "✗", info: "ℹ" };
+    document.getElementById("toast-icon").innerText = icons[type] || "ℹ";
+    document.getElementById("toast-msg").innerText = msg;
+    el.className = `show ${type}`;
+    setTimeout(() => { el.className = type; }, 3500);
+  }
+
+  // ─── Admin Authentication & Gate ─────────────────────
+  async function checkAdminAuth() {
+    const gate = document.getElementById("admin-auth-gate");
+    const header = document.getElementById("admin-dashboard-header");
+    const layout = document.getElementById("admin-dashboard-layout");
+    const loading = document.getElementById("auth-loading-state");
+    const form = document.getElementById("auth-gate-form");
+
+    if (!adminToken) {
+      gate.classList.remove("hidden");
+      header.style.display = "none";
+      layout.style.display = "none";
+      loading.classList.add("hidden");
+      form.classList.remove("hidden");
+      return;
+    }
+
+    form.classList.add("hidden");
+    loading.classList.remove("hidden");
+    document.getElementById("auth-error-msg").classList.add("hidden");
+
+    try {
+      const data = await safeFetch("/api/admin/users", { headers: { "x-admin-token": adminToken } });
+      if (data.error) {
+        adminToken = "";
+        gate.classList.remove("hidden");
+        header.style.display = "none";
+        layout.style.display = "none";
+        loading.classList.add("hidden");
+        form.classList.remove("hidden");
+        document.getElementById("auth-error-msg").classList.remove("hidden");
+        toast("Access denied: invalid token.", "error");
+      } else {
+        gate.classList.add("hidden");
+        header.style.display = "flex";
+        layout.style.display = "flex";
+        loadCurrentTab();
+        toast("Authenticated successfully ✓");
+      }
+    } catch (err) {
+      toast("Server communication failed.", "error");
+      loading.classList.add("hidden");
+      form.classList.remove("hidden");
+    }
+  }
+
+  async function verifyAdminToken(e) {
+    if (e) e.preventDefault();
+    const tokenInput = document.getElementById("auth-gate-token-input").value.trim();
+    if (!tokenInput) return;
+    
+    adminToken = tokenInput;
+    await checkAdminAuth();
+  }
+
+  function logoutAdmin() {
+    adminToken = "";
+    document.getElementById("auth-gate-token-input").value = "";
+    checkAdminAuth();
+    toast("Console locked successfully", "info");
+  }
+
+  // ─── Safe fetch helper ────────────────────────────────
+  async function safeFetch(url, opts = {}) {
+    const res = await fetch(url, opts);
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return { error: "Server returned non-JSON response. Check server is running." }; }
+  }
+
+  // ─── Sidebar Tabs ─────────────────────────────────────
+  const ALL_TABS = ["fulfillment","paidqueue","realestate","analytics","postsystem","users","tutorials","products","support"];
+
+  function switchTab(tab) {
+    if (!adminToken) {
+      toast("Access denied: Enter Admin Token first.", "error");
+      checkAdminAuth();
+      return;
+    }
+    activeTab = tab;
+    document.querySelectorAll(".tab-pane").forEach(p => { p.classList.remove("active"); });
+    const pane = document.getElementById(`pane-${tab}`);
+    if (pane) pane.classList.add("active");
+    ALL_TABS.forEach(key => {
+      const el = document.getElementById(`tab-btn-${key}`);
+      if (el) el.className = `sidebar-btn ${key === tab ? "active" : ""}`;
+    });
+    clearInterval(autoRefreshTimer);
+    loadCurrentTab();
+    // Auto-refresh queues every 30s
+    if (["fulfillment","paidqueue","realestate"].includes(tab)) {
+      autoRefreshTimer = setInterval(loadCurrentTab, 30000);
+    }
+  }
+
+  function loadCurrentTab() {
+    document.getElementById("last-refresh-label").innerText = new Date().toLocaleTimeString();
+    const loaders = {
+      fulfillment: loadFulfillmentQueue,
+      paidqueue: loadPaidQueue,
+      realestate: loadRealestateQueue,
+      analytics: loadPlatformAnalytics,
+      users: loadUsers,
+      tutorials: loadTutorials,
+      products: loadOfficialProducts
+    };
+    if (loaders[activeTab]) loaders[activeTab]();
+  }
+
+  // ─── Modal helpers ────────────────────────────────────
+  function closeEditModal() { document.getElementById("edit-modal").classList.remove("open"); }
+  function closeConfirmModal() { document.getElementById("confirm-modal").classList.remove("open"); }
+
+  function showConfirm(msg, onConfirm) {
+    document.getElementById("confirm-modal-msg").innerText = msg;
+    document.getElementById("confirm-modal").classList.add("open");
+    document.getElementById("confirm-delete-btn").onclick = () => { closeConfirmModal(); onConfirm(); };
+  }
+
+  // ─── YouTube Preview ──────────────────────────────────
+  function updateYTPreview() {
+    const url = document.getElementById("tut-url").value.trim();
+    const wrap = document.getElementById("yt-preview-wrap");
+    const iframe = document.getElementById("yt-preview-frame");
+    if (url && (url.includes("youtube.com/embed/") || url.includes("youtu.be/"))) {
+      iframe.src = url;
+      wrap.classList.remove("hidden");
+    } else {
+      wrap.classList.add("hidden");
+      iframe.src = "";
+    }
+  }
+
+  // ─── Add Tutorial Modal ───────────────────────────────
+  function openAddTutorialModal(tut = null) {
+    document.getElementById("add-tut-modal-title").innerText = tut ? "Edit Tutorial" : "Add YouTube Tutorial";
+    document.getElementById("tut-edit-id").value = tut ? tut._id : "";
+    document.getElementById("tut-title").value = tut ? tut.title : "";
+    document.getElementById("tut-url").value = tut ? tut.videoUrl : "";
+    document.getElementById("tut-category").value = tut ? tut.category : "Irrigation";
+    document.getElementById("tut-language").value = tut ? tut.language : "EN";
+    document.getElementById("tut-desc").value = tut ? tut.description : "";
+    document.getElementById("add-tutorial-modal").classList.add("open");
+    updateYTPreview();
+  }
+  function closeAddTutorialModal() {
+    document.getElementById("add-tutorial-modal").classList.remove("open");
+    document.getElementById("tut-url").value = "";
+    updateYTPreview();
+  }
+
+  // ─── FULFILLMENT ──────────────────────────────────────
+  async function loadFulfillmentQueue() {
+    const tbody = document.getElementById("fulfillment-table-body");
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">Loading…</td></tr>`;
+    const data = await safeFetch("/api/admin/logistics/pending", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-red-400">⚠ ${data.error}</td></tr>`; return; }
+    allFulfillmentData = Array.isArray(data) ? data : [];
+    renderFulfillmentTable(allFulfillmentData);
+  }
+
+  function filterFulfillmentTable() {
+    const q = document.getElementById("fulfillment-search").value.toLowerCase();
+    const pkg = document.getElementById("fulfillment-pkg-filter").value;
+    const filtered = allFulfillmentData.filter(p => {
+      const matchQ = !q || (p.cropTitle||"").toLowerCase().includes(q) || (p.sellerId?.name||"").toLowerCase().includes(q);
+      const matchPkg = !pkg || p.packagingUnitType === pkg;
+      return matchQ && matchPkg;
+    });
+    renderFulfillmentTable(filtered);
+  }
+
+  function renderFulfillmentTable(data) {
+    const tbody = document.getElementById("fulfillment-table-body");
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">Intake queue is currently empty.</td></tr>`; return; }
+    tbody.innerHTML = data.map(p => {
+      const user = p.sellerId || {};
+      let bankHtml = "";
+      if (user.upiId) bankHtml += `<span class="block text-[10px] text-emerald-400 font-mono">UPI: ${user.upiId}</span>`;
+      if (user.bankAccountNumber) bankHtml += `<span class="block text-[10px] text-teal-400 font-mono">A/C: ${user.bankAccountNumber} (${user.ifscCode||''})</span>`;
+      if (!bankHtml) bankHtml = `<span class="block text-[10px] text-gray-600 italic">No bank details</span>`;
+      return `<tr class="tbl-row">
+        <td class="py-3">
+          <span class="block font-semibold text-white">${user.name||"Unknown"}</span>
+          <span class="text-[10px] text-gray-500">${user.phone||"N/A"}</span>
+          ${bankHtml}
+        </td>
+        <td class="py-3 font-semibold text-white">${p.cropTitle}</td>
+        <td class="py-3 text-gray-300">${p.totalWeightKg} Kg</td>
+        <td class="py-3 text-gray-300">${p.packagingUnitType} (${p.weightPerUnitKg}kg)</td>
+        <td class="py-3">
+          <div class="flex flex-wrap gap-2 items-center">
+            <input type="number" id="verify-wt-${p._id}" placeholder="Real Wt (Kg)" class="filter-input w-28">
+            <button onclick="confirmAndPay('${p._id}')" class="btn-action btn-green">✓ Confirm &amp; Pay</button>
+            <input type="number" id="publish-pr-${p._id}" placeholder="₹ Unit Price" class="filter-input w-28">
+            <button onclick="publishToRetail('${p._id}','fulfillment')" class="btn-action btn-blue">🏪 Publish</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  async function confirmAndPay(id) {
+    const verifiedWeight = document.getElementById(`verify-wt-${id}`)?.value;
+    if (!verifiedWeight) return toast("Enter verified weight first", "error");
+    const data = await safeFetch(`/api/admin/logistics/pay/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+      body: JSON.stringify({ verifiedWeight })
+    });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast("Payment confirmed and ledger updated ✓");
+    loadFulfillmentQueue();
+  }
+
+  async function publishToRetail(id, source) {
+    const inputId = source === "paid" ? `pub-pr-${id}` : `publish-pr-${id}`;
+    const pricePerUnit = document.getElementById(inputId)?.value;
+    if (!pricePerUnit) return toast("Enter a retail unit price first", "error");
+    const data = await safeFetch(`/api/admin/logistics/publish/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+      body: JSON.stringify({ pricePerUnit })
+    });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast("Published to marketplace! ✓");
+    if (source === "paid") loadPaidQueue(); else loadFulfillmentQueue();
+  }
+
+  // ─── PAID QUEUE ───────────────────────────────────────
+  async function loadPaidQueue() {
+    const tbody = document.getElementById("paid-table-body");
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">Loading…</td></tr>`;
+    const data = await safeFetch("/api/admin/logistics/paid", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-red-400">⚠ ${data.error}</td></tr>`; return; }
+    allPaidData = Array.isArray(data) ? data : [];
+    renderPaidTable(allPaidData);
+  }
+
+  function filterPaidTable() {
+    const q = document.getElementById("paid-search").value.toLowerCase();
+    renderPaidTable(allPaidData.filter(p => (p.cropTitle||"").toLowerCase().includes(q) || (p.sellerId?.name||"").toLowerCase().includes(q)));
+  }
+
+  function renderPaidTable(data) {
+    const tbody = document.getElementById("paid-table-body");
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">No items awaiting retail publish.</td></tr>`; return; }
+    tbody.innerHTML = data.map(p => `
+      <tr class="tbl-row">
+        <td class="py-3 font-semibold text-white">${p.sellerId?.name||"N/A"}</td>
+        <td class="py-3 text-white">${p.cropTitle}</td>
+        <td class="py-3 text-gray-300">${p.totalWeightKg} Kg</td>
+        <td class="py-3 text-gray-300">${p.calculatedTotalUnits} units</td>
+        <td class="py-3">
+          <div class="flex gap-2 items-center">
+            <input type="number" id="pub-pr-${p._id}" placeholder="₹ per unit" class="filter-input w-28">
+            <button onclick="publishToRetail('${p._id}','paid')" class="btn-action btn-blue">Publish</button>
+          </div>
+        </td>
+      </tr>`).join("");
+  }
+
+  // ─── REAL ESTATE ──────────────────────────────────────
+  async function loadRealestateQueue() {
+    const tbody = document.getElementById("realestate-table-body");
+    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500">Loading…</td></tr>`;
+    const data = await safeFetch("/api/admin/land/pending", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-red-400">⚠ ${data.error}</td></tr>`; return; }
+    allLandData = Array.isArray(data) ? data : [];
+    renderLandTable(allLandData);
+  }
+
+  function filterLandTable() {
+    const q = document.getElementById("land-search").value.toLowerCase();
+    const sort = document.getElementById("land-sort").value;
+    let filtered = allLandData.filter(l =>
+      (l.title||"").toLowerCase().includes(q) || (l.sellerId?.name||"").toLowerCase().includes(q)
+    );
+    if (sort === "price-asc") filtered.sort((a,b) => a.totalPrice - b.totalPrice);
+    else if (sort === "price-desc") filtered.sort((a,b) => b.totalPrice - a.totalPrice);
+    else if (sort === "acres-desc") filtered.sort((a,b) => b.totalAcreage - a.totalAcreage);
+    renderLandTable(filtered);
+  }
+
+  function renderLandTable(data) {
+    const tbody = document.getElementById("realestate-table-body");
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500">Real estate queue is clear.</td></tr>`; return; }
+    tbody.innerHTML = data.map(l => `
+      <tr class="tbl-row">
+        <td class="py-3">
+          <span class="block font-semibold text-white">${l.sellerId?.name||"Unknown"}</span>
+          <span class="text-[10px] text-gray-500">${l.sellerId?.phone||"N/A"}</span>
+        </td>
+        <td class="py-3">
+          <span class="block font-semibold text-white">${l.title}</span>
+          <span class="text-[10px] text-gray-500">${l.location||""}</span>
+        </td>
+        <td class="py-3 text-gray-300">${l.totalAcreage} Acres</td>
+        <td class="py-3 text-gray-300">₹${l.pricePerSqFt}</td>
+        <td class="py-3 font-extrabold text-emerald-400">₹${(l.totalPrice||0).toLocaleString()}</td>
+        <td class="py-3">
+          <div class="flex gap-2">
+            <button onclick="approveLand('${l._id}')" class="btn-action btn-green">✓ Approve</button>
+            <button onclick="rejectLand('${l._id}')" class="btn-action btn-red">✗ Reject</button>
+          </div>
+        </td>
+      </tr>`).join("");
+  }
+
+  async function approveLand(id) {
+    const data = await safeFetch(`/api/admin/land/approve/${id}`, { method: "PUT", headers: { "x-admin-token": adminToken } });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast("Farmland approved and published ✓");
+    loadRealestateQueue();
+  }
+
+  async function rejectLand(id) {
+    showConfirm("Reject this land listing? The farmer will need to resubmit.", async () => {
+      const data = await safeFetch(`/api/admin/land/reject/${id}`, { method: "PUT", headers: { "x-admin-token": adminToken } });
+      if (data.error) { toast(data.error, "error"); return; }
+      toast("Listing rejected", "info");
+      loadRealestateQueue();
+    });
+  }
+
+  // ─── VIDEO TUTORIALS ──────────────────────────────────
+  async function loadTutorials() {
+    const grid = document.getElementById("tutorials-grid");
+    grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500">Loading tutorials…</div>`;
+    const data = await safeFetch("/api/learning/tutorials", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { grid.innerHTML = `<div class="col-span-full py-12 text-center text-red-400">⚠ ${data.error}</div>`; return; }
+    allTutorialsData = Array.isArray(data) ? data : (Array.isArray(data.tutorials) ? data.tutorials : []);
+    filterTutorials();
+  }
+
+  function filterTutorials() {
+    const q = document.getElementById("tut-search").value.toLowerCase();
+    const cat = document.getElementById("tut-category-filter").value;
+    const lang = document.getElementById("tut-lang-filter").value;
+    const filtered = allTutorialsData.filter(t =>
+      (!q || (t.title||"").toLowerCase().includes(q) || (t.category||"").toLowerCase().includes(q)) &&
+      (!cat || t.category === cat) &&
+      (!lang || t.language === lang)
+    );
+    renderTutorialsGrid(filtered);
+  }
+
+  function renderTutorialsGrid(data) {
+    const grid = document.getElementById("tutorials-grid");
+    if (!data.length) {
+      grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500">No tutorials found. Add one above!</div>`;
+      return;
+    }
+    grid.innerHTML = data.map(t => {
+      const idx = allTutorialsData.indexOf(t);
+      const thumbId = (t.videoUrl||"").split("/embed/")[1]?.split("?")[0] || "";
+      const thumbUrl = thumbId ? `https://img.youtube.com/vi/${thumbId}/mqdefault.jpg` : "/uploads/default-store.jpg";
+      return `
+      <div class="glass glass-card rounded-2xl overflow-hidden border border-white/5 flex flex-col">
+        <div class="relative">
+          <img src="${thumbUrl}" alt="${t.title}" class="w-full aspect-video object-cover bg-gray-900" onerror="this.src='/uploads/default-store.jpg'">
+          <div class="absolute top-2 left-2 flex gap-1.5">
+            <span class="badge ${t.language === 'தமிழ்' ? 'badge-purple' : 'badge-green'}">${t.language||"EN"}</span>
+            <span class="badge badge-gray">${t.category||""}</span>
+          </div>
+          <a href="${t.videoUrl}" target="_blank" class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/50 transition">
+            <span class="text-white text-4xl">▶</span>
+          </a>
+        </div>
+        <div class="p-4 flex flex-col flex-1">
+          <h4 class="text-sm font-bold text-white leading-snug">${t.title}</h4>
+          <p class="text-[11px] text-gray-400 mt-1 flex-1 line-clamp-2">${t.description||""}</p>
+          <div class="flex gap-2 mt-3">
+            <button onclick="editTutorialByIndex(${idx})"  class="btn-action btn-amber flex-1 text-center">✎ Edit</button>
+            <button onclick="deleteTutorial('${t._id}')" class="btn-action btn-red flex-1 text-center">🗑 Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function editTutorialByIndex(idx) {
+    const tut = allTutorialsData[idx];
+    if (tut) editTutorial(tut);
+  }
+
+  function editTutorial(tut) {
+    openAddTutorialModal(tut);
+  }
+
+  async function deleteTutorial(id) {
+    showConfirm("Delete this tutorial permanently?", async () => {
+      const data = await safeFetch(`/api/learning/tutorials/${id}`, { method: "DELETE", headers: { "x-admin-token": adminToken } });
+      if (data.error) { toast(data.error, "error"); return; }
+      toast("Tutorial deleted ✓");
+      loadTutorials();
+    });
+  }
+
+  async function submitTutorial(e) {
+    e.preventDefault();
+    const id = document.getElementById("tut-edit-id").value;
+    const body = {
+      title: document.getElementById("tut-title").value,
+      videoUrl: document.getElementById("tut-url").value,
+      category: document.getElementById("tut-category").value,
+      language: document.getElementById("tut-language").value,
+      description: document.getElementById("tut-desc").value
+    };
+    const url = id ? `/api/learning/tutorials/${id}` : "/api/learning/tutorials";
+    const method = id ? "PUT" : "POST";
+    const data = await safeFetch(url, {
+      method,
+      headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+      body: JSON.stringify(body)
+    });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast(id ? "Tutorial updated ✓" : "Tutorial added ✓");
+    closeAddTutorialModal();
+    loadTutorials();
+  }
+
+  // ─── OFFICIAL PRODUCTS ────────────────────────────────
+  async function loadOfficialProducts() {
+    const tbody = document.getElementById("products-table-body");
+    tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading…</td></tr>`;
+    const data = await safeFetch("/api/products?official=true", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-red-400">⚠ ${data.error}</td></tr>`; return; }
+    const arr = Array.isArray(data) ? data : (Array.isArray(data.products) ? data.products : []);
+    allOfficialProds = arr.filter(p => p.isOfficialHubProduct);
+    filterOfficialProducts();
+  }
+
+  function filterOfficialProducts() {
+    const q = document.getElementById("prod-search").value.toLowerCase();
+    const pkg = document.getElementById("prod-pkg-filter").value;
+    const sort = document.getElementById("prod-sort").value;
+    let filtered = allOfficialProds.filter(p =>
+      (!q || (p.cropTitle||"").toLowerCase().includes(q)) &&
+      (!pkg || p.packagingUnitType === pkg)
+    );
+    if (sort === "price-asc") filtered.sort((a,b) => a.pricePerUnit - b.pricePerUnit);
+    else if (sort === "price-desc") filtered.sort((a,b) => b.pricePerUnit - a.pricePerUnit);
+    renderOfficialProductsTable(filtered);
+  }
+
+  function renderOfficialProductsTable(data) {
+    const tbody = document.getElementById("products-table-body");
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">No official products posted yet. Use "Post New Product" tab.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map(p => `
+      <tr class="tbl-row">
+        <td class="py-2 pr-2">
+          <img src="${p.imagePath||'/uploads/default-crop.jpg'}" onerror="this.src='/uploads/default-crop.jpg'" class="w-12 h-12 object-cover rounded-lg bg-gray-800">
+        </td>
+        <td class="py-3 font-semibold text-white">${p.cropTitle}</td>
+        <td class="py-3">
+          <div class="flex items-center gap-1.5">
+            <span class="text-emerald-400 font-bold" id="price-display-${p._id}">₹${p.pricePerUnit}</span>
+            <button onclick="editProductPrice('${p._id}', ${p.pricePerUnit})" class="btn-action btn-amber">✎</button>
+          </div>
+        </td>
+        <td class="py-3 text-gray-300">${p.totalWeightKg} Kg</td>
+        <td class="py-3 text-gray-300">${p.calculatedTotalUnits}</td>
+        <td class="py-3 text-gray-400">${p.packagingUnitType}</td>
+        <td class="py-3">
+          <button onclick="deleteProduct('${p._id}')" class="btn-action btn-red">🗑 Delete</button>
+        </td>
+      </tr>`).join("");
+  }
+
+  function editProductPrice(id, currentPrice) {
+    const body = document.getElementById("edit-modal-body");
+    body.innerHTML = `
+      <div>
+        <label class="block text-xs font-semibold text-gray-400 mb-1">New Retail Price per Unit (₹)</label>
+        <input type="number" id="new-price-input" value="${currentPrice}" min="1" class="filter-input w-full text-lg">
+      </div>`;
+    document.getElementById("edit-modal-title").innerText = "Edit Product Price";
+    document.getElementById("edit-modal").classList.add("open");
+    document.getElementById("edit-modal-save").onclick = async () => {
+      const pricePerUnit = document.getElementById("new-price-input").value;
+      const data = await safeFetch(`/api/admin/products/${id}/price`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+        body: JSON.stringify({ pricePerUnit })
+      });
+      if (data.error) { toast(data.error, "error"); return; }
+      toast("Price updated ✓");
+      closeEditModal();
+      loadOfficialProducts();
+    };
+  }
+
+  async function deleteProduct(id) {
+    showConfirm("Delete this official product from the marketplace?", async () => {
+      const data = await safeFetch(`/api/admin/products/${id}`, { method: "DELETE", headers: { "x-admin-token": adminToken } });
+      if (data.error) { toast(data.error, "error"); return; }
+      toast("Product deleted ✓");
+      loadOfficialProducts();
+    });
+  }
+
+  // ─── POST OFFICIAL PRODUCT ────────────────────────────
+  async function submitOfficialProduct(e) {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const data = await safeFetch("/api/admin/store/official", { method: "POST", headers: { "x-admin-token": adminToken }, body: fd });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast("Official product published! ✓");
+    document.getElementById("system-post-form").reset();
+    switchTab("products");
+  }
+
+  // ─── USERS ────────────────────────────────────────────
+  async function loadUsers() {
+    const tbody = document.getElementById("users-table-body");
+    tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading…</td></tr>`;
+    const data = await safeFetch("/api/admin/users", { headers: { "x-admin-token": adminToken } });
+    if (data.error) { tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-red-400">⚠ ${data.error}</td></tr>`; return; }
+    allUsersData = Array.isArray(data) ? data : [];
+    // Update stat cards
+    document.getElementById("usr-stat-total").innerText = allUsersData.length;
+    document.getElementById("usr-stat-premium").innerText = allUsersData.filter(u => u.subscriptionStatus === "Active").length;
+    document.getElementById("usr-stat-pending").innerText = allUsersData.filter(u => u.subscriptionStatus === "Pending_Payment").length;
+    document.getElementById("usr-stat-free").innerText = allUsersData.filter(u => u.subscriptionTier !== "Premium").length;
+    filterUsersTable();
+  }
+
+  function filterUsersTable() {
+    const q = document.getElementById("user-search").value.toLowerCase();
+    const status = document.getElementById("user-status-filter").value;
+    const tier = document.getElementById("user-tier-filter").value;
+    const filtered = allUsersData.filter(u =>
+      (!q || (u.name||"").toLowerCase().includes(q) || (u.email||"").toLowerCase().includes(q) || (u.phone||"").includes(q)) &&
+      (!status || u.subscriptionStatus === status) &&
+      (!tier || (u.subscriptionTier||"Free") === tier)
+    );
+    renderUsersTable(filtered);
+  }
+
+  function renderUsersTable(data) {
+    const tbody = document.getElementById("users-table-body");
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">No users match this filter.</td></tr>`; return; }
+    tbody.innerHTML = data.map(u => {
+      const statusClass = u.subscriptionStatus === "Active" ? "badge-green" : u.subscriptionStatus === "Pending_Payment" ? "badge-yellow" : "badge-red";
+      const tierClass = u.subscriptionTier === "Premium" ? "badge-purple" : "badge-gray";
+      const isPremium = u.subscriptionTier === "Premium";
+      const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString("en-IN", {day:"2-digit",month:"short",year:"2-digit"}) : "—";
+      return `<tr class="tbl-row">
+        <td class="py-3 font-semibold text-white">${u.name}</td>
+        <td class="py-3 text-gray-300 font-mono text-[11px]">${u.email}</td>
+        <td class="py-3 text-gray-400">${u.phone||"—"}</td>
+        <td class="py-3"><span class="badge ${statusClass}">${u.subscriptionStatus||"—"}</span></td>
+        <td class="py-3"><span class="badge ${tierClass}">${u.subscriptionTier||"Free"}</span></td>
+        <td class="py-3 text-gray-500 text-[11px]">${joined}</td>
+        <td class="py-3 flex gap-2">
+          <button onclick="upgradeTier('${u._id}','${isPremium ? "Free" : "Premium"}')"
+            class="btn-action ${isPremium ? "btn-red" : "btn-amber"}">
+            ${isPremium ? "↓ Downgrade" : "↑ Upgrade"}
+          </button>
+          <button onclick="deleteUser('${u._id}')" class="btn-action btn-red">✕ Delete</button>
+        </td>
+      </tr>`;
+    }).join("");
+  }
+
+  async function upgradeTier(id, tier) {
+    const data = await safeFetch(`/api/admin/users/${id}/tier`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
+      body: JSON.stringify({ tier })
+    });
+    if (data.error) { toast(data.error, "error"); return; }
+    toast(`User ${tier === "Premium" ? "upgraded to Premium" : "downgraded to Free"} ✓`);
+    loadUsers();
+  }
+
+  
+  async function deleteUser(id) {
+    if (!confirm("Are you sure you want to permanently delete this user?")) return;
+    const res = await safeFetch(`/api/admin/users/${id}`, {
+      method: "DELETE",
+      headers: { "x-admin-token": adminToken }
+    });
+    if (res.error) { toast(res.error, "error"); return; }
+    toast("User deleted successfully ✓");
+    loadUsers();
+  }
+
+  // ─── ANALYTICS ────────────────────────────────────────
+  async function loadPlatformAnalytics() {
+    const text = await fetch("/api/admin/analytics/platform", { headers: { "x-admin-token": adminToken } })
+      .then(r => r.text()).catch(() => "{}");
+    let data = {};
+    try { data = JSON.parse(text); } catch { data = { error: "Parse error" }; }
+    if (data.error) { toast(data.error, "error"); return; }
+
+    document.getElementById("stat-platform-users").innerText = data.totalUsers || 0;
+    document.getElementById("stat-premium-users").innerText = data.activeSubscribers || 0;
+    document.getElementById("stat-platform-revenue").innerText = `₹${(data.totalRevenue||0).toLocaleString()}`;
+
+    if (tierChartInstance) tierChartInstance.destroy();
+    tierChartInstance = new Chart(document.getElementById("user-tier-chart").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: ["Active Subscribers", "Pending / Others"],
+        datasets: [{ label: "Users", data: [data.activeSubscribers||0, (data.totalUsers||0) - (data.activeSubscribers||0)], backgroundColor: ["#10B981","#f97316"], borderRadius: 6, borderWidth: 0 }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { color: "#6b7280" }, grid: { color: "rgba(255,255,255,0.05)" } }, x: { ticks: { color: "#6b7280" }, grid: { color: "rgba(255,255,255,0.05)" } } } }
+    });
+
+    if (volumeChartInstance) volumeChartInstance.destroy();
+    volumeChartInstance = new Chart(document.getElementById("volume-metric-chart").getContext("2d"), {
+      type: "line",
+      data: {
+        labels: ["Baseline","Current"],
+        datasets: [{ label: "Logistics Intake (Kg)", data: [0, data.totalVolume||0], borderColor: "#10B981", backgroundColor: "rgba(16,185,129,0.1)", fill: true, tension: 0.4, pointBackgroundColor: "#10B981" }]
+      },
+      options: { plugins: { legend: { labels: { color: "#9CA3AF" } } }, scales: { y: { ticks: { color: "#6b7280" }, grid: { color: "rgba(255,255,255,0.05)" } }, x: { ticks: { color: "#6b7280" }, grid: { color: "rgba(255,255,255,0.05)" } } } }
+    });
+  }
+
+  // ─── Init ─────────────────────────────────────────────
+  checkAdminAuth();
+</script>
+<script src="/theme-engine.js"></script>
+</body>
+</html>

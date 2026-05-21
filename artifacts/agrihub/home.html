@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub Pro - Home Feed</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body.theme-emerald { --bg-color: #0A0D14; --glass-bg: rgba(15, 23, 42, 0.8); --primary: #10B981; --primary-rgb: 16, 185, 129; --accent: #14B8A6; }
+    body.theme-sunset { --bg-color: #0F0A14; --glass-bg: rgba(24, 15, 30, 0.85); --primary: #D946EF; --primary-rgb: 217, 70, 239; --accent: #F43F5E; }
+    body.theme-cyberpunk { --bg-color: #000000; --glass-bg: rgba(10, 10, 10, 0.95); --primary: #06B6D4; --primary-rgb: 6, 182, 212; --accent: #F43F5E; }
+    body.theme-classic { --bg-color: #0B132B; --glass-bg: rgba(20, 30, 55, 0.8); --primary: #3B82F6; --primary-rgb: 59, 130, 246; --accent: #60A5FA; }
+
+    body { font-family: 'Outfit', sans-serif; background-color: var(--bg-color) !important; color: #E2E8F0; transition: background-color 0.3s ease, color 0.3s ease; }
+    .glass { background: var(--glass-bg) !important; backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.06) !important; }
+    .text-primary { color: var(--primary) !important; }
+    .bg-primary { background-color: var(--primary) !important; }
+    .border-primary { border-color: var(--primary) !important; }
+    
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .agri-gradient { background: linear-gradient(45deg, var(--primary) 0%, var(--accent) 100%); }
+    select option { background-color: #18181b; color: #ffffff; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
+  <script>
+    (function() {
+      const t = localStorage.getItem("theme") || "cyberpunk";
+      document.body.classList.add("theme-" + t);
+    })();
+  </script>
+
+  <!-- Super App Header -->
+  <header class="glass sticky top-0 z-50 border-b border-white/5">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center gap-4">
+      <a href="home.html" class="flex items-center gap-2">
+        <div class="p-1.5 bg-emerald-500/20 rounded-lg"><i data-lucide="sprout" class="w-5 h-5 text-emerald-400"></i></div>
+        <span class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-300">AgriHub Pro</span>
+      </a>
+      <div class="hidden md:flex gap-6 text-sm font-medium">
+        <a href="home.html" id="nav-home" class="text-emerald-400 font-semibold transition hover:text-emerald-300">Home Feed</a>
+        <a href="index.html" id="nav-market" class="text-gray-300 transition hover:text-emerald-300">Marketplace</a>
+        <a href="community.html" id="nav-feed" class="text-gray-300 transition hover:text-emerald-300">Community</a>
+        <a href="land-market.html" id="nav-land" class="text-gray-300 transition hover:text-emerald-300">Real Estate</a>
+        <a href="profile.html" id="nav-analytics" class="text-gray-300 transition hover:text-emerald-300">Profile</a>
+        <a href="learning.html" id="nav-learn" class="text-gray-300 transition hover:text-emerald-300">Academy</a>
+        <a href="smart-home.html" id="nav-smarthome" class="text-gray-300 transition hover:text-emerald-300">Smart Home</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="auth-actions" class="flex gap-2">
+          <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-white text-black hover:bg-gray-200 rounded transition shadow">Login</button>
+        </div>
+        <button onclick="toggleLang()" id="lang-btn" class="px-3 py-2 text-xs font-bold bg-white/5 hover:bg-white/10 text-gray-300 rounded border border-white/10 transition">à®¤à®®à®¿à®´à¯</button>
+        <a href="profile.html" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition text-gray-300" title="Settings & Profile">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto max-w-lg px-4 py-6 flex-grow">
+    
+    <!-- Instagram Stories Tray -->
+    <div class="flex gap-4 overflow-x-auto pb-4 mb-6 border-b border-white/10 scrollbar-hide">
+      <div onclick="triggerStoryUpload()" class="flex flex-col items-center flex-shrink-0 cursor-pointer group">
+        <div class="w-16 h-16 rounded-full p-[2px] border-2 border-dashed border-gray-600 hover:border-emerald-500 transition flex items-center justify-center bg-zinc-900">
+          <span class="text-lg text-gray-400 font-bold group-hover:text-emerald-400">+</span>
+        </div>
+        <span class="text-[10px] text-gray-400 mt-1 font-semibold">Your Story</span>
+        <input type="file" id="story-file-input" accept="image/*" class="hidden" onchange="uploadStory(this)">
+      </div>
+      <div id="stories-tray-container" class="flex gap-4"></div>
+    </div>
+
+    <!-- Flipkart Style Deals Slider -->
+    <div class="mb-6">
+      <h3 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i> Trending Deals</h3>
+      <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" id="deals-slider">
+        <!-- Dynamically populated products -->
+      </div>
+    </div>
+
+    <!-- Instagram Feed List -->
+    <div class="flex flex-col gap-6 border-t border-white/10 pt-6" id="instagram-feed-list">
+      <!-- Dynamically populated vertical cards -->
+    </div>
+
+  </main>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/85 backdrop-blur-sm px-4">
+    <div class="glass max-w-sm w-full rounded-2xl p-8 relative shadow-2xl">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+      <div class="flex gap-4 border-b border-white/10 pb-3 mb-6">
+        <button id="tab-login" onclick="setAuthTab('login')" class="text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm">Login</button>
+        <button id="tab-register" onclick="setAuthTab('register')" class="text-gray-400 hover:text-white pb-1.5 transition text-sm">Register</button>
+      </div>
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+          <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Email Address</label>
+          <input type="email" id="auth-email" required placeholder="name@farm.com" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div id="field-phone" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Phone Number</label>
+          <input type="tel" id="auth-phone" placeholder="+91 98765 43210" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Password</label>
+          <input type="password" id="auth-password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded text-white font-semibold transition mt-2">Proceed</button>
+      </form>
+    </div>
+  </div>
+
+  <nav class="fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 flex justify-around items-center py-2 md:hidden bg-zinc-950/95 shadow-2xl">
+    <a href="home.html" class="flex flex-col items-center gap-1 text-primary font-bold transition">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span class="text-[9px]">Home</span>
+    </a>
+    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+      <span class="text-[9px]">Market</span>
+    </a>
+    <a href="learning.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="play-circle" class="w-5 h-5"></i>
+      <span class="text-[9px]">Academy</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span class="text-[9px]">Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    let token = localStorage.getItem("token") || "";
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch (e) {
+      console.error("Failed to parse user from localStorage", e);
+    }
+    let activeAuthTab = "login";
+
+    function pickList(data, key) { return Array.isArray(data) ? data : (Array.isArray(data?.[key]) ? data[key] : []); }
+
+    const dict = {
+      EN: {
+        navHome: "Home Feed", navMarket: "Marketplace", navFeed: "Social Feed", navLand: "Real Estate", navAnalytics: "Profile", navLearn: "Academy", navSmarthome: "Smart Home",
+        langBtn: "à®¤à®®à®¿à®´à¯"
+      },
+      'à®¤à®®à®¿à®´à¯': {
+        navHome: "à®®à¯à®•à®ªà¯à®ªà¯", navMarket: "à®šà®¨à¯à®¤à¯ˆ", navFeed: "à®šà®®à¯‚à®• à®Šà®Ÿà®•à®®à¯", navLand: "à®°à®¿à®¯à®²à¯ à®Žà®¸à¯à®Ÿà¯‡à®Ÿà¯", navAnalytics: "à®µà®¿à®µà®°à®•à¯à®•à¯à®±à®¿à®ªà¯à®ªà¯", navLearn: "à®ªà®¯à®¿à®±à¯à®šà®¿", navSmarthome: "à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯",
+        langBtn: "English"
+      }
+    };
+    let currentLang = localStorage.getItem("lang") || "EN";
+
+    function applyTranslations() {
+      const d = dict[currentLang];
+      const elements = {
+        "nav-home": d.navHome,
+        "nav-market": d.navMarket,
+        "nav-feed": d.navFeed,
+        "nav-land": d.navLand,
+        "nav-analytics": d.navAnalytics,
+        "nav-learn": d.navLearn,
+        "nav-smarthome": d.navSmarthome,
+        "lang-btn": d.langBtn
+      };
+      for (const [id, text] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el && text) el.innerText = text;
+      }
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === "EN" ? "à®¤à®®à®¿à®´à¯" : "EN";
+      localStorage.setItem("lang", currentLang);
+      applyTranslations();
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById("auth-actions");
+      if (token && user) {
+        container.innerHTML = `
+          <div class="flex items-center gap-3">
+            <a href="profile.html" class="text-xs text-gray-300 font-semibold bg-white/5 px-3 py-2 rounded border border-white/10 hover:bg-white/10 transition hidden md:inline">ðŸ‘¤ ${user.name}</a>
+            <button onclick="logout()" class="px-3 py-2 text-xs font-semibold rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition">Logout</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<button onclick="openAuthModal()" class="px-4 py-2 text-xs font-bold bg-white text-black hover:bg-gray-200 rounded transition shadow">Login</button>`;
+      }
+    }
+
+    function logout() {
+      token = ""; user = null;
+      localStorage.removeItem("token"); localStorage.removeItem("user");
+      updateAuthUI(); location.reload();
+    }
+
+    function openAuthModal() { document.getElementById("auth-modal").classList.remove("hidden"); }
+    function closeAuthModal() { document.getElementById("auth-modal").classList.add("hidden"); }
+    
+    function setAuthTab(tab) {
+      activeAuthTab = tab;
+      const loginTab = document.getElementById("tab-login");
+      const regTab = document.getElementById("tab-register");
+      const nameField = document.getElementById("field-name");
+      const phoneField = document.getElementById("field-phone");
+
+      if (tab === "login") {
+        loginTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        regTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.add("hidden"); phoneField.classList.add("hidden");
+      } else {
+        regTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        loginTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.remove("hidden"); phoneField.classList.remove("hidden");
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      const endpoint = activeAuthTab === "login" ? "/api/auth/login" : "/api/auth/register";
+      const body = { email, password };
+      if (activeAuthTab === "register") {
+        body.name = document.getElementById("auth-name").value;
+        body.phone = document.getElementById("auth-phone").value;
+      }
+      try {
+        const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in home.html', e); }
+        if (data.error) alert(data.error);
+        else {
+          token = data.token; user = data.user;
+          localStorage.setItem("token", token); localStorage.setItem("user", JSON.stringify(user));
+          closeAuthModal(); updateAuthUI(); location.reload();
+        }
+      } catch (err) { alert("Auth error"); }
+    }
+
+    function triggerStoryUpload() {
+      if (!token) return openAuthModal();
+      document.getElementById("story-file-input").click();
+    }
+
+    async function uploadStory(input) {
+      if (!input.files || !input.files[0]) return;
+      const fd = new FormData();
+      fd.append("media", input.files[0]);
+      try {
+        const res = await fetch("/api/stories", { method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: fd });
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in home.html', e); }
+        if (data.error) alert(data.error);
+        else loadFeed();
+      } catch (err) { alert("Failed to post story."); }
+    }
+
+    function togglePostLike(id, btn) {
+      if (!token) return openAuthModal();
+      const lSpan = document.getElementById(`likes-cnt-${id}`);
+      if (!lSpan) return;
+      let count = parseInt(lSpan.getAttribute("data-count")) || 0;
+      if (btn.classList.contains("text-red-500")) {
+        btn.classList.remove("text-red-500"); btn.innerText = "â™¡"; count--;
+      } else {
+        btn.classList.add("text-red-500"); btn.innerText = "â™¥"; count++;
+      }
+      lSpan.setAttribute("data-count", count);
+      lSpan.innerText = count + " likes";
+    }
+
+    async function loadFeed() {
+      try {
+        const res = await fetch("/api/stories");
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in home.html', e); }
+        const stories = pickList(data, 'stories');
+        const tray = document.getElementById("stories-tray-container");
+        const feedList = document.getElementById("instagram-feed-list");
+        
+        tray.innerHTML = "";
+        
+        if (!stories.length) {
+          feedList.innerHTML = `<div class="py-16 text-center text-gray-500 glass rounded-2xl">No stories in your feed today.</div>`;
+          return;
+        }
+
+        stories.forEach(s => {
+          const div = document.createElement("div");
+          div.className = "flex flex-col items-center flex-shrink-0";
+          div.innerHTML = `
+            <div class="w-16 h-16 rounded-full p-[2.5px] agri-gradient flex items-center justify-center cursor-pointer hover:scale-105 transition">
+              <div class="w-full h-full rounded-full border-2 border-black overflow-hidden bg-cover bg-center" style="background-image: url('${s.mediaUrl}')"></div>
+            </div>
+            <span class="text-[10px] text-gray-300 mt-1 font-semibold truncate w-14 text-center">${s.userName}</span>
+          `;
+          tray.appendChild(div);
+        });
+
+        feedList.innerHTML = stories.map(s => {
+          const likesVal = Math.round(Math.random() * 80 + 10);
+          return `
+            <div class="glass rounded-xl overflow-hidden border border-white/10 flex flex-col">
+              <div class="p-3 flex items-center gap-3 border-b border-white/5">
+                <div class="w-8 h-8 rounded-full agri-gradient p-[1.5px] flex items-center justify-center bg-cover bg-center" style="background-image: url('${s.mediaUrl}')"></div>
+                <div>
+                  <h4 class="text-xs font-bold text-white">${s.userName}</h4>
+                  <span class="text-[9px] text-gray-500">Suggested For You</span>
+                </div>
+              </div>
+              <div class="w-full aspect-square bg-cover bg-center bg-gray-900" style="background-image: url('${s.mediaUrl}')"></div>
+              <div class="p-4 flex flex-col gap-2">
+                <div class="flex justify-between items-center text-xl">
+                  <div class="flex gap-4">
+                    <button onclick="togglePostLike('${s._id}', this)" class="hover:scale-110 transition leading-none">â™¡</button>
+                    <button class="hover:scale-110 transition leading-none">ðŸ’¬</button>
+                    <button class="hover:scale-110 transition leading-none">âœˆï¸</button>
+                  </div>
+                  <button class="hover:scale-110 transition leading-none">ðŸ”–</button>
+                </div>
+                <span class="text-[11px] font-bold text-white block mt-1" id="likes-cnt-${s._id}" data-count="${likesVal}">${likesVal} likes</span>
+                <p class="text-xs text-gray-300 mt-1 leading-relaxed"><span class="font-bold text-white mr-2">${s.userName}</span>Check out this recent upload! #agrihub</p>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (err) {
+        const feedList = document.getElementById("instagram-feed-list");
+        if (feedList) feedList.innerHTML = `<div class="py-16 text-center text-gray-500 glass rounded-2xl">Could not load feed. Ensure the API server is running.</div>`;
+      }
+    }
+
+    async function loadDeals() {
+      try {
+        const res = await fetch("/api/products");
+        const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in home.html', e); }
+        const productsList = pickList(data, 'products');
+        const slider = document.getElementById("deals-slider");
+        if (!productsList.length) {
+          slider.innerHTML = `<div class="text-xs text-gray-500 py-4">No active deals right now.</div>`;
+          return;
+        }
+        slider.innerHTML = productsList.slice(0, 5).map(p => {
+          if (!p.pricePerUnit || p.pricePerUnit <= 0) return '';
+          const origPrice = Math.round(p.pricePerUnit * 1.25);
+          return `
+            <div class="glass w-40 flex-shrink-0 rounded-xl overflow-hidden border border-white/5">
+              <div class="w-full h-28 bg-cover bg-center" style="background-image: url('${p.imagePath}')"></div>
+              <div class="p-3">
+                <h4 class="text-[11px] font-bold text-white truncate">${p.cropTitle}</h4>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span class="text-xs font-black text-emerald-400">â‚¹${p.pricePerUnit}</span>
+                  <span class="text-[9px] text-gray-500 line-through">â‚¹${origPrice}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (err) {}
+    }
+
+    applyTranslations();
+    updateAuthUI();
+    loadFeed();
+    loadDeals();
+  </script>
+  
+  <!-- Global Icon Fix -->
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+      const obs = new MutationObserver(m => {
+        let n = false;
+        for (let x of m) {
+          if (x.addedNodes.length) {
+            for (let node of x.addedNodes) {
+              if (node.nodeType === 1 && ((node.tagName === 'I' && node.hasAttribute('data-lucide')) || node.querySelector('i[data-lucide]'))) {
+                n = true; break;
+              }
+            }
+          }
+          if (n) break;
+        }
+        if (n) lucide.createIcons();
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
+  </script>
+  <script src="/theme-engine.js"></script>
+</body>
+</html>
+
