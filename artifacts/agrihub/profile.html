@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
   <link rel="stylesheet" href="/theme.css">
   <script>
     (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
@@ -11,6 +12,13 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/tailwind.css" />
+=======
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — My Profile</title>
+  <link rel="manifest" href="/manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     .lang-btn.active{background:#059669!important;color:#fff!important;}
@@ -18,29 +26,45 @@
     .progress-bar{transition:width 0.6s ease;}
   </style>
 </head>
+<<<<<<< HEAD
 <body class="bg-gray-50 min-h-screen font-sans pb-16 md:pb-0">
+=======
+<body class="bg-gray-50 min-h-screen font-sans">
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 <nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
   <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <a href="/index.html" class="flex items-center gap-2 text-xl font-bold">
+<<<<<<< HEAD
       <span class="text-2xl">ðŸŒ¾</span><span data-t="brand">AgriHub Pro</span>
+=======
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </a>
     <div class="hidden md:flex items-center gap-5 text-sm font-medium">
       <a href="/index.html" class="hover:text-green-200 transition" data-t="nav_market">Marketplace</a>
       <a href="/community.html" class="hover:text-green-200 transition" data-t="nav_community">Community</a>
       <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
+<<<<<<< HEAD
       <a href="/learning.html" class="hover:text-green-200 transition" data-t="nav_learn">Academy</a>
       <a href="/smart-home.html" class="hover:text-green-200 transition" data-t="nav_smarthome">Smart Home</a>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <a href="/profile.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_profile">My Profile</a>
     </div>
     <div class="flex items-center gap-3">
       <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
         <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+<<<<<<< HEAD
         <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">à®¤à®®à®¿à®´à¯</button>
+=======
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
       <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition max-w-32 truncate" data-t="login">Login</button>
     </div>
   </div>
+<<<<<<< HEAD
   <div class="md:hidden border-t border-green-700/70 bg-green-900">
     <div class="max-w-6xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-xs font-semibold">
       <a href="/index.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_market">Marketplace</a>
@@ -51,11 +75,17 @@
       <a href="/profile.html" class="shrink-0 rounded-md bg-white/15 px-3 py-2 text-white" data-t="nav_profile">My Profile</a>
     </div>
   </div>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </nav>
 
 <!-- AUTH REQUIRED -->
 <div id="auth-required" class="hidden max-w-lg mx-auto px-4 py-24 text-center">
+<<<<<<< HEAD
   <p class="text-7xl mb-4">ðŸ”</p>
+=======
+  <p class="text-7xl mb-4">🔐</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <h2 class="text-2xl font-bold text-gray-800 mb-2" data-t="auth_required_title">Login Required</h2>
   <p class="text-gray-500 mb-6" data-t="auth_required_sub">Please login to access your farmer profile and analytics.</p>
   <a href="/index.html" class="inline-block bg-green-700 hover:bg-green-600 text-white font-bold px-8 py-3 rounded-xl transition" data-t="go_login">Go to Login</a>
@@ -65,13 +95,19 @@
 <div id="profile-content" class="hidden max-w-6xl mx-auto px-4 py-8">
 
   <!-- PROFILE HEADER -->
+<<<<<<< HEAD
   <div class="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row items-center md:items-start gap-6 border border-gray-100">
     <div id="profile-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-white text-4xl font-extrabold shrink-0 shadow-md">F</div>
+=======
+  <div class="bg-white rounded-2xl shadow p-6 mb-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+    <div id="profile-avatar" class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-white text-4xl font-extrabold shrink-0">F</div>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     <div class="flex-1 text-center md:text-left">
       <h1 id="profile-name" class="text-2xl font-extrabold text-gray-800 mb-1">Farmer</h1>
       <p id="profile-email" class="text-gray-400 text-sm mb-3"></p>
       <div class="flex flex-wrap gap-3 justify-center md:justify-start">
         <span id="tier-badge" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold"></span>
+<<<<<<< HEAD
         <span id="profile-phone" class="text-sm text-gray-500 flex items-center gap-1">ðŸ“ž <span id="phone-text"></span></span>
       </div>
     </div>
@@ -252,6 +288,84 @@
     </div>
   </section>
 
+=======
+        <span id="profile-phone" class="text-sm text-gray-500 flex items-center gap-1">📞 <span id="phone-text"></span></span>
+      </div>
+    </div>
+    <div class="text-center">
+      <button onclick="openTrackerModal()" class="bg-green-700 hover:bg-green-600 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition block mb-2" data-t="track_crop">+ Track a Crop</button>
+      <button id="upgrade-btn" onclick="doUpgrade()" class="hidden bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-yellow-900 font-bold px-5 py-2.5 rounded-xl text-sm transition" data-t="upgrade_premium">Upgrade to Premium ⭐</button>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="stats-row">
+    <div class="bg-white rounded-2xl shadow p-5 text-center">
+      <p class="text-3xl font-extrabold text-green-700" id="stat-earnings">₹0</p>
+      <p class="text-xs text-gray-500 mt-1" data-t="lifetime_earnings">Lifetime Earnings</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-5 text-center">
+      <p class="text-3xl font-extrabold text-blue-600" id="stat-weight">0 kg</p>
+      <p class="text-xs text-gray-500 mt-1" data-t="total_weight_sold">Total Weight Sold</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-5 text-center">
+      <p class="text-3xl font-extrabold text-purple-600" id="stat-crops">0</p>
+      <p class="text-xs text-gray-500 mt-1" data-t="crops_delivered">Crops Delivered</p>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-5 text-center">
+      <p class="text-3xl font-extrabold text-amber-600" id="stat-tracked">0</p>
+      <p class="text-xs text-gray-500 mt-1" data-t="active_tracking">Active Trackings</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- DOUGHNUT CHART -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="crop_distribution">Crop Distribution</h2>
+      <div id="chart-empty" class="hidden text-center py-10">
+        <p class="text-4xl mb-2">🌱</p>
+        <p class="text-gray-400 text-sm" data-t="no_crop_data">No crop data yet. List and deliver crops to see your distribution.</p>
+      </div>
+      <div id="chart-container" class="relative h-64 flex items-center justify-center">
+        <canvas id="cropChart"></canvas>
+      </div>
+    </div>
+
+    <!-- ACTIVE CROP TRACKER -->
+    <div class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="crop_tracker">Active Crop Tracker</h2>
+      <div id="tracker-loading" class="text-center py-8">
+        <div class="inline-block w-6 h-6 border-3 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      <div id="tracker-list" class="space-y-3 hidden"></div>
+      <div id="tracker-empty" class="hidden text-center py-8">
+        <p class="text-4xl mb-2">🌾</p>
+        <p class="text-gray-400 text-sm" data-t="no_tracking">No crops being tracked yet.</p>
+        <button onclick="openTrackerModal()" class="mt-3 text-green-700 font-semibold text-sm hover:underline" data-t="start_tracking">Start Tracking a Crop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT PRODUCTS -->
+  <div class="bg-white rounded-2xl shadow p-6">
+    <h2 class="text-lg font-bold text-gray-800 mb-4" data-t="my_listings">My Crop Listings</h2>
+    <div id="products-loading" class="text-center py-8">
+      <div class="inline-block w-6 h-6 border-3 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+    <div id="products-table" class="hidden overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead><tr class="border-b border-gray-100 text-left">
+          <th class="pb-3 font-semibold text-gray-500" data-t="col_crop">Crop</th>
+          <th class="pb-3 font-semibold text-gray-500" data-t="col_weight">Weight (kg)</th>
+          <th class="pb-3 font-semibold text-gray-500" data-t="col_units">Units</th>
+          <th class="pb-3 font-semibold text-gray-500" data-t="col_status">Status</th>
+        </tr></thead>
+        <tbody id="products-tbody"></tbody>
+      </table>
+    </div>
+    <div id="products-empty" class="hidden text-center py-8 text-gray-400" data-t="no_listings_yet">No listings yet. <a href="/index.html" class="text-green-700 font-semibold hover:underline">Go to Marketplace</a> to list your first crop.</div>
+  </div>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </div>
 
 <!-- TRACKER MODAL -->
@@ -304,6 +418,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <!-- EDIT BANK CREDENTIALS MODAL -->
 <div id="edit-bank-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100">
@@ -359,25 +474,40 @@
   </a>
 </nav>
 
+=======
+<div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+  <span>✓</span><span id="toast-msg"></span>
+</div>
+
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 <script>
 const API_BASE='/api';
 let token=localStorage.getItem('agrihub_token')||'', user=JSON.parse(localStorage.getItem('agrihub_user')||'null');
 let currentLang='en', cropChart=null;
 
 const T={
+<<<<<<< HEAD
   en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',nav_learn:'Academy',nav_smarthome:'Smart Home',
+=======
+  en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     login:'Login',auth_required_title:'Login Required',auth_required_sub:'Please login to access your farmer profile.',go_login:'Go to Login',
     lifetime_earnings:'Lifetime Earnings (est.)',total_weight_sold:'Total Weight Delivered',crops_delivered:'Deliveries',
     active_tracking:'Active Trackings',crop_distribution:'Crop Distribution',no_crop_data:'No crop data yet.',
     crop_tracker:'Active Crop Tracker',no_tracking:'No crops being tracked yet.',start_tracking:'Start Tracking a Crop',
     my_listings:'My Crop Listings',col_crop:'Crop',col_weight:'Weight (kg)',col_units:'Units',col_status:'Status',
+<<<<<<< HEAD
     no_listings_yet:'No listings yet.',track_crop:'+ Track a Crop',upgrade_premium:'Upgrade to Premium â­',
+=======
+    no_listings_yet:'No listings yet.',track_crop:'+ Track a Crop',upgrade_premium:'Upgrade to Premium ⭐',
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     tracker_title:'Start Tracking a Crop',tracker_sub:'Set up daily watering and fertilizer alerts',
     crop_name_label:'Crop Name',variety_label:'Variety',planted_date_label:'Planted Date',field_size_label:'Field Size (acres)',
     watering_days_label:'Watering Days',watering_days_hint:'Day numbers from planting. Notifications fire on these days.',
     fertilizer_days_label:'Fertilizer Days',fertilizer_names_label:'Fertilizer Names',cancel:'Cancel',start_tracking_btn:'Start Tracking',
     status_awaiting:'Awaiting Delivery',status_paid:'Received & Paid',status_retail:'Listed for Retail',
     day:'Day',days_since:'days since planting',water_today:'Water today!',fertilize_today:'Apply fertilizer today!',
+<<<<<<< HEAD
     delete_tracker:'Remove',
     tab_overview:'Overview',tab_3d:'3D Model',tab_payouts:'Payouts',
     tab_3d_title:'Farm Boundary & 3D Contour Map',tab_3d_sub:'Generated using high-precision corner vertices.',
@@ -417,6 +547,23 @@ const T={
     payout_settings:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯',payout_settings_sub:'à®šà®°à®¿à®ªà®¾à®°à¯à®ªà¯à®ªà¯ à®•à¯Šà®Ÿà¯à®ªà¯à®ªà®©à®µà¯à®•à®³à¯ˆ à®‰à®™à¯à®•à®³à¯ à®•à®£à®•à¯à®•à¯à®•à®³à®¿à®²à¯ à®šà¯†à®²à¯à®¤à¯à®¤ à®‰à®™à¯à®•à®³à¯ à®µà®™à¯à®•à®¿ à®®à®±à¯à®±à¯à®®à¯ UPI à®’à®°à¯à®™à¯à®•à®¿à®£à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ˆ à®®à®¾à®±à¯à®±à®µà¯à®®à¯.',
     payout_settings_saved:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ à®µà¯†à®±à¯à®±à®¿à®•à®°à®®à®¾à®• à®ªà¯à®¤à¯à®ªà¯à®ªà®¿à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®Ÿà®©.',payout_settings_failed:'à®ªà®£à®ªà®°à®¿à®®à®¾à®±à¯à®± à®…à®®à¯ˆà®ªà¯à®ªà¯à®•à®³à¯ˆà®ªà¯ à®ªà¯à®¤à¯à®ªà¯à®ªà®¿à®•à¯à®• à®®à¯à®Ÿà®¿à®¯à®µà®¿à®²à¯à®²à¯ˆ.',
     payout_settings_loading_failed:'à®µà®™à¯à®•à®¿à®šà¯ à®šà®¾à®©à¯à®±à¯à®•à®³à¯ˆ à®à®±à¯à®±à¯à®µà®¤à®¿à®²à¯ à®¤à¯‹à®²à¯à®µà®¿.'}
+=======
+    delete_tracker:'Remove'},
+  ta:{brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',auth_required_title:'உள்நுழைவு தேவை',auth_required_sub:'உங்கள் விவசாய சுயவிவரத்தை அணுக உள்நுழையவும்.',go_login:'உள்நுழைக',
+    lifetime_earnings:'ஆயுள்கால வருவாய் (மதிப்பீடு)',total_weight_sold:'மொத்த எடை',crops_delivered:'விநியோகங்கள்',
+    active_tracking:'செயலில் உள்ள கண்காணிப்புகள்',crop_distribution:'பயிர் விநியோகம்',no_crop_data:'இன்னும் பயிர் தரவு இல்லை.',
+    crop_tracker:'செயலில் உள்ள பயிர் கண்காணிப்பி',no_tracking:'கண்காணிக்கப்படும் பயிர்கள் இல்லை.',start_tracking:'பயிரை கண்காணிக்க தொடங்குங்கள்',
+    my_listings:'என் பயிர் பட்டியல்கள்',col_crop:'பயிர்',col_weight:'எடை (கிலோ)',col_units:'அலகுகள்',col_status:'நிலை',
+    no_listings_yet:'பட்டியல்கள் இல்லை.',track_crop:'+ பயிரை கண்காணி',upgrade_premium:'பிரீமியத்திற்கு மேம்படுத்தவும் ⭐',
+    tracker_title:'பயிரை கண்காணிக்க தொடங்கவும்',tracker_sub:'தினசரி நீர்ப்பாசன மற்றும் உர அறிவிப்புகளை அமைக்கவும்',
+    crop_name_label:'பயிர் பெயர்',variety_label:'ரகம்',planted_date_label:'நட்ட தேதி',field_size_label:'நில அளவு (ஏக்கர்)',
+    watering_days_label:'நீர்ப்பாசன நாட்கள்',watering_days_hint:'நட்ட நாளிலிருந்து நாள் எண்கள்.',
+    fertilizer_days_label:'உர நாட்கள்',fertilizer_names_label:'உர பெயர்கள்',cancel:'ரத்து',start_tracking_btn:'கண்காணிப்பை தொடங்கு',
+    status_awaiting:'டெலிவரி காத்திருக்கிறது',status_paid:'பெறப்பட்டது & செலுத்தப்பட்டது',status_retail:'சில்லரை விற்பனைக்கு',
+    day:'நாள்',days_since:'நட்டு நாட்கள் ஆகிறது',water_today:'இன்று நீர்ப்பாசனம் செய்யவும்!',fertilize_today:'இன்று உரம் போடவும்!',
+    delete_tracker:'நீக்கு'}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 };
 function t(k){return T[currentLang][k]||T.en[k]||k;}
 function setLang(lang){
@@ -425,7 +572,11 @@ function setLang(lang){
   document.querySelectorAll('[data-t]').forEach(el=>{const v=T[lang][el.dataset.t];if(v)el.textContent=v;});
 }
 function handleAuthBtn(){if(user&&token)doLogout();else{window.location.href='/index.html';}}
+<<<<<<< HEAD
 function doLogout(){token='';user=null;localStorage.removeItem('agrihub_token');localStorage.removeItem('agrihub_user');localStorage.removeItem('token');localStorage.removeItem('user');window.location.href='/index.html';}
+=======
+function doLogout(){token='';user=null;localStorage.removeItem('agrihub_token');localStorage.removeItem('agrihub_user');window.location.href='/index.html';}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 function checkAuth(){
   if(!token||!user){
@@ -443,17 +594,26 @@ function checkAuth(){
   document.getElementById('phone-text').textContent=user.phone||'';
   const tierBadge=document.getElementById('tier-badge');
   if(user.subscriptionTier==='Premium'){
+<<<<<<< HEAD
     tierBadge.textContent='â­ Premium Member';
     tierBadge.className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border border-yellow-300';
     document.getElementById('upgrade-btn').classList.add('hidden');
   } else {
     tierBadge.textContent='ðŸŒ± Free Member';
+=======
+    tierBadge.textContent='⭐ Premium Member';
+    tierBadge.className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border border-yellow-300';
+    document.getElementById('upgrade-btn').classList.add('hidden');
+  } else {
+    tierBadge.textContent='🌱 Free Member';
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     tierBadge.className='inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-bold bg-green-100 text-green-800 border border-green-300';
     document.getElementById('upgrade-btn').classList.remove('hidden');
   }
   return true;
 }
 
+<<<<<<< HEAD
 function switchTab(tabName) {
   document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
   document.getElementById(`sect-${tabName}`).classList.remove('hidden');
@@ -476,11 +636,21 @@ async function loadAnalytics(){
   try {
     const res=await fetch(`${API_BASE}/users/me/analytics`,{headers:{Authorization:`Bearer ${token}`}});
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+=======
+async function loadAnalytics(){
+  try {
+    const res=await fetch(`${API_BASE}/users/me/analytics`,{headers:{Authorization:`Bearer ${token}`}});
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     const stats=data.lifetimeStats||{};
     const dist=data.cropDistribution||[];
     const recent=data.recentProducts||[];
 
+<<<<<<< HEAD
     document.getElementById('stat-earnings').textContent='â‚¹'+Math.round(stats.estimatedEarnings||0).toLocaleString('en-IN');
+=======
+    document.getElementById('stat-earnings').textContent='₹'+Math.round(stats.estimatedEarnings||0).toLocaleString('en-IN');
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     document.getElementById('stat-weight').textContent=(stats.totalWeightKg||0).toFixed(1)+' kg';
     document.getElementById('stat-crops').textContent=stats.totalProducts||0;
 
@@ -532,8 +702,13 @@ function renderProductsTable(products){
   tbody.innerHTML=products.map(p=>`
     <tr class="border-b border-gray-50 hover:bg-gray-50">
       <td class="py-3 font-medium text-gray-800">${p.cropTitle}</td>
+<<<<<<< HEAD
       <td class="py-3 text-gray-600">${p.totalWeightKg||'â€”'}</td>
       <td class="py-3 text-gray-600">${p.calculatedTotalUnits||'â€”'}</td>
+=======
+      <td class="py-3 text-gray-600">${p.totalWeightKg||'—'}</td>
+      <td class="py-3 text-gray-600">${p.calculatedTotalUnits||'—'}</td>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <td class="py-3">${statusMap[p.adminVerificationStatus]||p.adminVerificationStatus}</td>
     </tr>`).join('');
 }
@@ -541,7 +716,11 @@ function renderProductsTable(products){
 async function loadTrackerCrops(){
   try {
     const res=await fetch(`${API_BASE}/tracker`,{headers:{Authorization:`Bearer ${token}`}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     const crops=data.crops||[];
     document.getElementById('stat-tracked').textContent=crops.length;
     document.getElementById('tracker-loading').classList.add('hidden');
@@ -568,17 +747,30 @@ function renderTrackerCards(crops){
       <div class="flex items-center justify-between mb-2">
         <div>
           <h3 class="font-bold text-gray-800">${c.cropName}${c.variety?` <span class="text-xs text-gray-400">(${c.variety})</span>`:''}</h3>
+<<<<<<< HEAD
           <p class="text-xs text-gray-500">Day ${daysElapsed} Â· ${t('days_since')}</p>
         </div>
         <button onclick="deleteTracker('${c._id}')" class="text-xs text-gray-400 hover:text-red-500 transition">${t('delete_tracker')}</button>
       </div>
       ${needsWater?`<div class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 inline-block">ðŸ’§ ${t('water_today')}</div>`:''}
       ${needsFertilizer?`<div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 ml-1 inline-block">ðŸŒ¿ ${t('fertilize_today')}</div>`:''}
+=======
+          <p class="text-xs text-gray-500">Day ${daysElapsed} · ${t('days_since')}</p>
+        </div>
+        <button onclick="deleteTracker('${c._id}')" class="text-xs text-gray-400 hover:text-red-500 transition">${t('delete_tracker')}</button>
+      </div>
+      ${needsWater?`<div class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 inline-block">💧 ${t('water_today')}</div>`:''}
+      ${needsFertilizer?`<div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-lg mb-2 ml-1 inline-block">🌿 ${t('fertilize_today')}</div>`:''}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <div class="mt-2">
         <div class="flex justify-between text-xs text-gray-400 mb-1">
           <span>${t('day')} 0</span>
           <span>${t('day')} ${daysElapsed}</span>
+<<<<<<< HEAD
           ${nextWater?`<span class="text-blue-500">ðŸ’§ ${t('day')} ${nextWater}</span>`:''}
+=======
+          ${nextWater?`<span class="text-blue-500">💧 ${t('day')} ${nextWater}</span>`:''}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2.5">
           <div class="progress-bar bg-gradient-to-r from-green-500 to-emerald-400 h-2.5 rounded-full" style="width:${progress}%"></div>
@@ -595,11 +787,19 @@ function checkCropAlarms(crops){
     const planted=new Date(c.plantedDate); planted.setHours(0,0,0,0);
     const daysElapsed=Math.floor((today-planted)/(1000*60*60*24));
     if(c.wateringDays.includes(daysElapsed)){
+<<<<<<< HEAD
       new Notification(`ðŸ’§ AgriHub: Water Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to water your ${c.cropName}${c.variety?' ('+c.variety+')':''}.`,tag:`water-${c._id}-${daysElapsed}`});
     }
     if(c.fertilizerDays.includes(daysElapsed)){
       const fertName=c.fertilizerNames[c.fertilizerDays.indexOf(daysElapsed)]||'fertilizer';
       new Notification(`ðŸŒ¿ AgriHub: Fertilize Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to apply ${fertName} to your ${c.cropName}.`,tag:`fert-${c._id}-${daysElapsed}`});
+=======
+      new Notification(`💧 AgriHub: Water Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to water your ${c.cropName}${c.variety?' ('+c.variety+')':''}.`,tag:`water-${c._id}-${daysElapsed}`});
+    }
+    if(c.fertilizerDays.includes(daysElapsed)){
+      const fertName=c.fertilizerNames[c.fertilizerDays.indexOf(daysElapsed)]||'fertilizer';
+      new Notification(`🌿 AgriHub: Fertilize Your ${c.cropName}!`,{body:`Day ${daysElapsed}: Time to apply ${fertName} to your ${c.cropName}.`,tag:`fert-${c._id}-${daysElapsed}`});
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     }
   });
 }
@@ -622,7 +822,11 @@ async function submitTracker(e){
   const body={cropName:fd.get('cropName'),variety:fd.get('variety'),plantedDate:fd.get('plantedDate'),fieldSize:fd.get('fieldSize'),wateringDays:fd.get('wateringDays'),fertilizerDays:fd.get('fertilizerDays'),fertilizerNames:fd.get('fertilizerNames')};
   try {
     const res=await fetch(`${API_BASE}/tracker/start`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
     closeTrackerModal();showToast(`Now tracking ${body.cropName}!`);loadTrackerCrops();
     if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
@@ -633,18 +837,27 @@ async function submitTracker(e){
 async function doUpgrade(){
   try {
     const res=await fetch(`${API_BASE}/auth/upgrade`,{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in profile.html', e); }
     if(res.ok){
       token=data.token;user={...user,subscriptionTier:'Premium'};
       localStorage.setItem('agrihub_token',token);localStorage.setItem('agrihub_user',JSON.stringify(user));
       localStorage.setItem('token',token);localStorage.setItem('user',JSON.stringify(user));
       checkAuth();showToast('ðŸŽ‰ Welcome to Premium!');
+=======
+    const data=await res.json();
+    if(res.ok){
+      token=data.token;user={...user,subscriptionTier:'Premium'};
+      localStorage.setItem('agrihub_token',token);localStorage.setItem('agrihub_user',JSON.stringify(user));
+      checkAuth();showToast('🎉 Welcome to Premium!');
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     }
   } catch { showToast('Upgrade failed'); }
 }
 
 function showToast(msg,dur=3500){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),dur);}
 
+<<<<<<< HEAD
 function openEditBankModal() { document.getElementById('edit-bank-modal').classList.add('open'); }
 function closeEditBankModal() { document.getElementById('edit-bank-modal').classList.remove('open'); }
 
@@ -901,3 +1114,13 @@ if(checkAuth()){
 </body>
 </html>
 
+=======
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+
+setLang('en');
+if(checkAuth()){ loadAnalytics(); loadTrackerCrops(); }
+</script>
+</body>
+</html>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1

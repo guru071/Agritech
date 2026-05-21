@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
   <link rel="stylesheet" href="/theme.css">
   <script>
     (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
@@ -12,6 +13,14 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#059669" />
   <link rel="stylesheet" href="/src/tailwind.css" />
+=======
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Marketplace</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#059669" />
+  <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <style>
     .official-glow { box-shadow: 0 0 16px 4px rgba(5,150,105,0.45); }
     .badge-glow { animation: pulse-glow 2.5s infinite; }
@@ -26,24 +35,36 @@
 <nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <a href="/index.html" class="flex items-center gap-2 text-xl font-bold shrink-0">
+<<<<<<< HEAD
       <span class="text-2xl">ðŸŒ¾</span><span data-t="brand">AgriHub Pro</span>
+=======
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </a>
     <div class="hidden md:flex items-center gap-5 text-sm font-medium">
       <a href="/index.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_market">Marketplace</a>
       <a href="/community.html" class="hover:text-green-200 transition" data-t="nav_community">Community</a>
       <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
       <a href="/profile.html" class="hover:text-green-200 transition" data-t="nav_profile">My Profile</a>
+<<<<<<< HEAD
       <a href="/learning.html" class="hover:text-green-200 transition" data-t="nav_learn">Academy</a>
       <a href="/smart-home.html" class="hover:text-green-200 transition" data-t="nav_smarthome">Smart Home</a>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </div>
     <div class="flex items-center gap-3 shrink-0">
       <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
         <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+<<<<<<< HEAD
         <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">à®¤à®®à®¿à®´à¯</button>
+=======
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
       <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition truncate max-w-32" data-t="login">Login</button>
     </div>
   </div>
+<<<<<<< HEAD
   <div class="md:hidden border-t border-green-700/70 bg-green-900">
     <div class="max-w-7xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-xs font-semibold">
       <a href="/index.html" class="shrink-0 rounded-md bg-white/15 px-3 py-2 text-white" data-t="nav_market">Marketplace</a>
@@ -54,6 +75,8 @@
       <a href="/smart-home.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_smarthome">Smart Home</a>
     </div>
   </div>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </nav>
 
 <div class="bg-gradient-to-br from-green-900 via-green-800 to-emerald-700 text-white py-12 px-4">
@@ -83,7 +106,11 @@
   </div>
   <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></div>
   <div id="empty-state" class="hidden text-center py-24">
+<<<<<<< HEAD
     <p class="text-7xl mb-4">ðŸŒ±</p>
+=======
+    <p class="text-7xl mb-4">🌱</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     <p class="text-gray-400 text-lg" data-t="no_products">No products available yet.</p>
   </div>
 </div>
@@ -147,7 +174,11 @@
         </select>
       </div>
       <div>
+<<<<<<< HEAD
         <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="price_per_unit">Price Per Unit (â‚¹)</label>
+=======
+        <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="price_per_unit">Price Per Unit (₹)</label>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         <input name="pricePerUnit" type="number" min="0" step="1" placeholder="1200" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
       </div>
       <div id="units-calc" class="hidden bg-green-50 border-2 border-green-300 rounded-xl p-4">
@@ -173,7 +204,11 @@
 </div>
 
 <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+<<<<<<< HEAD
   <span>âœ“</span><span id="toast-msg"></span>
+=======
+  <span>✓</span><span id="toast-msg"></span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </div>
 
 <script>
@@ -181,6 +216,7 @@ const API_BASE = '/api';
 const ADMIN_PHONE = '919876543210';
 let products = [], productsMap = {}, currentLang = 'en';
 let token = localStorage.getItem('agrihub_token') || '';
+<<<<<<< HEAD
 let user = null;
 try {
   user = JSON.parse(localStorage.getItem('agrihub_user') || 'null');
@@ -191,13 +227,25 @@ try {
 const T = {
   en: {
     brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',nav_learn:'Academy',nav_smarthome:'Smart Home',
+=======
+let user = JSON.parse(localStorage.getItem('agrihub_user') || 'null');
+
+const T = {
+  en: {
+    brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     login:'Login',logout:'Logout',hero_title:'Fresh From The Farm. Direct To You.',hero_sub:'Verified quality. Fair prices. Trusted farmers.',
     sell_crop:'+ Sell Your Crop',search_placeholder:'Search crops...',loading:'Loading marketplace...',
     no_products:'No products available yet. Be the first to list!',intake_title:'List Your Crop for Wholesale',
     intake_sub:'Submit your harvest to the AgriHub fulfillment center',crop_title_label:'Crop Title',
     total_weight:'Total Weight (kg)',weight_per_unit:'Weight Per Unit (kg)',pack_type:'Packaging Unit Type',
+<<<<<<< HEAD
     price_per_unit:'Price Per Unit (â‚¹)',crop_image:'Crop Image (optional, max 5MB)',total_packages:'Total Packages Required',
     cancel:'Cancel',submit_listing:'Submit Listing',official_badge:'âœ“ AgriHub Official Tech',
+=======
+    price_per_unit:'Price Per Unit (₹)',crop_image:'Crop Image (optional, max 5MB)',total_packages:'Total Packages Required',
+    cancel:'Cancel',submit_listing:'Submit Listing',official_badge:'✓ AgriHub Official Tech',
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     order_now:'Order Now',units:'units',per_unit:'/unit',
     order_title:'Place Order Request',order_sub:'Your details will be sent to the seller via WhatsApp',
     buyer_name:'Your Full Name',buyer_phone:'Your Phone (with country code e.g. 919...))',buyer_email:'Email (optional)',
@@ -206,6 +254,7 @@ const T = {
     order_max:'Max available'
   },
   ta: {
+<<<<<<< HEAD
     brand:'à®…à®•à¯à®°à®¿à®¹à®ªà¯ à®ªà¯à®°à¯‹',nav_market:'à®šà®¨à¯à®¤à¯ˆ',nav_community:'à®šà®®à¯‚à®•à®®à¯',nav_land:'à®¨à®¿à®² à®šà®¨à¯à®¤à¯ˆ',nav_profile:'à®Žà®©à¯ à®šà¯à®¯à®µà®¿à®µà®°à®®à¯',nav_learn:'à®ªà®¯à®¿à®±à¯à®šà®¿',nav_smarthome:'à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯',
     login:'à®‰à®³à¯à®¨à¯à®´à¯ˆà®•',logout:'à®µà¯†à®³à®¿à®¯à¯‡à®±à¯',hero_title:'à®ªà®£à¯à®£à¯ˆà®¯à®¿à®²à®¿à®°à¯à®¨à¯à®¤à¯ à®¨à¯‡à®°à®Ÿà®¿à®¯à®¾à®• à®‰à®™à¯à®•à®³à¯à®•à¯à®•à¯',hero_sub:'à®šà®°à®¿à®ªà®¾à®°à¯à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®Ÿ à®¤à®°à®®à¯. à®¨à®¿à®¯à®¾à®¯à®®à®¾à®© à®µà®¿à®²à¯ˆ.',
     sell_crop:'+ à®ªà®¯à®¿à®°à¯ˆ à®µà®¿à®±à¯à®•à®µà¯à®®à¯',search_placeholder:'à®ªà®¯à®¿à®°à¯à®•à®³à¯ˆ à®¤à¯‡à®Ÿà¯à®™à¯à®•à®³à¯...',loading:'à®šà®¨à¯à®¤à¯ˆ à®à®±à¯à®±à®ªà¯à®ªà®Ÿà¯à®•à®¿à®±à®¤à¯...',
@@ -220,11 +269,30 @@ const T = {
     units_label:'à®¨à¯€à®™à¯à®•à®³à¯ à®µà®¿à®°à¯à®®à¯à®ªà¯à®®à¯ à®…à®²à®•à¯à®•à®³à¯',order_msg:'à®µà®¿à®±à¯à®ªà®©à¯ˆà®¯à®¾à®³à®°à¯à®•à¯à®•à¯ à®šà¯†à®¯à¯à®¤à®¿ (à®µà®¿à®°à¯à®ªà¯à®ªà®®à®¾à®©à®¤à¯)',
     submit_order:'à®šà®®à®°à¯à®ªà¯à®ªà®¿ & à®µà®¾à®Ÿà¯à®¸à¯à®…à®ªà¯ à®¤à®¿à®±',order_success:'à®†à®°à¯à®Ÿà®°à¯ à®šà®®à®°à¯à®ªà¯à®ªà®¿à®•à¯à®•à®ªà¯à®ªà®Ÿà¯à®Ÿà®¤à¯! à®µà®¾à®Ÿà¯à®¸à¯à®…à®ªà¯ à®¤à®¿à®±à®•à¯à®•à®¿à®±à®¤à¯...',
     order_max:'à®…à®¤à®¿à®•à®ªà®Ÿà¯à®šà®®à¯ à®•à®¿à®Ÿà¯ˆà®•à¯à®•à¯à®®à¯'
+=======
+    brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',logout:'வெளியேறு',hero_title:'பண்ணையிலிருந்து நேரடியாக உங்களுக்கு',hero_sub:'சரிபார்க்கப்பட்ட தரம். நியாயமான விலை.',
+    sell_crop:'+ பயிரை விற்கவும்',search_placeholder:'பயிர்களை தேடுங்கள்...',loading:'சந்தை ஏற்றப்படுகிறது...',
+    no_products:'இன்னும் தயாரிப்புகள் இல்லை!',intake_title:'மொத்த விற்பனைக்கு பயிரை பட்டியலிடவும்',
+    intake_sub:'உங்கள் அறுவடையை அக்ரிஹப் மையத்திற்கு சமர்ப்பிக்கவும்',crop_title_label:'பயிர் பெயர்',
+    total_weight:'மொத்த எடை (கிலோ)',weight_per_unit:'ஒரு அலகு எடை (கிலோ)',pack_type:'பேக்கேஜிங் வகை',
+    price_per_unit:'ஒரு அலகு விலை (₹)',crop_image:'பயிர் படம் (விருப்பமானது)',total_packages:'மொத்த தொகுப்புகள்',
+    cancel:'ரத்து செய்',submit_listing:'சமர்ப்பிக்கவும்',official_badge:'✓ அக்ரிஹப் அதிகாரப்பூர்வ தொழில்நுட்பம்',
+    order_now:'இப்போது ஆர்டர் செய்',units:'அலகுகள்',per_unit:'/அலகு',
+    order_title:'ஆர்டர் கோரிக்கை வைக்கவும்',order_sub:'உங்கள் விவரங்கள் வாட்ஸ்அப் மூலம் விற்பனையாளருக்கு அனுப்பப்படும்',
+    buyer_name:'உங்கள் முழு பெயர்',buyer_phone:'உங்கள் தொலைபேசி (நாட்டு குறியீட்டுடன்)',buyer_email:'மின்னஞ்சல் (விருப்பமானது)',
+    units_label:'நீங்கள் விரும்பும் அலகுகள்',order_msg:'விற்பனையாளருக்கு செய்தி (விருப்பமானது)',
+    submit_order:'சமர்ப்பி & வாட்ஸ்அப் திற',order_success:'ஆர்டர் சமர்ப்பிக்கப்பட்டது! வாட்ஸ்அப் திறக்கிறது...',
+    order_max:'அதிகபட்சம் கிடைக்கும்'
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   }
 };
 
 function t(k){ return T[currentLang][k] || T.en[k] || k; }
+<<<<<<< HEAD
 function pickList(data, key){ return Array.isArray(data) ? data : (Array.isArray(data?.[key]) ? data[key] : []); }
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 function setLang(lang) {
   currentLang = lang;
@@ -239,22 +307,37 @@ function setLang(lang) {
 
 function updateAuthUI() {
   const btn = document.getElementById('auth-btn');
+<<<<<<< HEAD
   if (user && token && user.name) { btn.textContent = user.name.split(' ')[0]; btn.onclick = doLogout; }
   else { btn.textContent = t('login'); btn.onclick = openAuthModal; }
 }
 function handleAuthBtn() { if(user&&token) doLogout(); else openAuthModal(); }
 function doLogout() { token=''; user=null; localStorage.removeItem('agrihub_token'); localStorage.removeItem('agrihub_user'); localStorage.removeItem('token'); localStorage.removeItem('user'); updateAuthUI(); showToast('Logged out'); }
+=======
+  if (user && token) { btn.textContent = user.name.split(' ')[0]; btn.onclick = doLogout; }
+  else { btn.textContent = t('login'); btn.onclick = openAuthModal; }
+}
+function handleAuthBtn() { if(user&&token) doLogout(); else openAuthModal(); }
+function doLogout() { token=''; user=null; localStorage.removeItem('agrihub_token'); localStorage.removeItem('agrihub_user'); updateAuthUI(); showToast('Logged out'); }
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 async function doLogin() {
   const email=document.getElementById('login-email').value, password=document.getElementById('login-password').value;
   const err=document.getElementById('auth-error'); err.classList.add('hidden');
   try {
     const res=await fetch(`${API_BASE}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in index.html', e); }
     if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
     token=data.token; user=data.user;
     localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
     localStorage.setItem('token',token); localStorage.setItem('user',JSON.stringify(user));
+=======
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    token=data.token; user=data.user;
+    localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     closeAuthModal(); updateAuthUI(); showToast(`Welcome back, ${user.name}!`);
   } catch { err.textContent='Network error. Is the API server running?'; err.classList.remove('hidden'); }
 }
@@ -265,11 +348,18 @@ async function doRegister() {
   const err=document.getElementById('auth-error'); err.classList.add('hidden');
   try {
     const res=await fetch(`${API_BASE}/auth/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,phone,password})});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in index.html', e); }
     if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
     token=data.token; user=data.user;
     localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
     localStorage.setItem('token',token); localStorage.setItem('user',JSON.stringify(user));
+=======
+    const data=await res.json();
+    if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
+    token=data.token; user=data.user;
+    localStorage.setItem('agrihub_token',token); localStorage.setItem('agrihub_user',JSON.stringify(user));
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     closeAuthModal(); updateAuthUI(); showToast(`Welcome to AgriHub, ${user.name}!`);
   } catch { err.textContent='Network error. Is the API server running?'; err.classList.remove('hidden'); }
 }
@@ -289,7 +379,11 @@ function calcUnits(){
   if(totalW>0&&unitW>0){
     const u=Math.ceil(totalW/unitW);
     document.getElementById('units-count').textContent=u;
+<<<<<<< HEAD
     document.getElementById('units-formula').textContent=`âŒˆ${totalW}kg Ã· ${unitW}kg/unitâŒ‰ = ${u} packages`;
+=======
+    document.getElementById('units-formula').textContent=`⌈${totalW}kg ÷ ${unitW}kg/unit⌉ = ${u} packages`;
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     calc.classList.remove('hidden');
   } else { calc.classList.add('hidden'); }
 }
@@ -300,7 +394,11 @@ async function submitIntake(e) {
   const err=document.getElementById('intake-error'); err.classList.add('hidden');
   try {
     const res=await fetch(`${API_BASE}/products`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:new FormData(e.target)});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in index.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
     closeIntakeModal(); showToast('Crop listed! Awaiting Hub delivery confirmation.');
     loadProducts();
@@ -314,7 +412,11 @@ async function loadProducts() {
   document.getElementById('empty-state').classList.add('hidden');
   try {
     const res=await fetch(`${API_BASE}/products`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in index.html', e); } products=pickList(data,'products');
+=======
+    const data=await res.json(); products=data.products||[];
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     productsMap={}; products.forEach(p=>{productsMap[p._id]=p;});
     renderProducts();
   } catch {
@@ -342,10 +444,17 @@ function renderFilteredProducts(list) {
   grid.innerHTML=list.map(p=>{
     const isOff=p.isOfficialHubProduct;
     const phone=isOff?(p.adminPhone||ADMIN_PHONE):p.sellerPhone;
+<<<<<<< HEAD
     const msg=encodeURIComponent(`Hi, I'm interested in buying: ${p.cropTitle}\n(${p.calculatedTotalUnits} units Ã— ${p.weightPerUnitKg}kg = ${p.totalWeightKg}kg total)`);
     const imgHtml=p.imagePath
       ?`<img src="${p.imagePath}" alt="${p.cropTitle}" class="w-full h-48 object-cover" onerror="this.outerHTML='<div class=\'w-full h-48 bg-green-100 flex items-center justify-center text-5xl\'>ðŸŒ¾</div>'">`
       :`<div class="w-full h-48 bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center text-5xl">ðŸŒ¾</div>`;
+=======
+    const msg=encodeURIComponent(`Hi, I'm interested in buying: ${p.cropTitle}\n(${p.calculatedTotalUnits} units × ${p.weightPerUnitKg}kg = ${p.totalWeightKg}kg total)`);
+    const imgHtml=p.imagePath
+      ?`<img src="${p.imagePath}" alt="${p.cropTitle}" class="w-full h-48 object-cover" onerror="this.outerHTML='<div class=\'w-full h-48 bg-green-100 flex items-center justify-center text-5xl\'>🌾</div>'">`
+      :`<div class="w-full h-48 bg-gradient-to-br from-green-100 to-emerald-50 flex items-center justify-center text-5xl">🌾</div>`;
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     return `<div class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-shadow flex flex-col ${isOff?'official-glow ring-2 ring-green-400':''}">
       <div class="relative">${imgHtml}
         ${isOff?`<span class="badge-glow absolute top-2 left-2 bg-green-700 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">${t('official_badge')}</span>`:''}
@@ -353,10 +462,17 @@ function renderFilteredProducts(list) {
       </div>
       <div class="p-4 flex flex-col flex-1">
         <h3 class="font-bold text-gray-800 mb-1 leading-tight">${p.cropTitle}</h3>
+<<<<<<< HEAD
         <p class="text-xs text-gray-400 mb-1">${p.packagingUnitType} Â· ${p.weightPerUnitKg}kg${t('per_unit')}</p>
         <p class="text-xs text-gray-500 mb-3">by ${isOff?'<span class="text-green-700 font-semibold">AgriHub Official</span>':p.sellerName||'Farmer'}</p>
         ${p.pricePerUnit>0?`<p class="text-green-800 font-extrabold text-xl mb-3">â‚¹${Number(p.pricePerUnit).toLocaleString()}<span class="text-xs font-normal text-gray-400">${t('per_unit')}</span></p>`:'<p class="text-gray-400 text-sm mb-3">Price on request</p>'}
         <button onclick="openOrderModal('${p._id}')" class="mt-auto block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">ðŸ›’ ${t('order_now')}</button>
+=======
+        <p class="text-xs text-gray-400 mb-1">${p.packagingUnitType} · ${p.weightPerUnitKg}kg${t('per_unit')}</p>
+        <p class="text-xs text-gray-500 mb-3">by ${isOff?'<span class="text-green-700 font-semibold">AgriHub Official</span>':p.sellerName||'Farmer'}</p>
+        ${p.pricePerUnit>0?`<p class="text-green-800 font-extrabold text-xl mb-3">₹${Number(p.pricePerUnit).toLocaleString()}<span class="text-xs font-normal text-gray-400">${t('per_unit')}</span></p>`:'<p class="text-gray-400 text-sm mb-3">Price on request</p>'}
+        <button onclick="openOrderModal('${p._id}')" class="mt-auto block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">🛒 ${t('order_now')}</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
     </div>`;
   }).join('');
@@ -367,7 +483,11 @@ function showToast(msg,dur=3500){
   el.classList.remove('hidden'); setTimeout(()=>el.classList.add('hidden'),dur);
 }
 
+<<<<<<< HEAD
 /* â”€â”€ Order Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+=======
+/* ── Order Modal ─────────────────────────── */
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 let activeOrderProduct = null;
 
 function openOrderModal(id) {
@@ -376,7 +496,11 @@ function openOrderModal(id) {
   const el = document.getElementById('order-modal');
   document.getElementById('order-crop-title').textContent = p.cropTitle;
   document.getElementById('order-seller').textContent = p.isOfficialHubProduct ? 'AgriHub Official' : (p.sellerName || 'Farmer');
+<<<<<<< HEAD
   document.getElementById('order-price').textContent = p.pricePerUnit > 0 ? `â‚¹${Number(p.pricePerUnit).toLocaleString()} ${t('per_unit')}` : 'Price on request';
+=======
+  document.getElementById('order-price').textContent = p.pricePerUnit > 0 ? `₹${Number(p.pricePerUnit).toLocaleString()} ${t('per_unit')}` : 'Price on request';
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   const maxUnits = p.calculatedTotalUnits || 999;
   const unitsInput = document.getElementById('order-units');
   unitsInput.max = maxUnits;
@@ -399,7 +523,11 @@ async function submitOrder(e) {
   e.preventDefault();
   const btn = document.getElementById('order-submit');
   const errEl = document.getElementById('order-error');
+<<<<<<< HEAD
   btn.disabled = true; btn.textContent = 'Submittingâ€¦';
+=======
+  btn.disabled = true; btn.textContent = 'Submitting…';
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   errEl.classList.add('hidden');
 
   const p = activeOrderProduct;
@@ -415,7 +543,11 @@ async function submitOrder(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId: p._id, buyerName, buyerPhone, buyerEmail, unitsRequested: units, message })
     });
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in index.html', e); }
+=======
+    const data = await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if (!res.ok) {
       errEl.textContent = data.error || 'Failed to submit order';
       errEl.classList.remove('hidden');
@@ -433,10 +565,19 @@ async function submitOrder(e) {
 }
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+<<<<<<< HEAD
 updateAuthUI(); loadProducts(); setLang('en');
 </script>
 
 <!-- â”€â”€ ORDER REQUEST MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+=======
+if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+
+updateAuthUI(); loadProducts(); setLang('en');
+</script>
+
+<!-- ── ORDER REQUEST MODAL ─────────────────────────── -->
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 <div id="order-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
     <!-- Header -->
@@ -450,7 +591,11 @@ updateAuthUI(); loadProducts(); setLang('en');
 
     <!-- Product summary -->
     <div class="mx-5 mt-4 bg-green-50 rounded-xl p-3 flex gap-3 items-start">
+<<<<<<< HEAD
       <span class="text-3xl">ðŸŒ¾</span>
+=======
+      <span class="text-3xl">🌾</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <div class="min-w-0">
         <p id="order-crop-title" class="font-bold text-green-900 truncate"></p>
         <p class="text-xs text-gray-500">by <span id="order-seller" class="font-medium"></span></p>
@@ -489,7 +634,11 @@ updateAuthUI(); loadProducts(); setLang('en');
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="order_msg">Message (optional)</label>
+<<<<<<< HEAD
         <textarea id="order-message" rows="2" placeholder="Any special requirementsâ€¦"
+=======
+        <textarea id="order-message" rows="2" placeholder="Any special requirements…"
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
           class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"></textarea>
       </div>
 
@@ -501,19 +650,33 @@ updateAuthUI(); loadProducts(); setLang('en');
           Cancel
         </button>
         <button id="order-submit" type="submit"
+<<<<<<< HEAD
           class="flex-grow bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
           ðŸ“± <span data-t="submit_order">Submit &amp; Open WhatsApp</span>
+=======
+          class="flex-2 flex-grow bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+          📱 <span data-t="submit_order">Submit &amp; Open WhatsApp</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         </button>
       </div>
 
       <p class="text-center text-xs text-gray-400">
+<<<<<<< HEAD
         WhatsApp will open pre-filled â€” just hit <strong>Send</strong> to confirm your order.
+=======
+        WhatsApp will open pre-filled — just hit <strong>Send</strong> to confirm your order.
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </p>
     </form>
   </div>
 </div>
 
+<<<<<<< HEAD
 <script src="/theme-engine.js"></script>
 </body>
 </html>
 
+=======
+</body>
+</html>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1

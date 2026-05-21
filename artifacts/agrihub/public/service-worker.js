@@ -1,11 +1,18 @@
+<<<<<<< HEAD
 const CACHE_NAME = "agrihub-v2";
+=======
+const CACHE_NAME = "agrihub-v1";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 const CORE_ASSETS = [
   "/",
   "/index.html",
   "/community.html",
   "/land-market.html",
   "/profile.html",
+<<<<<<< HEAD
   "/favicon.svg",
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   "/manifest.json",
 ];
 
@@ -58,8 +65,13 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
+<<<<<<< HEAD
       icon: "/favicon.svg",
       badge: "/favicon.svg",
+=======
+      icon: "/manifest.json",
+      badge: "/manifest.json",
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       tag: "agrihub-alert",
       requireInteraction: true,
       data: { url: data.url || "/" },

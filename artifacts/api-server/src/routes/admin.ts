@@ -2,8 +2,11 @@ import { Router, Request, Response } from "express";
 import { Product } from "../schemas/Product.js";
 import { LandListing } from "../schemas/LandListing.js";
 import { User } from "../schemas/User.js";
+<<<<<<< HEAD
 import { Order } from "../schemas/Order.js";
 import { Story } from "../schemas/Story.js";
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 import { authenticateAdmin } from "../middleware/auth.js";
 import { multerUpload, processImage } from "../middleware/upload.js";
 
@@ -11,6 +14,7 @@ const router = Router();
 
 router.use(authenticateAdmin);
 
+<<<<<<< HEAD
 const PRODUCT_STATUSES = ["Awaiting_Hub_Delivery", "Received_And_Paid", "Listed_For_Retail"];
 const LAND_APPROVAL_STATUSES = ["Pending", "Approved", "Rejected"];
 const LAND_STATUSES = ["Available", "Sold"];
@@ -404,6 +408,8 @@ router.delete("/stories/:id", async (req: Request, res: Response): Promise<void>
   }
 });
 
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 router.get("/logistics/pending", async (req: Request, res: Response): Promise<void> => {
   try {
     const products = await Product.find({

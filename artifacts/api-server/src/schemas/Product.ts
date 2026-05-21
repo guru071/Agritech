@@ -14,10 +14,13 @@ export interface IProduct extends Document {
   isOfficialHubProduct: boolean;
   imagePath: string;
   pricePerUnit: number;
+<<<<<<< HEAD
   visibility: "Public" | "Hidden";
   isFeatured: boolean;
   payoutStatus: "Unpaid" | "Settled";
   payoutTransactionId: string;
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   createdAt: Date;
 }
 
@@ -40,10 +43,13 @@ const ProductSchema = new Schema<IProduct>(
     isOfficialHubProduct: { type: Boolean, default: false },
     imagePath: { type: String, default: "" },
     pricePerUnit: { type: Number, default: 0 },
+<<<<<<< HEAD
     visibility: { type: String, enum: ["Public", "Hidden"], default: "Public" },
     isFeatured: { type: Boolean, default: false },
     payoutStatus: { type: String, enum: ["Unpaid", "Settled"], default: "Unpaid" },
     payoutTransactionId: { type: String, default: "" },
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   },
   { timestamps: true }
 );

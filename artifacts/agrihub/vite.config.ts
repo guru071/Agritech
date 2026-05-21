@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+<<<<<<< HEAD
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
@@ -10,6 +11,21 @@ const basePath = process.env.BASE_PATH || "/";
 export default defineConfig({
   base: basePath,
   plugins: [tailwindcss()],
+=======
+import path from "path";
+
+const rawPort = process.env.PORT;
+if (!rawPort) throw new Error("PORT environment variable is required but was not provided.");
+const port = Number(rawPort);
+if (Number.isNaN(port) || port <= 0) throw new Error(`Invalid PORT value: "${rawPort}"`);
+
+const basePath = process.env.BASE_PATH;
+if (!basePath) throw new Error("BASE_PATH environment variable is required but was not provided.");
+
+export default defineConfig({
+  base: basePath,
+  plugins: [],
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   root: path.resolve(import.meta.dirname),
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
@@ -20,12 +36,16 @@ export default defineConfig({
         community: path.resolve(import.meta.dirname, "community.html"),
         "land-market": path.resolve(import.meta.dirname, "land-market.html"),
         profile: path.resolve(import.meta.dirname, "profile.html"),
+<<<<<<< HEAD
         home: path.resolve(import.meta.dirname, "home.html"),
         learning: path.resolve(import.meta.dirname, "learning.html"),
         "smart-home": path.resolve(import.meta.dirname, "smart-home.html"),
         prosurvey: path.resolve(import.meta.dirname, "prosurvey.html"),
         payment: path.resolve(import.meta.dirname, "payment.html"),
         "admin/dashboard": path.resolve(import.meta.dirname, "admin/dashboard.html"),
+=======
+        admin: path.resolve(import.meta.dirname, "admin/dashboard.html"),
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       },
     },
   },
@@ -35,6 +55,7 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: true,
     fs: { strict: false },
+<<<<<<< HEAD
     proxy: {
       "/api": {
         target: "http://127.0.0.1:3000",
@@ -45,6 +66,8 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   },
   preview: {
     port,

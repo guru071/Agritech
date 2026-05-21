@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/theme.css">
+  <script>
+    (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriHub Pro — Harvest Marketplace</title>
+  <link rel="stylesheet" href="/agrihub-ui.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/agrihub-products.js"></script>
+  <script src="/agrihub-icons.js" data-agri-icons></script>
+  <style>select option { background-color: #18181b; color: #ffffff; }</style>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
+
+    <header class="agri-nav glass sticky top-0 z-50">
+    <div class="container mx-auto px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-3">
+      <a href="index.html" class="agri-logo">
+        <div class="agri-logo-mark">🌾</div>
+        <div class="agri-logo-text">
+          <strong>AgriHub</strong>
+          <span>Harvest Exchange</span>
+        </div>
+      </a>
+
+      <div class="agri-search order-3 md:order-none w-full md:w-auto">
+        <input type="text" id="search-input" oninput="typeof loadProducts === 'function' ? loadProducts() : null" placeholder="Search rice, seeds, land, tools…">
+        <span class="agri-search-icon" data-icon-size="sm"><i data-lucide="search"></i></span>
+      </div>
+
+      <div class="flex items-center gap-3 md:gap-5">
+        <div class="hidden lg:flex gap-5">
+          <a href="community.html" class="agri-nav-link" id="nav-feed">Stories</a>
+          <a href="index.html" class="agri-nav-link active" id="nav-market">Harvest Mart</a>
+          <a href="land-market.html" class="agri-nav-link" id="nav-land">Land</a>
+          <a href="learning.html" class="agri-nav-link" id="nav-learn">Academy</a>
+          <a href="smart-home.html" class="agri-nav-link" id="nav-smarthome">IoT Farm</a>
+          <a href="profile.html" class="agri-nav-link" id="nav-analytics">Profile</a>
+        </div>
+        <div id="auth-actions"></div>
+        <button onclick="toggleLang()" id="lang-btn" class="hidden md:inline text-xs font-semibold text-gray-400 hover:text-white px-2 py-1 rounded border border-white/10">தமிழ்</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="container mx-auto px-4 md:px-6 mt-5">
+    <div class="agri-hero p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="relative z-10 max-w-lg">
+        <span class="agri-hero-badge">🌿 Live harvest catalog</span>
+        <h1 class="agri-display text-white">From Tamil Nadu fields to your doorstep</h1>
+        <p class="text-gray-400 text-sm mt-3 max-w-md">Grade-tagged crops, hub-verified logistics, and real stock — not placeholder listings.</p>
+        <button type="button" onclick="document.getElementById('market-products-start').scrollIntoView({behavior:'smooth'})" class="agri-btn-primary mt-5">Browse harvest cards</button>
+      </div>
+      <div class="hidden md:flex relative z-10 items-center justify-center">
+        <div class="agri-hero-visual">
+          <span class="agri-hero-ring"></span>
+          <span class="text-5xl relative z-10">🌾</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Services / Quick Links (Mobile View) -->
+  <section class="container mx-auto px-6 mt-6 md:hidden">
+    <div class="grid grid-cols-2 gap-4">
+      <a href="land-market.html" class="glass p-4 rounded-xl flex items-center gap-3 border border-white/10 hover:border-emerald-500/30 transition">
+        <div class="p-2.5 bg-emerald-500/10 rounded-lg text-primary" data-icon-size="md">
+          <i data-lucide="map"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-white">Land Market</h4>
+          <p class="text-[9px] text-gray-400">Buy & Sell Lands</p>
+        </div>
+      </a>
+      <a href="smart-home.html" class="glass p-4 rounded-xl flex items-center gap-3 border border-white/10 hover:border-emerald-500/30 transition">
+        <div class="p-2.5 bg-cyan-500/10 rounded-lg text-primary" data-icon-size="md">
+          <i data-lucide="cpu"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-white">Smart Farm</h4>
+          <p class="text-[9px] text-gray-400">IoT Telemetry & Pump</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="container mx-auto px-4 md:px-6 mt-6">
+    <div class="agri-pill-track" id="category-pills">
+      <button type="button" onclick="filterCategory('All')" data-cat="All" class="agri-pill active"><span class="agri-pill-icon">✦</span> All harvests</button>
+      <button type="button" onclick="filterCategory('Organic Crops')" data-cat="Organic Crops" class="agri-pill"><span class="agri-pill-icon">🍃</span> Organic</button>
+      <button type="button" onclick="filterCategory('Premium Seeds')" data-cat="Premium Seeds" class="agri-pill"><span class="agri-pill-icon">🌱</span> Seeds</button>
+      <button type="button" onclick="filterCategory('Soil Nutrients')" data-cat="Soil Nutrients" class="agri-pill"><span class="agri-pill-icon">🧪</span> Nutrients</button>
+      <button type="button" onclick="filterCategory('Farming Tools')" data-cat="Farming Tools" class="agri-pill"><span class="agri-pill-icon">🔧</span> Tools</button>
+    </div>
+  </section>
+
+  <!-- Main Marketplace Layout -->
+  <main class="container mx-auto px-6 py-8 flex-grow" id="market-products-start">
+    <div class="flex flex-col lg:flex-row gap-8">
+      
+      <aside class="w-full lg:w-64 flex-shrink-0 flex flex-col gap-6">
+        <div class="agri-panel glass">
+          <h3 class="agri-panel-title">
+            <span>Harvest filters</span>
+            <button type="button" onclick="clearFilters()" class="text-xs font-bold" style="color:var(--primary)">Reset</button>
+          </h3>
+          
+          <div class="flex flex-col gap-5 border-t border-white/5 pt-4">
+            <!-- Delivery Hub Location -->
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Verification Hub</label>
+              <select id="hub-filter" onchange="loadProducts()" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <option value="All">All Hubs</option>
+                <option value="Thanjavur">Thanjavur Center</option>
+                <option value="Madurai">Madurai Center</option>
+                <option value="Coimbatore">Coimbatore Center</option>
+              </select>
+            </div>
+
+            <!-- Price Sorting -->
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Price Arrangement</label>
+              <select id="sort-filter" onchange="loadProducts()" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <option value="none">Popularity</option>
+                <option value="low-high">Price: Low to High</option>
+                <option value="high-low">Price: High to Low</option>
+              </select>
+            </div>
+            
+            <!-- Seller Type -->
+            <div>
+              <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Sellers</label>
+              <div class="flex flex-col gap-2 text-xs">
+                <label class="flex items-center gap-2 text-gray-300">
+                  <input type="checkbox" id="seller-hub" onchange="loadProducts()" class="accent-emerald-500">
+                  <span>AgriHub Official</span>
+                </label>
+                <label class="flex items-center gap-2 text-gray-300">
+                  <input type="checkbox" id="seller-farmer" onchange="loadProducts()" class="accent-emerald-500">
+                  <span>Direct Farmers</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Crop Logistics Ticket Card (Direct to Hub) -->
+        <div class="agri-panel glass flex flex-col">
+          <h4 class="agri-display text-white text-sm mb-2">Sell your harvest?</h4>
+          <p class="text-xs text-gray-400 mb-4">Log intake weight, get hub verification, then list on the Harvest Mart.</p>
+          <button type="button" onclick="openDeliveryModal()" class="agri-btn-primary w-full justify-center text-xs">Open intake ticket</button>
+        </div>
+      </aside>
+
+      <!-- Products Grid -->
+      <section class="flex-grow">
+        <h2 class="agri-display text-2xl text-white mb-2" id="grid-title">Live harvest listings</h2>
+        <p class="text-xs text-gray-500 mb-6">Each card shows grade ring, hub origin, and real unit stock.</p>
+        
+        <div id="products-grid">
+          <!-- Loaded dynamically -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Intake Ticket Registration Modal -->
+  <div id="delivery-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <div class="glass glass-card glass-card max-w-lg w-full rounded-2xl p-8 relative shadow-2xl">
+      <button onclick="closeDeliveryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold"><i data-lucide="x" class="w-3.5 h-3.5 inline"></i></button>
+      <h3 class="text-xl font-extrabold text-white">Create Intake Delivery Ticket</h3>
+      <p class="text-xs text-gray-400 mt-1">Register weights to print a barcode label for local transport to the Thanjavur verification center.</p>
+      
+      <form id="delivery-form" class="mt-6 flex flex-col gap-4" onsubmit="submitDelivery(event)">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Crop / Product Title</label>
+          <input type="text" name="cropTitle" required placeholder="e.g. Organic Ponni Rice Yield" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Estimated Total Weight (Kg)</label>
+            <input type="number" name="totalWeightKg" required min="10" placeholder="1000" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-400 mb-1">Average Weight per Unit (Kg)</label>
+            <input type="number" name="weightPerUnitKg" required min="1" placeholder="50" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Packaging Container Type</label>
+          <select name="packagingUnitType" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+            <option value="Sack / Bag">Sack / Bag</option>
+            <option value="Crate">Crate</option>
+            <option value="Box">Box</option>
+            <option value="Barrel">Barrel</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Attach Crop Photo</label>
+          <input type="file" name="image" required accept="image/*" class="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-emerald-500/20 file:text-emerald-300 hover:file:bg-emerald-500/30">
+        </div>
+        <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 rounded text-white font-bold transition mt-2">Log Logistics Intake Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Registration / Login Modal -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <div class="glass glass-card glass-card max-w-sm w-full rounded-2xl p-8 relative shadow-2xl">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold"><i data-lucide="x" class="w-3.5 h-3.5 inline"></i></button>
+      
+      <!-- Tab Headers -->
+      <div class="flex gap-4 border-b border-white/10 pb-3 mb-6">
+        <button id="tab-login" onclick="setAuthTab('login')" class="text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm">Login</button>
+        <button id="tab-register" onclick="setAuthTab('register')" class="text-gray-400 hover:text-white pb-1.5 transition text-sm">Register</button>
+      </div>
+
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="flex flex-col gap-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Full Name</label>
+          <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Email Address</label>
+          <input type="email" id="auth-email" required placeholder="name@farm.com" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div id="field-phone" class="hidden">
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Phone Number</label>
+          <input type="tel" id="auth-phone" placeholder="+91 98765 43210" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1">Password</label>
+          <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" id="auth-submit-btn" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded text-white font-semibold transition mt-2">Proceed</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass border-t border-white/10 text-center py-6 text-xs text-gray-500 mt-auto">
+    &copy; 2026 AgriHub Pro Ecosystem. All Rights Reserved. Built for Monolithic High-Performance Deployment.
+  </footer>
+
+  <script>
+    let currentLang = localStorage.getItem("lang") || "EN";
+    let token = localStorage.getItem("token") || "";
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user") || "null");
+    } catch (e) {
+      console.error("Failed to parse user from localStorage", e);
+    }
+    let activeAuthTab = "login";
+    let currentCategory = "All";
+
+    function pickList(data, key) { return Array.isArray(data) ? data : (Array.isArray(data?.[key]) ? data[key] : []); }
+
+    const dict = {
+      EN: {
+        navHome: "Home", navMarket: "Marketplace", navFeed: "Social Feed", navLand: "Real Estate", navAnalytics: "Profile", navLearn: "Academy", navSmarthome: "IoT Farm",
+        langBtn: "தமிழ்"
+      },
+      'தமிழ்': {
+        navHome: "முகப்பு", navMarket: "சந்தை", navFeed: "சமூக ஊடகம்", navLand: "ரியல் எஸ்டேட்", navAnalytics: "விவரங்கள்", navLearn: "பயிற்சி", navSmarthome: "IoT பண்ணை",
+        langBtn: "English"
+      }
+    };
+
+    function applyTranslations() {
+      const d = dict[currentLang];
+      const elements = {
+        "nav-home": d.navHome,
+        "nav-market": d.navMarket,
+        "nav-feed": d.navFeed,
+        "nav-land": d.navLand,
+        "nav-analytics": d.navAnalytics,
+        "nav-learn": d.navLearn,
+        "nav-smarthome": d.navSmarthome,
+        "lang-btn": d.langBtn
+      };
+      for (const [id, text] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el && text) el.innerText = text;
+      }
+    }
+
+    function toggleLang() {
+      currentLang = currentLang === "EN" ? "தமிழ்" : "EN";
+      localStorage.setItem("lang", currentLang);
+      applyTranslations();
+    }
+
+    function checkActiveSubscription() {
+      if (user && user.subscriptionStatus !== "Active") {
+        window.location.href = "payment.html";
+        return false;
+      }
+      return true;
+    }
+
+    function openDeliveryModal() {
+      if (!token) return openAuthModal();
+      if (!checkActiveSubscription()) return;
+      document.getElementById("delivery-modal").classList.remove("hidden");
+    }
+    
+    function closeDeliveryModal() {
+      document.getElementById("delivery-modal").classList.add("hidden");
+    }
+    
+    function openAuthModal() {
+      document.getElementById("auth-modal").classList.remove("hidden");
+    }
+    
+    function closeAuthModal() {
+      document.getElementById("auth-modal").classList.add("hidden");
+    }
+
+    function setAuthTab(tab) {
+      activeAuthTab = tab;
+      const loginTab = document.getElementById("tab-login");
+      const regTab = document.getElementById("tab-register");
+      const nameField = document.getElementById("field-name");
+      const phoneField = document.getElementById("field-phone");
+
+      if (tab === "login") {
+        loginTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        regTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.add("hidden");
+        phoneField.classList.add("hidden");
+      } else {
+        regTab.className = "text-emerald-400 font-bold border-b-2 border-emerald-400 pb-1.5 transition text-sm";
+        loginTab.className = "text-gray-400 hover:text-white pb-1.5 transition text-sm";
+        nameField.classList.remove("hidden");
+        phoneField.classList.remove("hidden");
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      const endpoint = activeAuthTab === "login" ? "/api/auth/login" : "/api/auth/register";
+      
+      const body = { email, password };
+      if (activeAuthTab === "register") {
+        body.name = document.getElementById("auth-name").value;
+        body.phone = document.getElementById("auth-phone").value;
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const text = await res.text();
+        let data = {};
+        try { data = JSON.parse(text); } catch { alert("Server error — check if the server is running."); return; }
+        
+        if (data.error) {
+          alert(data.error);
+        } else {
+          token = data.token;
+          user = data.user;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(user));
+          closeAuthModal();
+          updateAuthUI();
+          
+          if (user.subscriptionStatus === "Pending_Payment") {
+            window.location.href = "payment.html";
+          } else {
+            location.reload();
+          }
+        }
+      } catch (err) {
+        alert("Authentication server communication failed.");
+      }
+    }
+
+    function updateAuthUI() {
+      const container = document.getElementById("auth-actions");
+      if (token && user) {
+        container.innerHTML = `
+          <div class="flex items-center gap-3">
+            <a href="profile.html" class="text-xs text-gray-300 font-semibold bg-white/5 px-3 py-2 rounded border border-white/10 hover:bg-white/10 transition hidden md:inline" data-icon-size="sm"><i data-lucide="user"></i> ${user.name}</a>
+            <button type="button" onclick="logout()" class="px-3 py-2 text-xs font-semibold rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 transition">Logout</button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<button type="button" onclick="openAuthModal()" class="agri-btn-primary text-xs py-2">Sign in</button>`;
+      }
+      if (window.AgriIcons) AgriIcons.refresh(container);
+    }
+
+    function logout() {
+      token = "";
+      user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      updateAuthUI();
+      location.reload();
+    }
+
+    async function placeOrder(productId, cropTitle, unitPrice, maxUnits) {
+      if (!token) return openAuthModal();
+      if (!checkActiveSubscription()) return;
+      const qtyStr = prompt(`How many units of "${cropTitle}"? (₹${unitPrice} each, max ${maxUnits})`, "1");
+      if (!qtyStr) return;
+      const quantity = parseInt(qtyStr, 10);
+      if (!quantity || quantity < 1 || quantity > maxUnits) {
+        alert(`Enter a quantity between 1 and ${maxUnits}.`);
+        return;
+      }
+      try {
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ productId, quantity })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(`Order confirmed: ${quantity} × ${cropTitle} — ₹${data.totalPrice} total. View orders in Profile.`);
+          loadProducts();
+        }
+      } catch {
+        alert("Could not place order. Check that the server is running.");
+      }
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll(".agri-pill[data-cat]").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-cat") === cat);
+      });
+      loadProducts();
+    }
+
+    function clearFilters() {
+      document.getElementById("search-input").value = "";
+      document.getElementById("hub-filter").value = "All";
+      document.getElementById("sort-filter").value = "none";
+      document.getElementById("seller-hub").checked = false;
+      document.getElementById("seller-farmer").checked = false;
+      filterCategory("All");
+    }
+
+    async function submitDelivery(e) {
+      e.preventDefault();
+      if (!checkActiveSubscription()) return;
+      const fd = new FormData(e.target);
+
+      try {
+        const res = await fetch("/api/products", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: fd
+        });
+        const text = await res.text();
+        let data = {};
+        try { data = JSON.parse(text); } catch { alert("Server error saving product."); return; }
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Logistics ticket created! Barcode label printed for transport verification.");
+          closeDeliveryModal();
+          document.getElementById("delivery-form").reset();
+        }
+      } catch (err) {
+        alert("Failed to submit intake delivery.");
+      }
+    }
+
+    async function loadProducts() {
+      const grid = document.getElementById("products-grid");
+      if (grid && window.AgriProducts) grid.innerHTML = AgriProducts.renderSkeletons(6);
+      try {
+        const res = await fetch("/api/products");
+        const text = await res.text();
+        let data = {};
+        try { data = JSON.parse(text); } catch {
+          if (grid) grid.innerHTML = `<div class="agri-empty-state glass"><i data-lucide="wifi-off"></i><p class="text-gray-400">Server error — ensure MongoDB and the server are running.</p></div>`;
+          return;
+        }
+        let products = pickList(data, 'products');
+
+        const query = (document.getElementById("search-input")?.value || "").toLowerCase();
+        const hub = document.getElementById("hub-filter")?.value || "All";
+        const sort = document.getElementById("sort-filter")?.value || "default";
+        const onlyHub = document.getElementById("seller-hub")?.checked || false;
+        const onlyFarmer = document.getElementById("seller-farmer")?.checked || false;
+
+        // Apply filters
+        products = products.filter(p => {
+          const matchQuery = !query || (p.cropTitle||'').toLowerCase().includes(query);
+          const matchHub = hub === "All" || (p.cropTitle||'').includes(hub);
+          
+          let matchSeller = true;
+          if (onlyHub && !p.isOfficialHubProduct) matchSeller = false;
+          if (onlyFarmer && p.isOfficialHubProduct) matchSeller = false;
+
+          const cat = p.cropCategory || (window.AgriProducts && AgriProducts.inferCategory(p.cropTitle)) || "";
+          const titleL = (p.cropTitle||'').toLowerCase();
+          let matchCategory = true;
+          if (currentCategory === "Organic Crops") matchCategory = cat === "Organic" || titleL.includes("organic");
+          if (currentCategory === "Premium Seeds") matchCategory = cat === "Seeds" || titleL.includes("seed");
+          if (currentCategory === "Soil Nutrients") matchCategory = cat === "Fertilizer" || /fertil|nutrient|urea/.test(titleL);
+          if (currentCategory === "Farming Tools") matchCategory = cat === "Tools" || /tool|implement/.test(titleL);
+
+          return matchQuery && matchHub && matchSeller && matchCategory;
+        });
+
+        // Only show products with a valid price (listed for retail)
+        products = products.filter(p => p.pricePerUnit && p.pricePerUnit > 0);
+
+
+        // Apply Sorting
+        if (sort === "low-high") {
+          products.sort((a, b) => a.pricePerUnit - b.pricePerUnit);
+        } else if (sort === "high-low") {
+          products.sort((a, b) => b.pricePerUnit - a.pricePerUnit);
+        }
+
+        if (!products.length) {
+          const catMsg = currentCategory !== "All" ? ` in "${currentCategory}"` : "";
+          const qMsg = query ? ` for "${query}"` : "";
+          grid.innerHTML = `
+            <div class="agri-empty-state glass">
+              <i data-lucide="sprout"></i>
+              <p class="text-gray-300 font-semibold">No harvest listings${catMsg}${qMsg}</p>
+              <p class="text-gray-500 text-xs mt-2">Try another filter or list crops via intake ticket.</p>
+              <button type="button" onclick="clearFilters()" class="mt-4 agri-btn-primary text-xs">Clear filters</button>
+            </div>
+          `;
+          if (window.AgriIcons) AgriIcons.refresh(grid);
+          return;
+        }
+
+        grid.innerHTML = products.map((p, i) => AgriProducts.renderHarvestCard(p, i)).join("");
+        if (window.AgriIcons) AgriIcons.refresh(grid);
+
+      } catch (err) {
+        const grid = document.getElementById("products-grid");
+        if (grid) grid.innerHTML = `<div class="agri-empty-state glass"><i data-lucide="cloud-off"></i><p class="text-gray-400">Could not load products.</p></div>`;
+        if (window.AgriIcons) AgriIcons.refresh(grid);
+      }
+    }
+
+    // Translate mobile bottom navigation bar elements
+    const origApplyTranslations = applyTranslations;
+    applyTranslations = function() {
+      origApplyTranslations();
+      const d = dict[currentLang];
+      if (document.getElementById("m-nav-market")) document.getElementById("m-nav-market").innerText = d.navMarket;
+      if (document.getElementById("m-nav-feed")) document.getElementById("m-nav-feed").innerText = d.navFeed;
+      if (document.getElementById("m-nav-land")) document.getElementById("m-nav-land").innerText = d.navLand;
+      if (document.getElementById("m-nav-profile")) document.getElementById("m-nav-profile").innerText = d.navAnalytics;
+      if (document.getElementById("m-nav-learn")) document.getElementById("m-nav-learn").innerText = d.navLearn;
+      if (document.getElementById("m-nav-smart")) document.getElementById("m-nav-smart").innerText = d.navSmarthome;
+    };
+
+    applyTranslations();
+    updateAuthUI();
+    loadProducts();
+
+    if (window.AgriIcons) AgriIcons.refresh();
+  </script>
+  <nav class="agri-mobile-nav md:hidden">
+    <a href="index.html" class="active"><i data-lucide="shopping-bag" class="w-5 h-5"></i><span id="m-nav-market">Mart</span></a>
+    <a href="community.html"><i data-lucide="layout-list" class="w-5 h-5"></i><span id="m-nav-feed">Stories</span></a>
+    <a href="land-market.html"><i data-lucide="map" class="w-5 h-5"></i><span id="m-nav-land">Land</span></a>
+    <a href="learning.html"><i data-lucide="play-circle" class="w-5 h-5"></i><span id="m-nav-learn">Learn</span></a>
+    <a href="profile.html"><i data-lucide="user" class="w-5 h-5"></i><span id="m-nav-profile">Profile</span></a>
+  </nav>
+<script src="/theme-engine.js"></script>
+</body>
+</html>

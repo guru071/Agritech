@@ -12,8 +12,11 @@ export interface ILandListing extends Document {
   adminApprovalStatus: "Pending" | "Approved" | "Rejected";
   imagePath: string;
   location: string;
+<<<<<<< HEAD
   visibility: "Public" | "Hidden";
   isFeatured: boolean;
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   createdAt: Date;
 }
 
@@ -30,8 +33,11 @@ const LandListingSchema = new Schema<ILandListing>(
     adminApprovalStatus: { type: String, enum: ["Pending", "Approved", "Rejected"], default: "Pending" },
     imagePath: { type: String, default: "" },
     location: { type: String, default: "" },
+<<<<<<< HEAD
     visibility: { type: String, enum: ["Public", "Hidden"], default: "Public" },
     isFeatured: { type: Boolean, default: false },
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   },
   { timestamps: true }
 );

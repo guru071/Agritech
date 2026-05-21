@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Router, type IRouter, type Response } from "express";
+=======
+import { Router, type IRouter } from "express";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 import healthRouter from "./health.js";
 import authRouter from "./auth.js";
 import productsRouter from "./products.js";
@@ -8,12 +12,15 @@ import trackerRouter from "./tracker.js";
 import analyticsRouter from "./analytics.js";
 import adminRouter from "./admin.js";
 import ordersRouter from "./orders.js";
+<<<<<<< HEAD
 import learningRouter from "./learning.js";
 import iotRouter from "./iot.js";
 import land3dRouter from "./land3d.js";
 import { authenticateToken, type AuthRequest } from "../middleware/auth.js";
 import { User } from "../schemas/User.js";
 import { Product } from "../schemas/Product.js";
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 const router: IRouter = Router();
 
@@ -26,6 +33,7 @@ router.use("/tracker", trackerRouter);
 router.use("/users/me/analytics", analyticsRouter);
 router.use("/admin", adminRouter);
 router.use("/orders", ordersRouter);
+<<<<<<< HEAD
 router.use("/learning", learningRouter);
 router.use("/iot", iotRouter);
 router.use("/land3d", land3dRouter);
@@ -58,5 +66,7 @@ router.get("/users/me/deliveries", authenticateToken, async (req: AuthRequest, r
     res.status(500).json({ error: "Failed to fetch ledger." });
   }
 });
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 export default router;

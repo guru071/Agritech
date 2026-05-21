@@ -39,6 +39,7 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       token,
+<<<<<<< HEAD
       user: {
         id: user._id,
         name: user.name,
@@ -47,6 +48,9 @@ router.post("/register", async (req: Request, res: Response): Promise<void> => {
         subscriptionTier: user.subscriptionTier,
         accountStatus: user.accountStatus,
       },
+=======
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, subscriptionTier: user.subscriptionTier },
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     });
   } catch (err) {
     req.log?.error({ err }, "Registration error");
@@ -74,11 +78,14 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+<<<<<<< HEAD
     if (user.accountStatus === "Suspended") {
       res.status(403).json({ error: "This account is suspended. Please contact AgriHub support." });
       return;
     }
 
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email, name: user.name, subscriptionTier: user.subscriptionTier },
       JWT_SECRET,
@@ -87,6 +94,7 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
 
     res.json({
       token,
+<<<<<<< HEAD
       user: {
         id: user._id,
         name: user.name,
@@ -95,6 +103,9 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
         subscriptionTier: user.subscriptionTier,
         accountStatus: user.accountStatus,
       },
+=======
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, subscriptionTier: user.subscriptionTier },
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     });
   } catch (err) {
     req.log?.error({ err }, "Login error");
@@ -109,6 +120,7 @@ router.get("/me", authenticateToken, async (req: AuthRequest, res: Response): Pr
       res.status(404).json({ error: "User not found" });
       return;
     }
+<<<<<<< HEAD
     res.json({
       id: user._id,
       name: user.name,
@@ -133,6 +145,9 @@ router.get("/me", authenticateToken, async (req: AuthRequest, res: Response): Pr
         ifscCode: user.ifscCode,
       },
     });
+=======
+    res.json({ user: { id: user._id, name: user.name, email: user.email, phone: user.phone, subscriptionTier: user.subscriptionTier } });
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch user" });
   }
@@ -154,6 +169,7 @@ router.post("/upgrade", authenticateToken, async (req: AuthRequest, res: Respons
       JWT_SECRET,
       { expiresIn: "30d" }
     );
+<<<<<<< HEAD
     res.json({
       success: true,
       token,
@@ -168,11 +184,15 @@ router.post("/upgrade", authenticateToken, async (req: AuthRequest, res: Respons
       },
       message: "Upgraded to Premium!"
     });
+=======
+    res.json({ token, subscriptionTier: user.subscriptionTier, message: "Upgraded to Premium!" });
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   } catch (err) {
     res.status(500).json({ error: "Upgrade failed" });
   }
 });
 
+<<<<<<< HEAD
 router.post("/pay", authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -208,4 +228,6 @@ router.post("/pay", authenticateToken, async (req: AuthRequest, res: Response): 
   }
 });
 
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 export default router;

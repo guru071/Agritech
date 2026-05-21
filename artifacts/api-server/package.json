@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "pnpm run build && pnpm run start",
+=======
+    "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"

@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgriHub Pro — Super Admin Dashboard</title>
+<<<<<<< HEAD
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/tailwind.css" />
+=======
+  <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     .tab-btn.active{border-bottom:3px solid #059669;color:#059669;font-weight:700;}
@@ -52,7 +56,11 @@
     <!-- TABS -->
     <div class="max-w-7xl mx-auto px-4 border-t border-green-800">
       <div class="flex gap-1 overflow-x-auto">
+<<<<<<< HEAD
         <button onclick="switchTab('fulfillment')" id="tab-fulfillment" class="tab-btn active px-5 py-3 text-sm whitespace-nowrap text-green-300 transition border-b-[3px]">Fulfillment</button>
+=======
+        <button onclick="switchTab('fulfillment')" id="tab-fulfillment" class="tab-btn active px-5 py-3 text-sm whitespace-nowrap text-green-300 transition border-b-3">Fulfillment</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         <button onclick="switchTab('land')" id="tab-land" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Real Estate</button>
         <button onclick="switchTab('store')" id="tab-store" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Official Store</button>
         <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-5 py-3 text-sm whitespace-nowrap text-green-300 transition">Analytics</button>
@@ -261,10 +269,13 @@ function showLoginError(msg){const e=document.getElementById('admin-login-error'
 function adminLogout(){adminToken='';sessionStorage.removeItem('agrihub_admin_token');document.getElementById('admin-dashboard').classList.add('hidden');document.getElementById('admin-login').classList.remove('hidden');document.getElementById('admin-token-input').value='';}
 
 function switchTab(tab){
+<<<<<<< HEAD
   if(!adminToken){
     showToast("Access denied: Please enter the admin token.");
     return;
   }
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   ['fulfillment','land','store','analytics'].forEach(t=>{
     document.getElementById(`tab-${t}`).classList.toggle('active',t===tab);
     document.getElementById(`tab-${t}-content`).classList.toggle('hidden',t!==tab);

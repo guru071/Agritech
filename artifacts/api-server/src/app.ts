@@ -10,7 +10,11 @@ import { logger } from "./lib/logger.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+<<<<<<< HEAD
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/agrihub-pro";
+=======
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/agrihub";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 async function connectWithRetry() {
   let attempt = 0;

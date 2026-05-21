@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+<<<<<<< HEAD
 import crypto from "crypto";
 
 // ─── Secrets ─────────────────────────────────────────────────────────────────
@@ -18,6 +19,10 @@ function requireSecret(envKey: string, devFallback: string): string {
 
 const JWT_SECRET = requireSecret("JWT_SECRET",
   process.env.SESSION_SECRET ?? `agrihub-dev-${crypto.randomBytes(8).toString("hex")}`);
+=======
+
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || "agrihub-secret-key-2024";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -75,8 +80,12 @@ export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction
   next();
 };
 
+<<<<<<< HEAD
 export const ADMIN_TOKEN = requireSecret("ADMIN_SECRET",
   `agrihub-admin-${crypto.randomBytes(8).toString("hex")}`);
+=======
+export const ADMIN_TOKEN = process.env.ADMIN_SECRET || "agrihub-admin-2024";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 export const ADMIN_BUSINESS_PHONE = process.env.ADMIN_PHONE || "919876543210";
 
 export const authenticateAdmin = (req: Request, res: Response, next: NextFunction): void => {

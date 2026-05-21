@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
   <link rel="stylesheet" href="/theme.css">
   <script>
     (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
@@ -11,6 +12,13 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/tailwind.css" />
+=======
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Land Market</title>
+  <link rel="manifest" href="/manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <style>
     .lang-btn.active{background:#059669!important;color:#fff!important;}
     .modal-overlay{display:none;}.modal-overlay.open{display:flex;}
@@ -22,24 +30,36 @@
 <nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <a href="/index.html" class="flex items-center gap-2 text-xl font-bold">
+<<<<<<< HEAD
       <span class="text-2xl">ðŸŒ¾</span><span data-t="brand">AgriHub Pro</span>
+=======
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </a>
     <div class="hidden md:flex items-center gap-5 text-sm font-medium">
       <a href="/index.html" class="hover:text-green-200 transition" data-t="nav_market">Marketplace</a>
       <a href="/community.html" class="hover:text-green-200 transition" data-t="nav_community">Community</a>
       <a href="/land-market.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_land">Land Market</a>
+<<<<<<< HEAD
       <a href="/learning.html" class="hover:text-green-200 transition" data-t="nav_learn">Academy</a>
       <a href="/smart-home.html" class="hover:text-green-200 transition" data-t="nav_smarthome">Smart Home</a>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <a href="/profile.html" class="hover:text-green-200 transition" data-t="nav_profile">My Profile</a>
     </div>
     <div class="flex items-center gap-3">
       <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
         <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+<<<<<<< HEAD
         <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">à®¤à®®à®¿à®´à¯</button>
+=======
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
       <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition max-w-32 truncate" data-t="login">Login</button>
     </div>
   </div>
+<<<<<<< HEAD
   <div class="md:hidden border-t border-green-700/70 bg-green-900">
     <div class="max-w-7xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-xs font-semibold">
       <a href="/index.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_market">Marketplace</a>
@@ -50,6 +70,8 @@
       <a href="/profile.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_profile">My Profile</a>
     </div>
   </div>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </nav>
 
 <div class="bg-gradient-to-br from-amber-900 via-green-900 to-emerald-800 text-white py-12 px-4">
@@ -80,7 +102,11 @@
   </div>
   <div id="listings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
   <div id="empty-state" class="hidden text-center py-24">
+<<<<<<< HEAD
     <p class="text-7xl mb-4">ðŸ¡</p>
+=======
+    <p class="text-7xl mb-4">🏡</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     <p class="text-gray-400 text-lg" data-t="no_listings">No approved land listings available yet.</p>
   </div>
 </div>
@@ -90,7 +116,11 @@
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[95vh]">
     <div class="bg-amber-700 text-white p-6">
       <h2 class="text-xl font-bold" data-t="list_modal_title">List Your Agricultural Land</h2>
+<<<<<<< HEAD
       <p class="text-amber-200 text-sm mt-1" data-t="list_modal_sub">Submit for admin review â€” approved listings appear publicly</p>
+=======
+      <p class="text-amber-200 text-sm mt-1" data-t="list_modal_sub">Submit for admin review — approved listings appear publicly</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </div>
     <form id="list-form" onsubmit="submitListing(event)" class="p-6 space-y-4">
       <div>
@@ -107,15 +137,24 @@
           <input name="totalAcreage" type="number" min="0.01" step="0.01" required placeholder="5.5" oninput="calcTotalPrice()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
         </div>
         <div>
+<<<<<<< HEAD
           <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="price_sqft_label">Price Per Sq.Ft (â‚¹)</label>
+=======
+          <label class="block text-sm font-semibold text-gray-700 mb-1" data-t="price_sqft_label">Price Per Sq.Ft (₹)</label>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
           <input name="pricePerSqFt" type="number" min="0.01" step="0.01" required placeholder="8.50" oninput="calcTotalPrice()" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
         </div>
       </div>
 
       <!-- COMPUTED PRICE -->
       <div id="price-calc" class="hidden bg-amber-50 border-2 border-amber-300 rounded-xl p-4">
+<<<<<<< HEAD
         <p class="text-xs text-amber-700 font-medium mb-1" data-t="computed_price_formula">Formula: Acreage Ã— 43,560 sq.ft Ã— Price/sq.ft</p>
         <p class="text-2xl font-extrabold text-amber-800">â‚¹<span id="computed-price">0</span></p>
+=======
+        <p class="text-xs text-amber-700 font-medium mb-1" data-t="computed_price_formula">Formula: Acreage × 43,560 sq.ft × Price/sq.ft</p>
+        <p class="text-2xl font-extrabold text-amber-800">₹<span id="computed-price">0</span></p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         <p class="text-xs text-amber-600 mt-1" id="price-breakdown"></p>
       </div>
 
@@ -125,7 +164,11 @@
       </div>
       <div id="list-error" class="hidden text-red-600 text-sm bg-red-50 p-3 rounded-lg"></div>
       <div id="list-notice" class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+<<<<<<< HEAD
         <p class="text-blue-700 text-xs font-medium">ðŸ“‹ Your listing will be reviewed by AgriHub admin before appearing publicly. This usually takes 24-48 hours.</p>
+=======
+        <p class="text-blue-700 text-xs font-medium">📋 Your listing will be reviewed by AgriHub admin before appearing publicly. This usually takes 24-48 hours.</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
       <div class="flex gap-3 pt-2">
         <button type="button" onclick="closeListModal()" class="flex-1 border border-gray-300 text-gray-600 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition" data-t="cancel">Cancel</button>
@@ -138,7 +181,11 @@
 <!-- CONFIRM DELETE MODAL -->
 <div id="delete-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/60 p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+<<<<<<< HEAD
     <p class="text-5xl mb-3">âš ï¸</p>
+=======
+    <p class="text-5xl mb-3">⚠️</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     <h3 class="text-lg font-bold text-gray-800 mb-2" data-t="confirm_delete_title">Delete this listing?</h3>
     <p class="text-gray-500 text-sm mb-5" data-t="confirm_delete_sub">This action is permanent and cannot be undone.</p>
     <div class="flex gap-3">
@@ -149,7 +196,11 @@
 </div>
 
 <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+<<<<<<< HEAD
   <span>âœ“</span><span id="toast-msg"></span>
+=======
+  <span>✓</span><span id="toast-msg"></span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </div>
 
 <script>
@@ -157,6 +208,7 @@ const API_BASE='/api';
 let token=localStorage.getItem('agrihub_token')||'', user=JSON.parse(localStorage.getItem('agrihub_user')||'null');
 let listings=[], currentLang='en', deleteTargetId=null;
 const T={
+<<<<<<< HEAD
   en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',nav_learn:'Academy',nav_smarthome:'Smart Home',
     login:'Login',hero_title:'Premium Agricultural Land',hero_sub:'Verified farmland listings. Transparent pricing.',
     list_land:'+ List Your Land',loading:'Loading land listings...',no_listings:'No approved land listings available yet.',
@@ -178,6 +230,28 @@ const T={
 };
 function t(k){return T[currentLang][k]||T.en[k]||k;}
 function pickList(data, key){return Array.isArray(data)?data:(Array.isArray(data?.[key])?data[key]:[]);}
+=======
+  en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+    login:'Login',hero_title:'Premium Agricultural Land',hero_sub:'Verified farmland listings. Transparent pricing.',
+    list_land:'+ List Your Land',loading:'Loading land listings...',no_listings:'No approved land listings available yet.',
+    list_modal_title:'List Your Agricultural Land',list_modal_sub:'Submit for admin review',land_title_label:'Property Title',
+    location_label:'Location / District',acreage_label:'Total Acreage',price_sqft_label:'Price Per Sq.Ft (₹)',
+    land_image_label:'Property Image (optional)',computed_price_formula:'Formula: Acreage × 43,560 sq.ft × Price/sq.ft',
+    cancel:'Cancel',submit_land:'Submit for Review',mark_sold:'Mark as Sold',mark_available:'Mark as Available',
+    delete_listing:'Delete Listing',confirm_delete_title:'Delete this listing?',confirm_delete_sub:'This is permanent.',
+    delete_confirm:'Delete',acres:'acres',contact_whatsapp:'Contact on WhatsApp',total_price:'Total Price',sqft:'sq.ft'},
+  ta:{brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',hero_title:'பிரீமியம் விவசாய நிலம்',hero_sub:'சரிபார்க்கப்பட்ட நில பட்டியல்கள்.',
+    list_land:'+ உங்கள் நிலத்தை பட்டியலிடவும்',loading:'நில பட்டியல்கள் ஏற்றப்படுகின்றன...',no_listings:'இன்னும் நில பட்டியல்கள் இல்லை.',
+    list_modal_title:'விவசாய நிலத்தை பட்டியலிடவும்',list_modal_sub:'நிர்வாக மதிப்பாய்வுக்கு சமர்ப்பிக்கவும்',land_title_label:'சொத்து தலைப்பு',
+    location_label:'இடம் / மாவட்டம்',acreage_label:'மொத்த ஏக்கர்',price_sqft_label:'ஒரு சதுர அடிக்கு விலை (₹)',
+    land_image_label:'சொத்து படம் (விருப்பமானது)',computed_price_formula:'சூத்திரம்: ஏக்கர் × 43,560 × விலை/சதுர அடி',
+    cancel:'ரத்து',submit_land:'மதிப்பாய்வுக்கு சமர்ப்பிக்கவும்',mark_sold:'விற்கப்பட்டது என்று குறிக்கவும்',mark_available:'கிடைக்கும் என்று குறிக்கவும்',
+    delete_listing:'பட்டியலை நீக்கவும்',confirm_delete_title:'இந்த பட்டியலை நீக்கவுமா?',confirm_delete_sub:'இது நிரந்தரமானது.',
+    delete_confirm:'நீக்கு',acres:'ஏக்கர்',contact_whatsapp:'வாட்ஸ்அப்பில் தொடர்பு கொள்ளவும்',total_price:'மொத்த விலை',sqft:'சதுர அடி'}
+};
+function t(k){return T[currentLang][k]||T.en[k]||k;}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 function setLang(lang){
   currentLang=lang;
   ['en','ta'].forEach(l=>document.getElementById(`btn-${l}`).classList.toggle('active',l===lang));
@@ -200,7 +274,11 @@ function calcTotalPrice(){
   if(ac>0&&ppsf>0){
     const sqft=ac*43560, total=sqft*ppsf;
     document.getElementById('computed-price').textContent=Math.round(total).toLocaleString('en-IN');
+<<<<<<< HEAD
     document.getElementById('price-breakdown').textContent=`${ac} acres Ã— ${sqft.toLocaleString()} sq.ft Ã— â‚¹${ppsf}/sq.ft`;
+=======
+    document.getElementById('price-breakdown').textContent=`${ac} acres × ${sqft.toLocaleString()} sq.ft × ₹${ppsf}/sq.ft`;
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     calc.classList.remove('hidden');
   } else { calc.classList.add('hidden'); }
 }
@@ -208,7 +286,11 @@ function calcTotalPrice(){
 async function loadListings(){
   try {
     const res=await fetch(`${API_BASE}/land-market`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in land-market.html', e); } listings=pickList(data,'listings');
+=======
+    const data=await res.json(); listings=data.listings||[];
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     renderListings();
   } catch {
     document.getElementById('loading').innerHTML='<p class="text-red-400 text-sm py-8">Failed to load listings. API server might be offline.</p>';
@@ -238,10 +320,17 @@ function renderFilteredListings(list){
     const isSold=l.status==='Sold';
     const totalPriceFormatted=Math.round(l.totalPrice).toLocaleString('en-IN');
     const sqftTotal=Math.round(l.totalAcreage*43560).toLocaleString('en-IN');
+<<<<<<< HEAD
     const waMsg=encodeURIComponent(`Hi, I'm interested in the land listing: "${l.title}" listed on AgriHub Pro.\nTotal Price: â‚¹${totalPriceFormatted}`);
     const imgHtml=l.imagePath
       ?`<img src="${l.imagePath}" alt="${l.title}" class="w-full h-56 object-cover" onerror="this.outerHTML='<div class=\'w-full h-56 bg-amber-100 flex items-center justify-center text-6xl\'>ðŸ¡</div>'">`
       :`<div class="w-full h-56 bg-gradient-to-br from-amber-100 to-green-100 flex items-center justify-center text-6xl">ðŸ¡</div>`;
+=======
+    const waMsg=encodeURIComponent(`Hi, I'm interested in the land listing: "${l.title}" listed on AgriHub Pro.\nTotal Price: ₹${totalPriceFormatted}`);
+    const imgHtml=l.imagePath
+      ?`<img src="${l.imagePath}" alt="${l.title}" class="w-full h-56 object-cover" onerror="this.outerHTML='<div class=\'w-full h-56 bg-amber-100 flex items-center justify-center text-6xl\'>🏡</div>'">`
+      :`<div class="w-full h-56 bg-gradient-to-br from-amber-100 to-green-100 flex items-center justify-center text-6xl">🏡</div>`;
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     return `<div class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-shadow flex flex-col ${isSold?'opacity-75':''}">
       <div class="relative">
         ${imgHtml}
@@ -250,6 +339,7 @@ function renderFilteredListings(list){
       </div>
       <div class="p-5 flex flex-col flex-1">
         <h3 class="font-bold text-gray-800 text-base leading-tight mb-1">${l.title}</h3>
+<<<<<<< HEAD
         ${l.location?`<p class="text-xs text-gray-400 mb-1">ðŸ“ ${l.location}</p>`:''}
         <p class="text-xs text-gray-400 mb-3">Listed by ${l.sellerName||'Farmer'}</p>
         <div class="bg-amber-50 rounded-xl p-3 mb-3">
@@ -262,6 +352,20 @@ function renderFilteredListings(list){
           ${isOwner?`
             <button onclick="toggleStatus('${l._id}','${isSold?'Available':'Sold'}')" class="w-full border-2 ${isSold?'border-green-500 text-green-700 hover:bg-green-50':'border-red-400 text-red-600 hover:bg-red-50'} py-2 rounded-xl text-sm font-semibold transition">
               ${isSold?'âœ“ '+t('mark_available'):'âœ— '+t('mark_sold')}
+=======
+        ${l.location?`<p class="text-xs text-gray-400 mb-1">📍 ${l.location}</p>`:''}
+        <p class="text-xs text-gray-400 mb-3">Listed by ${l.sellerName||'Farmer'}</p>
+        <div class="bg-amber-50 rounded-xl p-3 mb-3">
+          <p class="text-xs text-amber-600 font-medium">${t('total_price')}</p>
+          <p class="text-2xl font-extrabold text-amber-800">₹${totalPriceFormatted}</p>
+          <p class="text-xs text-amber-600 mt-0.5">${sqftTotal} ${t('sqft')} · ₹${l.pricePerSqFt}/${t('sqft')}</p>
+        </div>
+        <div class="flex flex-col gap-2 mt-auto">
+          ${!isSold?`<a href="https://wa.me/${l.sellerPhone||''}?text=${waMsg}" target="_blank" class="block w-full text-center bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 rounded-xl text-sm transition">📱 ${t('contact_whatsapp')}</a>`:''}
+          ${isOwner?`
+            <button onclick="toggleStatus('${l._id}','${isSold?'Available':'Sold'}')" class="w-full border-2 ${isSold?'border-green-500 text-green-700 hover:bg-green-50':'border-red-400 text-red-600 hover:bg-red-50'} py-2 rounded-xl text-sm font-semibold transition">
+              ${isSold?'✓ '+t('mark_available'):'✗ '+t('mark_sold')}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
             </button>
             <button onclick="confirmDelete('${l._id}')" class="w-full border border-gray-300 text-gray-500 py-2 rounded-xl text-sm hover:bg-gray-50 hover:text-red-600 transition">${t('delete_listing')}</button>
           `:''}
@@ -280,7 +384,11 @@ async function submitListing(e){
   const err=document.getElementById('list-error');err.classList.add('hidden');
   try {
     const res=await fetch(`${API_BASE}/land-market`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:new FormData(e.target)});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in land-market.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if(!res.ok){err.textContent=data.error;err.classList.remove('hidden');return;}
     closeListModal();showToast('Land listed! Awaiting admin approval.');
   } catch { err.textContent='Network error.';err.classList.remove('hidden'); }
@@ -292,7 +400,11 @@ async function toggleStatus(id,newStatus){
   try {
     const res=await fetch(`${API_BASE}/land-market/${id}/status`,{method:'PATCH',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({status:newStatus})});
     if(res.ok){showToast(`Listing marked as ${newStatus}`);loadListings();}
+<<<<<<< HEAD
     else { const t=await res.text(); let d={}; try{d=JSON.parse(t);}catch(e){} showToast(d.error||'Failed to update'); }
+=======
+    else { const d=await res.json(); showToast(d.error||'Failed to update'); }
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   } catch { showToast('Network error'); }
 }
 
@@ -307,7 +419,11 @@ async function doDelete(id){
     const res=await fetch(`${API_BASE}/land-market/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
     document.getElementById('delete-modal').classList.remove('open');
     if(res.ok){showToast('Listing deleted');loadListings();}
+<<<<<<< HEAD
     else{const t=await res.text();let d={};try{d=JSON.parse(t);}catch(e){}showToast(d.error||'Failed to delete');}
+=======
+    else{const d=await res.json();showToast(d.error||'Failed to delete');}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   } catch { showToast('Network error'); }
 }
 
@@ -316,7 +432,12 @@ function showToast(msg,dur=3500){const el=document.getElementById('toast');docum
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
 setLang('en'); updateAuthUI(); loadListings();
 </script>
+<<<<<<< HEAD
 <script src="/theme-engine.js"></script>
 </body>
 </html>
 
+=======
+</body>
+</html>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1

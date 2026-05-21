@@ -5,7 +5,11 @@ import mongoose from "mongoose";
 
 const router = Router();
 
+<<<<<<< HEAD
 router.get("/", authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+=======
+router.get("/me", authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   try {
     const userId = new mongoose.Types.ObjectId(req.userId);
 

@@ -63,7 +63,10 @@ router.post(
 router.get("/", optionalAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const products = await Product.find({
+<<<<<<< HEAD
       visibility: { $ne: "Hidden" },
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       $or: [{ adminVerificationStatus: "Listed_For_Retail" }, { isOfficialHubProduct: true }],
     }).sort({ createdAt: -1 });
 

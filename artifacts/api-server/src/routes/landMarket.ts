@@ -61,10 +61,14 @@ router.post(
 
 router.get("/", optionalAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+<<<<<<< HEAD
     const listings = await LandListing.find({
       adminApprovalStatus: "Approved",
       visibility: { $ne: "Hidden" },
     }).sort({ createdAt: -1 });
+=======
+    const listings = await LandListing.find({ adminApprovalStatus: "Approved" }).sort({ createdAt: -1 });
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     res.json({ listings, currentUserId: req.userId || null });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch land listings" });

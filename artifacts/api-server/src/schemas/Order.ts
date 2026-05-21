@@ -10,7 +10,11 @@ export interface IOrder extends Document {
   buyerEmail: string;
   unitsRequested: number;
   message: string;
+<<<<<<< HEAD
   status: "Pending" | "Accepted" | "Rejected" | "Packed" | "Shipped" | "Delivered" | "Cancelled";
+=======
+  status: "Pending" | "Accepted" | "Rejected";
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   createdAt: Date;
 }
 
@@ -25,11 +29,15 @@ const OrderSchema = new Schema<IOrder>(
     buyerEmail: { type: String, default: "", lowercase: true },
     unitsRequested: { type: Number, required: true, min: 1 },
     message: { type: String, default: "" },
+<<<<<<< HEAD
     status: {
       type: String,
       enum: ["Pending", "Accepted", "Rejected", "Packed", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
+=======
+    status: { type: String, enum: ["Pending", "Accepted", "Rejected"], default: "Pending" },
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   },
   { timestamps: true }
 );

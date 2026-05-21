@@ -98,9 +98,14 @@ router.get("/admin/all", authenticateAdmin, async (req: Request, res: Response):
 router.put("/admin/:id/status", authenticateAdmin, async (req: Request, res: Response): Promise<void> => {
   try {
     const { status } = req.body;
+<<<<<<< HEAD
     const allowedStatuses = ["Pending", "Accepted", "Rejected", "Packed", "Shipped", "Delivered", "Cancelled"];
     if (!allowedStatuses.includes(status)) {
       res.status(400).json({ error: `Status must be one of: ${allowedStatuses.join(", ")}` });
+=======
+    if (!["Accepted", "Rejected"].includes(status)) {
+      res.status(400).json({ error: "Status must be Accepted or Rejected" });
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       return;
     }
     const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< HEAD
   <link rel="stylesheet" href="/theme.css">
   <script>
     (function(){const h=new Date().getHours();const t=h>=5&&h<=10?"morning":h>=11&&h<=16?"afternoon":h>=17&&h<=20?"evening":"night";document.documentElement.setAttribute("data-time",t);})();
@@ -11,6 +12,13 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/tailwind.css" />
+=======
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriHub Pro — Community</title>
+  <link rel="manifest" href="/manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   <style>
     .lang-btn.active{background:#059669!important;color:#fff!important;}
     .modal-overlay{display:none;}.modal-overlay.open{display:flex;}
@@ -22,24 +30,36 @@
 <nav class="bg-green-800 text-white shadow-lg sticky top-0 z-40">
   <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
     <a href="/index.html" class="flex items-center gap-2 text-xl font-bold">
+<<<<<<< HEAD
       <span class="text-2xl">ðŸŒ¾</span><span data-t="brand">AgriHub Pro</span>
+=======
+      <span class="text-2xl">🌾</span><span data-t="brand">AgriHub Pro</span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </a>
     <div class="hidden md:flex items-center gap-5 text-sm font-medium">
       <a href="/index.html" class="hover:text-green-200 transition" data-t="nav_market">Marketplace</a>
       <a href="/community.html" class="text-green-200 border-b-2 border-green-300 pb-0.5" data-t="nav_community">Community</a>
       <a href="/land-market.html" class="hover:text-green-200 transition" data-t="nav_land">Land Market</a>
       <a href="/profile.html" class="hover:text-green-200 transition" data-t="nav_profile">My Profile</a>
+<<<<<<< HEAD
       <a href="/learning.html" class="hover:text-green-200 transition" data-t="nav_learn">Academy</a>
       <a href="/smart-home.html" class="hover:text-green-200 transition" data-t="nav_smarthome">Smart Home</a>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </div>
     <div class="flex items-center gap-3">
       <div class="flex rounded overflow-hidden border border-green-600 text-xs font-bold">
         <button onclick="setLang('en')" id="btn-en" class="lang-btn active px-2.5 py-1.5 bg-green-900 transition">EN</button>
+<<<<<<< HEAD
         <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">à®¤à®®à®¿à®´à¯</button>
+=======
+        <button onclick="setLang('ta')" id="btn-ta" class="lang-btn px-2.5 py-1.5 bg-green-900 transition">தமிழ்</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       </div>
       <button onclick="handleAuthBtn()" id="auth-btn" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg text-sm font-semibold transition max-w-32 truncate" data-t="login">Login</button>
     </div>
   </div>
+<<<<<<< HEAD
   <div class="md:hidden border-t border-green-700/70 bg-green-900">
     <div class="max-w-4xl mx-auto px-4 py-2 flex gap-2 overflow-x-auto text-xs font-semibold">
       <a href="/index.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_market">Marketplace</a>
@@ -50,6 +70,8 @@
       <a href="/smart-home.html" class="shrink-0 rounded-md px-3 py-2 text-green-100 hover:bg-white/10" data-t="nav_smarthome">Smart Home</a>
     </div>
   </div>
+=======
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </nav>
 
 <div class="max-w-4xl mx-auto px-4 py-6">
@@ -76,9 +98,15 @@
           <div id="feed-avatar" class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shrink-0">U</div>
           <button onclick="openPostStoryModal()" class="flex-1 text-left border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-400 hover:border-green-400 hover:bg-green-50 transition" data-t="share_placeholder">Share something with the farming community...</button>
         </div>
+<<<<<<< HEAD
         <div class="flex gap-3 mt-3 pl-[3.25rem]">
           <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1"><span>ðŸ“·</span><span data-t="photo_story">Photo Story</span></button>
           <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1 ml-3"><span>âœï¸</span><span data-t="text_story">Text Story</span></button>
+=======
+        <div class="flex gap-3 mt-3 pl-13">
+          <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1"><span>📷</span><span data-t="photo_story">Photo Story</span></button>
+          <button onclick="openPostStoryModal()" class="text-xs text-green-700 font-semibold hover:underline flex items-center gap-1 ml-3"><span>✍️</span><span data-t="text_story">Text Story</span></button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         </div>
       </div>
 
@@ -87,7 +115,11 @@
       </div>
       <div id="feed-container" class="space-y-4 hidden"></div>
       <div id="feed-empty" class="hidden bg-white rounded-2xl shadow p-10 text-center">
+<<<<<<< HEAD
         <p class="text-5xl mb-3">ðŸ¤</p>
+=======
+        <p class="text-5xl mb-3">🤝</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         <p class="text-gray-500" data-t="no_stories">No stories yet. Be the first to share!</p>
       </div>
     </div>
@@ -99,7 +131,11 @@
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
     <div class="bg-green-800 text-white p-5 flex items-center justify-between">
       <h2 class="text-lg font-bold" data-t="post_story_title">Share a Story</h2>
+<<<<<<< HEAD
       <button onclick="closePostModal()" class="text-green-300 hover:text-white text-xl leading-none">Ã—</button>
+=======
+      <button onclick="closePostModal()" class="text-green-300 hover:text-white text-xl leading-none">×</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     </div>
     <form id="post-form" onsubmit="submitStory(event)" class="p-5 space-y-4">
       <textarea name="caption" rows="4" placeholder="What's happening on your farm today?" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500" data-t-placeholder="story_caption_ph"></textarea>
@@ -119,7 +155,11 @@
 <!-- STORY VIEW MODAL -->
 <div id="story-view-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/90 backdrop-blur-sm" onclick="closeStoryView()">
   <div class="relative w-full max-w-sm mx-4" onclick="event.stopPropagation()">
+<<<<<<< HEAD
     <button onclick="closeStoryView()" class="absolute -top-10 right-0 text-white text-3xl font-light">Ã—</button>
+=======
+    <button onclick="closeStoryView()" class="absolute -top-10 right-0 text-white text-3xl font-light">×</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     <div class="bg-gray-900 rounded-2xl overflow-hidden">
       <div class="p-4 flex items-center gap-3 bg-black/40">
         <div id="sv-avatar" class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold"></div>
@@ -135,14 +175,22 @@
 <div id="premium-modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center bg-black/70 backdrop-blur-sm p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
     <div class="bg-gradient-to-br from-yellow-400 to-orange-500 p-6 text-center">
+<<<<<<< HEAD
       <p class="text-4xl mb-2">â­</p>
+=======
+      <p class="text-4xl mb-2">⭐</p>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
       <h2 class="text-xl font-extrabold text-white" data-t="upgrade_title">Upgrade to Premium</h2>
     </div>
     <div class="p-6 text-center">
       <p class="text-gray-700 mb-2 font-semibold" data-t="upgrade_desc">You've reached your daily story limit.</p>
       <p class="text-gray-500 text-sm mb-5" data-t="upgrade_sub">Free users can post 1 story per 24 hours. Upgrade to Premium for unlimited stories, priority listings, and more!</p>
       <div class="space-y-3">
+<<<<<<< HEAD
         <button onclick="doUpgrade()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-extrabold py-3 rounded-xl transition shadow" data-t="upgrade_btn">Upgrade to Premium âœ¨</button>
+=======
+        <button onclick="doUpgrade()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-extrabold py-3 rounded-xl transition shadow" data-t="upgrade_btn">Upgrade to Premium ✨</button>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
         <button onclick="document.getElementById('premium-modal').classList.remove('open')" class="w-full border border-gray-300 text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition text-sm" data-t="maybe_later">Maybe Later</button>
       </div>
     </div>
@@ -150,7 +198,11 @@
 </div>
 
 <div id="toast" class="hidden fixed bottom-6 right-6 z-50 bg-green-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 text-sm font-semibold">
+<<<<<<< HEAD
   <span>âœ“</span><span id="toast-msg"></span>
+=======
+  <span>✓</span><span id="toast-msg"></span>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 </div>
 
 <script>
@@ -158,12 +210,17 @@ const API_BASE='/api';
 let token=localStorage.getItem('agrihub_token')||'', user=JSON.parse(localStorage.getItem('agrihub_user')||'null');
 let currentLang='en';
 const T={
+<<<<<<< HEAD
   en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',nav_learn:'Academy',nav_smarthome:'Smart Home',
+=======
+  en:{brand:'AgriHub Pro',nav_market:'Marketplace',nav_community:'Community',nav_land:'Land Market',nav_profile:'My Profile',
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     login:'Login',add_story:'Add Story',loading_stories:'Loading stories...',share_placeholder:'Share something with the farming community...',
     photo_story:'Photo Story',text_story:'Text Story',no_stories:'No stories yet. Be the first to share!',
     post_story_title:'Share a Story',attach_photo:'Attach Photo (optional)',cancel:'Cancel',post_now:'Post Now',
     story_caption_ph:'What\'s happening on your farm today?',upgrade_title:'Upgrade to Premium',
     upgrade_desc:'You\'ve reached your daily story limit.',upgrade_sub:'Free users can post 1 story per 24 hours. Upgrade to Premium for unlimited stories!',
+<<<<<<< HEAD
     upgrade_btn:'Upgrade to Premium âœ¨',maybe_later:'Maybe Later',just_now:'just now',ago:' ago',hrs:' hr',min:' min'},
   ta:{brand:'à®…à®•à¯à®°à®¿à®¹à®ªà¯ à®ªà¯à®°à¯‹',nav_market:'à®šà®¨à¯à®¤à¯ˆ',nav_community:'à®šà®®à¯‚à®•à®®à¯',nav_land:'à®¨à®¿à®² à®šà®¨à¯à®¤à¯ˆ',nav_profile:'à®Žà®©à¯ à®šà¯à®¯à®µà®¿à®µà®°à®®à¯',nav_learn:'à®ªà®¯à®¿à®±à¯à®šà®¿',nav_smarthome:'à®¸à¯à®®à®¾à®°à¯à®Ÿà¯ à®¹à¯‹à®®à¯',
     login:'à®‰à®³à¯à®¨à¯à®´à¯ˆà®•',add_story:'à®•à®¤à¯ˆ à®šà¯‡à®°à¯',loading_stories:'à®•à®¤à¯ˆà®•à®³à¯ à®à®±à¯à®±à®ªà¯à®ªà®Ÿà¯à®•à®¿à®©à¯à®±à®©...',share_placeholder:'à®‡à®©à¯à®±à¯ à®‰à®™à¯à®•à®³à¯ à®ªà®£à¯à®£à¯ˆà®¯à®¿à®²à¯ à®Žà®©à¯à®© à®¨à®Ÿà®•à¯à®•à®¿à®±à®¤à¯?',
@@ -175,6 +232,18 @@ const T={
 };
 function t(k){return T[currentLang][k]||T.en[k]||k;}
 function pickList(data, key){return Array.isArray(data)?data:(Array.isArray(data?.[key])?data[key]:[]);}
+=======
+    upgrade_btn:'Upgrade to Premium ✨',maybe_later:'Maybe Later',just_now:'just now',ago:' ago',hrs:' hr',min:' min'},
+  ta:{brand:'அக்ரிஹப் ப்ரோ',nav_market:'சந்தை',nav_community:'சமூகம்',nav_land:'நில சந்தை',nav_profile:'என் சுயவிவரம்',
+    login:'உள்நுழைக',add_story:'கதை சேர்',loading_stories:'கதைகள் ஏற்றப்படுகின்றன...',share_placeholder:'இன்று உங்கள் பண்ணையில் என்ன நடக்கிறது?',
+    photo_story:'புகைப்பட கதை',text_story:'உரை கதை',no_stories:'இன்னும் கதைகள் இல்லை!',
+    post_story_title:'கதை பகிர்',attach_photo:'புகைப்படம் இணை (விருப்பமானது)',cancel:'ரத்து',post_now:'இப்போது பதிவிடு',
+    story_caption_ph:'இன்று உங்கள் பண்ணையில் என்ன நடக்கிறது?',upgrade_title:'பிரீமியத்திற்கு மேம்படுத்தவும்',
+    upgrade_desc:'நீங்கள் தினசரி கதை வரம்பை எட்டிவிட்டீர்கள்.',upgrade_sub:'இலவச பயனர்கள் 24 மணி நேரத்தில் 1 கதை மட்டுமே பதிவிட முடியும்.',
+    upgrade_btn:'பிரீமியத்திற்கு மேம்படுத்தவும் ✨',maybe_later:'பிறகு பார்க்கலாம்',just_now:'இப்போதுதான்',ago:' முன்',hrs:' மணி',min:' நிமிடம்'}
+};
+function t(k){return T[currentLang][k]||T.en[k]||k;}
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
 function setLang(lang){
   currentLang=lang;
   ['en','ta'].forEach(l=>{document.getElementById(`btn-${l}`).classList.toggle('active',l===lang);});
@@ -201,7 +270,11 @@ function timeAgo(dateStr){
 async function loadStories(){
   try {
     const res=await fetch(`${API_BASE}/stories`,{headers:token?{Authorization:`Bearer ${token}`}:{}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in community.html', e); } const stories=pickList(data,'stories');
+=======
+    const data=await res.json(); const stories=data.stories||[];
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     renderStoriesBar(stories); renderFeed(stories);
   } catch {
     document.getElementById('feed-loading').innerHTML='<p class="text-red-400 text-sm py-6">Failed to load stories. API server might be offline.</p>';
@@ -249,7 +322,11 @@ function viewStory(story){
   document.getElementById('sv-time').textContent=timeAgo(story.createdAt);
   document.getElementById('sv-media').innerHTML=story.mediaUrl
     ?`<img src="${story.mediaUrl}" class="w-full object-cover max-h-80">`
+<<<<<<< HEAD
     :`<div class="h-32 bg-gray-800 flex items-center justify-center text-4xl">ðŸŒ¾</div>`;
+=======
+    :`<div class="h-32 bg-gray-800 flex items-center justify-center text-4xl">🌾</div>`;
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
   document.getElementById('sv-caption').textContent=story.caption||'';
   m.classList.add('open');
 }
@@ -265,7 +342,11 @@ async function submitStory(e){
   const fd=new FormData(e.target);
   try {
     const res=await fetch(`${API_BASE}/stories`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:fd});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in community.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if(res.status===403&&data.code==='STORY_LIMIT'){closePostModal();document.getElementById('premium-modal').classList.add('open');return;}
     if(!res.ok){err.textContent=data.error||'Failed to post story.';err.classList.remove('hidden');return;}
     closePostModal();showToast('Story posted!');loadStories();
@@ -277,12 +358,20 @@ async function doUpgrade(){
   if(!token){window.location.href='/index.html';return;}
   try {
     const res=await fetch(`${API_BASE}/auth/upgrade`,{method:'POST',headers:{Authorization:`Bearer ${token}`}});
+<<<<<<< HEAD
     const resText = await res.text(); let data = {}; try { data = JSON.parse(resText); } catch(e) { console.error('JSON parse error in community.html', e); }
+=======
+    const data=await res.json();
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     if(res.ok){
       token=data.token;user={...user,subscriptionTier:'Premium'};
       localStorage.setItem('agrihub_token',token);localStorage.setItem('agrihub_user',JSON.stringify(user));
       document.getElementById('premium-modal').classList.remove('open');
+<<<<<<< HEAD
       showToast('ðŸŽ‰ You are now a Premium member!',4000);
+=======
+      showToast('🎉 You are now a Premium member!',4000);
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
     }
   } catch { showToast('Upgrade failed. Try again.'); }
 }
@@ -292,7 +381,12 @@ function showToast(msg,dur=3500){const el=document.getElementById('toast');docum
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
 setLang('en'); updateAuthUI(); loadStories();
 </script>
+<<<<<<< HEAD
 <script src="/theme-engine.js"></script>
 </body>
 </html>
 
+=======
+</body>
+</html>
+>>>>>>> 56261fb4a8c736aef1d597c94e452828e0844ca1
